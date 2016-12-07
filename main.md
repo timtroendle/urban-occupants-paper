@@ -30,6 +30,8 @@ Validate simulation results. Goal: stay in certain *plausible* ranges.
 
 Compare heating/cooling energy needed for different HVAC control strategies.
 
+Compare comfort level (temperature when home) for different HVAC control strategies.
+
 Optional: Discuss likelihood of certain HVAC control strategies for certain spatial areas. For example the fraction of an LSOA following a certain control strategy.
 
 ## Conclusion
