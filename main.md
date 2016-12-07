@@ -32,6 +32,8 @@ Compare heating/cooling energy needed for different HVAC control strategies.
 
 Compare comfort level (temperature when home) for different HVAC control strategies.
 
+Show and discuss 'Energy Pathways' of people: their energy footprint while they move through the city.
+
 Optional: Discuss likelihood of certain HVAC control strategies for certain spatial areas. For example the fraction of an LSOA following a certain control strategy.
 
 ## Conclusion
