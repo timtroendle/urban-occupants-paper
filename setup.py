@@ -2,7 +2,7 @@
 
 from setuptools import setup, find_packages
 
-exec(open('people/__init__.py').read())
+exec(open('people/version.py').read())
 
 setup(
     name='people',
