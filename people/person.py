@@ -1,9 +1,38 @@
 class Person():
 
-    def __init__(self, activity_markov_chain, initial_activity, number_generator):
-        self.__chain = activity_markov_chain
+    def __init__(self, activity_markov_chains, initial_activity, number_generator,
+                 initial_time, time_step_size):
+        self.__chain = _TimeHeterogenousMarkovChain(activity_markov_chains, number_generator)
         self.activity = initial_activity
-        self.__number_generator = number_generator
+        self.__time = initial_time
+        self.__time_step_size = time_step_size
 
     def step(self):
-        self.activity = self.__chain.move(state=self.activity, random_func=self.__number_generator)
+        self.activity = self.__chain.move(current_state=self.activity, current_time=self.__time)
+        self.__time += self.__time_step_size
+
+
+class _TimeHeterogenousMarkovChain():
+
+    def __init__(self, activity_markov_chains, number_generator):
+        self.__number_generator = number_generator
+        if 'weekday' not in activity_markov_chains.keys():
+            raise ValueError('Activity markov chains have wrong format.')
+        if 'weekend' not in activity_markov_chains.keys():
+            raise ValueError('Activity markov chains have wrong format.')
+        if any(hour not in activity_markov_chains['weekday'] for hour in range(24)):
+            raise ValueError('Activity markov chains have wrong format.')
+        if any(hour not in activity_markov_chains['weekend'] for hour in range(24)):
+            raise ValueError('Activity markov chains have wrong format.')
+        self.__chains = {day: activity_markov_chains['weekday'] if day < 5
+                         else activity_markov_chains['weekend']
+                         for day in range(7)}
+
+    def move(self, current_state, current_time):
+        return self._select_chain(current_time).move(
+            state=current_state,
+            random_func=self.__number_generator
+        )
+
+    def _select_chain(self, current_time):
+        return self.__chains[current_time.weekday()][current_time.hour]
