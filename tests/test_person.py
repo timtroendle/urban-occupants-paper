@@ -4,7 +4,12 @@ from datetime import datetime, timedelta
 import pykov
 import pytest
 
-from people import Person
+from people import Person, ActivityEnum
+
+
+class Activities(ActivityEnum):
+    SLEEP = 1
+    WORK = 2
 
 
 @pytest.fixture
@@ -22,20 +27,20 @@ def pseudo_random():
 @pytest.fixture
 def day_markov_chain():
     return pykov.Chain(OrderedDict([
-        (('sleep', 'work'), 0.9),
-        (('sleep', 'sleep'), 0.1),
-        (('work', 'sleep'), 0.2),
-        (('work', 'work'), 0.8)
+        ((Activities.SLEEP, Activities.WORK), 0.9),
+        ((Activities.SLEEP, Activities.SLEEP), 0.1),
+        ((Activities.WORK, Activities.SLEEP), 0.2),
+        ((Activities.WORK, Activities.WORK), 0.8)
     ]))
 
 
 @pytest.fixture
 def night_markov_chain():
     return pykov.Chain(OrderedDict([
-        (('sleep', 'work'), 0.0),
-        (('sleep', 'sleep'), 1.0),
-        (('work', 'sleep'), 0.7),
-        (('work', 'work'), 0.3)
+        ((Activities.SLEEP, Activities.WORK), 0.0),
+        ((Activities.SLEEP, Activities.SLEEP), 1.0),
+        ((Activities.WORK, Activities.SLEEP), 0.7),
+        ((Activities.WORK, Activities.WORK), 0.3)
     ]))
 
 
@@ -54,7 +59,7 @@ def sleeping_person(activity_markov_chains, pseudo_random):
     return Person(
         activity_markov_chains=activity_markov_chains,
         number_generator=pseudo_random,
-        initial_activity='sleep',
+        initial_activity=Activities.SLEEP,
         initial_time=datetime(2016, 12, 13, 16, 00), # Tuesday
         time_step_size=timedelta(hours=1)
     )
@@ -65,7 +70,7 @@ def weekend_person(activity_markov_chains, pseudo_random):
     return Person(
         activity_markov_chains=activity_markov_chains,
         number_generator=pseudo_random,
-        initial_activity='work',
+        initial_activity=Activities.WORK,
         initial_time=datetime(2016, 12, 18, 16, 00), # Sunday
         time_step_size=timedelta(hours=1)
     )
@@ -74,25 +79,25 @@ def weekend_person(activity_markov_chains, pseudo_random):
 def test_sleeping_person_starts_working_during_day(sleeping_person, pseudo_random):
     pseudo_random.number = 0.8
     sleeping_person.step()
-    assert sleeping_person.activity == 'work'
+    assert sleeping_person.activity == Activities.WORK
 
 
 def test_sleeping_person_remains_sleeping_during_day(sleeping_person, pseudo_random):
     pseudo_random.number = 0.91
     sleeping_person.step()
-    assert sleeping_person.activity == 'sleep'
+    assert sleeping_person.activity == Activities.SLEEP
 
 
 def test_working_person_remains_working_on_weekend(weekend_person, pseudo_random):
     pseudo_random.number = 0.71
     weekend_person.step()
-    assert weekend_person.activity == 'work'
+    assert weekend_person.activity == Activities.WORK
 
 
 def test_working_person_starts_sleeping_on_weekend(weekend_person, pseudo_random):
     pseudo_random.number = 0.69
     weekend_person.step()
-    assert weekend_person.activity == 'sleep'
+    assert weekend_person.activity == Activities.SLEEP
 
 
 def test_working_person_starts_sleeping_during_night(sleeping_person, pseudo_random):
@@ -100,4 +105,4 @@ def test_working_person_starts_sleeping_during_night(sleeping_person, pseudo_ran
     sleeping_person.step()
     pseudo_random.number = 0.69
     sleeping_person.step()
-    assert sleeping_person.activity == 'sleep'
+    assert sleeping_person.activity == Activities.SLEEP
