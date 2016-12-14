@@ -26,7 +26,11 @@ Based on measured data. Identify which control strategy is likely to be used by 
 
 ## Results
 
-Validate simulation results. Goal: stay in certain *plausible* ranges.
+Validate people's schedule against test data set.
+
+Validate people's travels against London data set.
+
+Validate energy simulation results. Goal: stay in certain *plausible* ranges.
 
 Compare heating/cooling energy needed for different HVAC control strategies.
 
