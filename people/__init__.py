@@ -1,2 +1,2 @@
-from .person import Person, ActivityEnum
+from .person import Person, Activity
 from .version import __version__
