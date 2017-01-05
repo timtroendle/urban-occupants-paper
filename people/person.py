@@ -1,3 +1,4 @@
+import datetime
 from enum import Enum
 
 
@@ -13,7 +14,11 @@ class Person():
 
     def __init__(self, activity_markov_chains, initial_activity, number_generator,
                  initial_time, time_step_size):
-        self.__chain = _TimeHeterogenousMarkovChain(activity_markov_chains, number_generator)
+        self.__chain = _TimeHeterogenousMarkovChain(
+            activity_markov_chains=activity_markov_chains,
+            time_step_size=time_step_size,
+            number_generator=number_generator
+        )
         if not isinstance(initial_activity, Activity):
             raise ValueError('Initial activity must be an people.Activity.')
         self.activity = initial_activity
@@ -27,25 +32,26 @@ class Person():
 
 class _TimeHeterogenousMarkovChain():
 
-    def __init__(self, activity_markov_chains, number_generator):
+    def __init__(self, activity_markov_chains, time_step_size, number_generator):
+        assert 'weekday' in activity_markov_chains.keys()
+        assert 'weekend' in activity_markov_chains.keys()
+        assert all(isinstance(time, datetime.time)
+                   for time in activity_markov_chains['weekday'].keys())
+        assert all(isinstance(time, datetime.time)
+                   for time in activity_markov_chains['weekend'].keys())
+        assert all(isinstance(activity, Activity)
+                   for chain in activity_markov_chains['weekday'].values()
+                   for activity in chain.states())
+        assert all(isinstance(activity, Activity)
+                   for chain in activity_markov_chains['weekend'].values()
+                   for activity in chain.states())
+        n_time_steps_per_day = datetime.timedelta(hours=24) / time_step_size
+        assert len(activity_markov_chains['weekday']) == n_time_steps_per_day
+        assert len(activity_markov_chains['weekend']) == n_time_steps_per_day
         self.__number_generator = number_generator
-        if 'weekday' not in activity_markov_chains.keys():
-            raise ValueError('Activity markov chains have wrong format.')
-        if 'weekend' not in activity_markov_chains.keys():
-            raise ValueError('Activity markov chains have wrong format.')
-        if any(hour not in activity_markov_chains['weekday'] for hour in range(24)):
-            raise ValueError('Activity markov chains have wrong format.')
-        if any(hour not in activity_markov_chains['weekend'] for hour in range(24)):
-            raise ValueError('Activity markov chains have wrong format.')
         self.__chains = {day: activity_markov_chains['weekday'] if day < 5
                          else activity_markov_chains['weekend']
                          for day in range(7)}
-        for day in range(7):
-            for hour in range(24):
-                activities = self.__chains[day][hour].states()
-                if not all(isinstance(activity, Activity) for activity in activities):
-                    msg = 'At least one activity in {} is not a people.Activity.'.format(activities)
-                    raise ValueError(msg)
 
     def move(self, current_state, current_time):
         return self._select_chain(current_time).move(
@@ -54,4 +60,4 @@ class _TimeHeterogenousMarkovChain():
         )
 
     def _select_chain(self, current_time):
-        return self.__chains[current_time.weekday()][current_time.hour]
+        return self.__chains[current_time.weekday()][current_time.time()]

@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 
 import pykov
 import pytest
@@ -42,10 +42,10 @@ def night_markov_chain():
 @pytest.fixture
 def activity_markov_chains(day_markov_chain, night_markov_chain):
     chain = {}
-    chain['weekday'] = {hour: day_markov_chain if (hour >= 9 and hour < 17)
+    chain['weekday'] = {time(hour): day_markov_chain if (hour >= 9 and hour < 17)
                         else night_markov_chain
                         for hour in range(24)}
-    chain['weekend'] = {hour: night_markov_chain for hour in range(24)}
+    chain['weekend'] = {time(hour): night_markov_chain for hour in range(24)}
     return chain
 
 
@@ -69,6 +69,18 @@ def weekend_person(activity_markov_chains, pseudo_random):
         initial_time=datetime(2016, 12, 18, 16, 00), # Sunday
         time_step_size=timedelta(hours=1)
     )
+
+
+@pytest.mark.parametrize('time_step_size', [timedelta(minutes=30), timedelta(hours=2)])
+def test_inconsistent_time_step_size_fails(activity_markov_chains, pseudo_random, time_step_size):
+    with pytest.raises(AssertionError):
+        Person(
+            activity_markov_chains=activity_markov_chains,
+            number_generator=pseudo_random,
+            initial_activity=Activity.SLEEP_AT_HOME,
+            initial_time=datetime(2016, 12, 13, 16, 00), # Tuesday
+            time_step_size=time_step_size
+        )
 
 
 def test_sleeping_person_leaves_home_during_day(sleeping_person, pseudo_random):
