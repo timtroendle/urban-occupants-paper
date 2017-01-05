@@ -3,3 +3,5 @@
 
 *.tex text
 *.md text
+
+*.ipynb filter=nbstripout
