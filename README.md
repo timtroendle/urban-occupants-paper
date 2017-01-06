@@ -2,6 +2,8 @@
 
 An activity and location model of urban citizens.
 
+Activities and locations are chosen based on a time-heterogenous Markov chain of activity transitions.
+
 ## Developer Guide
 
 ### Installation

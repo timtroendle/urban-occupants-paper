@@ -3,6 +3,7 @@ from enum import Enum
 
 
 class Activity(Enum):
+    """Activities of citizens."""
     HOME = 1
     SLEEP_AT_HOME = 2
     OTHER_HOME = 3
@@ -11,6 +12,31 @@ class Activity(Enum):
 
 
 class Person():
+    """The model of a citizen making choices on activities and locations.
+
+    Parameters:
+        * activity_markov_chains: one pykov.Chain markov chain for each timestep per day of each,
+                                  weekday and weekend day
+        * number_generator:       a callable returning a random number between min and max
+                                  parameters
+        * initial_activity:       the activity at initial time
+        * initial_time:           the initial time
+        * time_step_size:         the time step size of the simulation, must be consistent with
+                                  time step size of markov chains
+
+    For example:
+
+    Person(
+        activity_markov_chains={
+            'weekday': {hour: pykov.Chain(...) for hour in range(24)},
+            'weekend': {hour: pykov.Chain(...) for hour in range(24)}
+        },
+        number_generator=random.uniform,
+        initial_activity=HOME,
+        initial_time=datetime(2016, 12, 15, 12, 06),
+        time_step_size=timedelta(hours=1)
+    )
+    """
 
     def __init__(self, activity_markov_chains, initial_activity, number_generator,
                  initial_time, time_step_size):
@@ -26,6 +52,11 @@ class Person():
         self.__time_step_size = time_step_size
 
     def step(self):
+        """Run simulation for one time step.
+
+        Chooses new activity.
+        Updates internal time by time step.
+        """
         self.activity = self.__chain.move(current_state=self.activity, current_time=self.__time)
         self.__time += self.__time_step_size
 
