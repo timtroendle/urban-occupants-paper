@@ -2,7 +2,7 @@
 
 from setuptools import setup, find_packages
 
-exec(open('people/__init__.py').read())
+exec(open('people/version.py').read())
 
 setup(
     name='people',
@@ -13,7 +13,7 @@ setup(
     url='https://www.github.com/timtroendle/people',
     packages=find_packages(exclude=['tests*']),
     include_package_data=True,
-    install_requires=[],
+    install_requires=['pykov>1.1'],
     classifiers=[
         'Environment :: Console',
         'Intended Audience :: Science/Research',

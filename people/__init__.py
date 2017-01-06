@@ -1,1 +1,2 @@
-__version__ = '0.1.0.dev'
+from .person import Person, Activity
+from .version import __version__
