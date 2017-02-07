@@ -111,14 +111,9 @@ def _fit(reference_sample, weights, controls):
     for control_name, control_values in controls.items():
         summed_weights = {key: weights[reference_sample[control_name] == key].sum()
                           for key, value in control_values.items()}
-        df = pd.DataFrame( # temporary data frame to work on
-            index=weights.index,
-            data={'weight': weights, 'value': reference_sample[control_name]}
-        )
-        new_weights = df.apply(
-            lambda row: row.weight * control_values[row.value] / summed_weights[row.value],
-            axis='columns'
-        )
+        control_values = reference_sample[control_name].map(control_values)
+        summed_weights = reference_sample[control_name].map(summed_weights)
+        new_weights = weights * control_values / summed_weights
     return new_weights
 
 
@@ -146,11 +141,9 @@ def _rescale_weights(reference_sample, weights):
     dx = list(filter(lambda x: np.real(x) > 0, filterfalse(lambda x: np.iscomplex(x), roots)))
     assert len(dx) == 1
     d = np.real(dx[0])
-    c = 190 / sum([Fp[p] * d ** p for p in range(1, largest_household_size + 1)])
+    c = 190 / sum(Fp[p] * d ** p for p in range(1, largest_household_size + 1))
     fhprime_by_fh = {p: c * d ** p for p in range(1, largest_household_size + 1)}
 
-    new_weights = weights.copy()
-    for household_id in weights.index:
-        household_size = household_sizes[household_id]
-        new_weights[household_id] = fhprime_by_fh[household_size] * weights[household_id]
+    fhprime_by_fh = household_sizes.map(fhprime_by_fh)
+    new_weights = fhprime_by_fh * weights
     return new_weights
