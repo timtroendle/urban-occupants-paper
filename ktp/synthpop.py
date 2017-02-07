@@ -43,15 +43,16 @@ def fit_hipf(reference_sample, controls_individuals, controls_households, maxite
         data=1.0,
         dtype=np.float64
     )
-    for i in range(0, maxiter):
+    for i in range(1, maxiter + 1):
         next_weights = _fit(_household_groups(reference_sample).first(), weights,
                             controls_households)
         weights_person = _expand_weights_to_person(next_weights, reference_sample.index)
         weights_person = _fit(reference_sample, weights_person, controls_individuals)
         next_weights = _aggregate_person_weights_to_household(weights_person)
-        next_weights = _rescale_weights(reference_sample, next_weights)
-        previous_weights = weights
-        weights = next_weights
+        next_weights = _rescale_weights(reference_sample, next_weights,
+                                        controls_individuals, controls_households)
+        previous_weights = weights.copy()
+        weights = next_weights.copy()
         if (residuals_tol is not None and
             _residuals_tolerance_reached(reference_sample, weights, controls_households,
                                          controls_individuals, residuals_tol)):
@@ -70,6 +71,11 @@ def _household_groups(reference_sample):
 
 def _residuals_tolerance_reached(reference_sample, weights, controls_households,
                                  controls_individuals, tol):
+    residuals = _all_residuals(reference_sample, weights, controls_households, controls_individuals)
+    return residuals.abs().max() < tol
+
+
+def _all_residuals(reference_sample, weights, controls_households, controls_individuals):
     household_ref_sample = _household_groups(reference_sample).first()
     residuals_household = _residuals(
         reference_sample=_household_groups(reference_sample).first(),
@@ -81,8 +87,7 @@ def _residuals_tolerance_reached(reference_sample, weights, controls_households,
         weights=_expand_weights_to_person(weights, reference_sample.index),
         controls=controls_individuals
     )
-    residuals = pd.Series(list(chain(residuals_household, residuals_individual)))
-    return residuals.abs().max() < tol
+    return pd.Series(list(chain(residuals_household, residuals_individual)))
 
 
 def _residuals(reference_sample, weights, controls):
@@ -109,11 +114,11 @@ def _grand_total(controls):
 def _fit(reference_sample, weights, controls):
     new_weights = weights.copy()
     for control_name, control_values in controls.items():
-        summed_weights = {key: weights[reference_sample[control_name] == key].sum()
+        summed_weights = {key: new_weights[reference_sample[control_name] == key].sum()
                           for key, value in control_values.items()}
         control_values = reference_sample[control_name].map(control_values)
         summed_weights = reference_sample[control_name].map(summed_weights)
-        new_weights = weights * control_values / summed_weights
+        new_weights = new_weights * control_values / summed_weights
     return new_weights
 
 
@@ -131,17 +136,20 @@ def _expand_weights_to_person(weights, person_index):
     return person_weights.iloc[:, 0] # return series not dataframe
 
 
-def _rescale_weights(reference_sample, weights):
+def _rescale_weights(reference_sample, weights, controls_individuals, controls_households):
+    grand_total_hh = _grand_total(controls_households)
+    grand_total_ind = _grand_total(controls_individuals)
     household_sizes = _household_groups(reference_sample)[reference_sample.columns[0]].count()
     largest_household_size = household_sizes.max()
     Fp = [weights[household_sizes == p].sum()
           for p in range(0, largest_household_size + 1)]
-    polynom = [(190 / 434 * p - 1) * Fp[p] for p in range(0, largest_household_size + 1)]
+    polynom = [(grand_total_hh / grand_total_ind * p - 1) * Fp[p]
+               for p in range(0, largest_household_size + 1)]
     roots = Polynomial(polynom).roots()
     dx = list(filter(lambda x: np.real(x) > 0, filterfalse(lambda x: np.iscomplex(x), roots)))
     assert len(dx) == 1
     d = np.real(dx[0])
-    c = 190 / sum(Fp[p] * d ** p for p in range(1, largest_household_size + 1))
+    c = grand_total_hh / sum(Fp[p] * d ** p for p in range(1, largest_household_size + 1))
     fhprime_by_fh = {p: c * d ** p for p in range(1, largest_household_size + 1)}
 
     fhprime_by_fh = household_sizes.map(fhprime_by_fh)
