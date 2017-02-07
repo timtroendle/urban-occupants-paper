@@ -1,4 +1,5 @@
 from itertools import filterfalse, chain
+from functools import reduce
 
 import pandas as pd
 import numpy as np
@@ -37,6 +38,14 @@ def fit_hipf(reference_sample, controls_individuals, controls_households, maxite
                               stop. (optional)
         maxiter:              Maximum number of iterations.
     """
+    assert isinstance(reference_sample, pd.DataFrame)
+    assert reference_sample.index.nlevels == 2
+    assert len(controls_individuals) > 0
+    assert len(controls_households) > 0
+    assert _consistent_keys(controls_individuals, reference_sample)
+    assert _consistent_keys(controls_households, reference_sample)
+    assert _consistent_grand_totals(controls_individuals)
+    assert _consistent_grand_totals(controls_households)
 
     weights = pd.Series(
         index=_household_groups(reference_sample).count().index.get_level_values(0),
@@ -63,6 +72,17 @@ def fit_hipf(reference_sample, controls_individuals, controls_households, maxite
             print("Weights haven't changed anymore in iteration {}.".format(i))
             break
     return weights
+
+
+def _consistent_keys(controls, reference_sample):
+    return [control_name for control_name in controls.keys()
+            if control_name not in reference_sample.columns] == []
+
+
+def _consistent_grand_totals(controls):
+    grand_totals = [sum([value for key, value in category.items()])
+                    for category in controls.values()]
+    return len(set(grand_totals)) <= 1
 
 
 def _household_groups(reference_sample):

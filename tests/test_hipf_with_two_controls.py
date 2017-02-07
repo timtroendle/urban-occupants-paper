@@ -11,6 +11,7 @@ import sys
 import math
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 from pandas.util.testing import assert_series_equal
 import pytest
@@ -38,6 +39,28 @@ def controls_individuals():
 @pytest.fixture
 def controls_households():
     return {'CAR': {0: 99, 1: 273}}
+
+
+@pytest.fixture(params=[
+    {'UNKNOWN_NAME': {0: 395, 1: 459}, 'GENDER': {'X': 434, 'Y': 420}},
+    {'WKSTAT': {0: 10, 1: 20}, 'GENDER': {'X': 434, 'Y': 420}},
+    {}
+])
+def invalid_controls_individuals(request):
+    return request.param
+
+
+@pytest.fixture(params=[
+    {'UNKNOWN_NAME': {0: 99, 1: 273}},
+    {}
+])
+def invalid_controls_households(request):
+    return request.param
+
+
+@pytest.fixture
+def invalid_index_reference_sample(reference_sample):
+    return reference_sample.reset_index() # this mlipf, no multi-index style is invalid
 
 
 @pytest.fixture
@@ -78,3 +101,47 @@ def test_converges(reference_sample, controls_households, controls_individuals, 
     )
     residuals = _all_residuals(reference_sample, weights, controls_households, controls_individuals)
     assert residuals.abs().max() < tol
+
+
+def test_fails_with_invalid_controls_individuals(reference_sample, controls_households,
+                                                 invalid_controls_individuals):
+    with pytest.raises(AssertionError):
+        weights = fit_hipf(
+            reference_sample=reference_sample,
+            controls_individuals=invalid_controls_individuals,
+            controls_households=controls_households,
+            maxiter=2
+        )
+
+
+def test_fails_with_invalid_controls_household(reference_sample, invalid_controls_households,
+                                               controls_individuals):
+    with pytest.raises(AssertionError):
+        weights = fit_hipf(
+            reference_sample=reference_sample,
+            controls_individuals=controls_individuals,
+            controls_households=invalid_controls_households,
+            maxiter=2
+        )
+
+
+def test_fails_with_invalid_index_reference_sample(invalid_index_reference_sample,
+                                                   controls_households, controls_individuals):
+    with pytest.raises(AssertionError):
+        weights = fit_hipf(
+            reference_sample=invalid_index_reference_sample,
+            controls_individuals=controls_individuals,
+            controls_households=controls_households,
+            maxiter=2
+        )
+
+
+def test_fails_with_invalid_type_reference_sample(reference_sample,
+                                                  controls_households, controls_individuals):
+    with pytest.raises(AssertionError):
+        weights = fit_hipf(
+            reference_sample=np.array(reference_sample),
+            controls_individuals=controls_individuals,
+            controls_households=controls_households,
+            maxiter=2
+        )

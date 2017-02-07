@@ -161,47 +161,61 @@ def expected_weights(household_types, reference_sample):
     return expected_weights
 
 
+@pytest.fixture
+def controls_households():
+    return {'a': {True: 145, False: 45}}
+
+
+@pytest.fixture
+def controls_individuals():
+    return {'alpha': {True: 227, False: 207}}
+
+
 def assert_weights_equal(expected_weights, weights, precision=1):
     weights.name = expected_weights.name # don't want to check the name
     assert_series_equal(expected_weights, weights, check_less_precise=precision)
 
 
-def test_first_iteration(reference_sample, expected_weights):
+def test_first_iteration(reference_sample, expected_weights,
+                         controls_households, controls_individuals):
     weights = fit_hipf(
         reference_sample=reference_sample,
-        controls_individuals={'alpha': {True: 227, False: 207}},
-        controls_households={'a': {True: 145, False: 45}},
+        controls_individuals=controls_individuals,
+        controls_households=controls_households,
         maxiter=1
     )
     assert_weights_equal(expected_weights[5], weights) # 5 iterations in paper represent 1 iteration
 
 
-def test_second_iteration(reference_sample, expected_weights):
+def test_second_iteration(reference_sample, expected_weights,
+                          controls_households, controls_individuals):
     weights = fit_hipf(
         reference_sample=reference_sample,
-        controls_individuals={'alpha': {True: 227, False: 207}},
-        controls_households={'a': {True: 145, False: 45}},
+        controls_individuals=controls_individuals,
+        controls_households=controls_households,
         maxiter=2
     )
     assert_weights_equal(expected_weights[10], weights) # 5 iteration in paper represent 1 iteration
 
 
-def test_convergence(reference_sample, expected_weights):
+def test_convergence(reference_sample, expected_weights,
+                     controls_households, controls_individuals):
     weights = fit_hipf(
         reference_sample=reference_sample,
-        controls_individuals={'alpha': {True: 227, False: 207}},
-        controls_households={'a': {True: 145, False: 45}},
+        controls_individuals=controls_individuals,
+        controls_households=controls_households,
         maxiter=10
     )
     assert_weights_equal(expected_weights['infinity'], weights)
 
 
 @pytest.mark.parametrize("tol", [(10), (1), (0.1)]) # assertion below uses tolerance 0.01
-def test_residuals_tolerance_criteria_stops_early(reference_sample, expected_weights, tol):
+def test_residuals_tolerance_criteria_stops_early(reference_sample, expected_weights, tol,
+                                                  controls_households, controls_individuals):
     weights = fit_hipf(
         reference_sample=reference_sample,
-        controls_individuals={'alpha': {True: 227, False: 207}},
-        controls_households={'a': {True: 145, False: 45}},
+        controls_individuals=controls_individuals,
+        controls_households=controls_households,
         residuals_tol=tol,
         weights_tol=1e-16,
         maxiter=10
@@ -211,11 +225,13 @@ def test_residuals_tolerance_criteria_stops_early(reference_sample, expected_wei
 
 
 @pytest.mark.parametrize("tol", [(0.01), (0.001)]) # assertion below uses tolerance 0.01
-def test_residuals_tolerance_criteria_does_not_stop_early(reference_sample, expected_weights, tol):
+def test_residuals_tolerance_criteria_does_not_stop_early(reference_sample, expected_weights,
+                                                          tol, controls_households,
+                                                          controls_individuals):
     weights = fit_hipf(
         reference_sample=reference_sample,
-        controls_individuals={'alpha': {True: 227, False: 207}},
-        controls_households={'a': {True: 145, False: 45}},
+        controls_individuals=controls_individuals,
+        controls_households=controls_households,
         residuals_tol=tol,
         weights_tol=1e-16,
         maxiter=10
@@ -224,11 +240,12 @@ def test_residuals_tolerance_criteria_does_not_stop_early(reference_sample, expe
 
 
 @pytest.mark.parametrize("tol", [(10), (1), (0.1)]) # assertion below uses tolerance 0.01
-def test_weights_tolerance_criteria_stops_early(reference_sample, expected_weights, tol):
+def test_weights_tolerance_criteria_stops_early(reference_sample, expected_weights, tol,
+                                                controls_households, controls_individuals):
     weights = fit_hipf(
         reference_sample=reference_sample,
-        controls_individuals={'alpha': {True: 227, False: 207}},
-        controls_households={'a': {True: 145, False: 45}},
+        controls_individuals=controls_individuals,
+        controls_households=controls_households,
         residuals_tol=1e-16,
         weights_tol=tol,
         maxiter=10
@@ -238,11 +255,13 @@ def test_weights_tolerance_criteria_stops_early(reference_sample, expected_weigh
 
 
 @pytest.mark.parametrize("tol", [(0.01), (0.001)]) # assertion below uses tolerance 0.01
-def test_weights_tolerance_criteria_does_not_stop_early(reference_sample, expected_weights, tol):
+def test_weights_tolerance_criteria_does_not_stop_early(reference_sample, expected_weights,
+                                                        tol, controls_households,
+                                                        controls_individuals):
     weights = fit_hipf(
         reference_sample=reference_sample,
-        controls_individuals={'alpha': {True: 227, False: 207}},
-        controls_households={'a': {True: 145, False: 45}},
+        controls_individuals=controls_individuals,
+        controls_households=controls_households,
         residuals_tol=1e-16,
         weights_tol=tol,
         maxiter=10
