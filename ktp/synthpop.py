@@ -1,11 +1,12 @@
-from itertools import filterfalse
+from itertools import filterfalse, chain
 
 import pandas as pd
 import numpy as np
 from numpy.polynomial import Polynomial
 
 
-def fit_hipf(reference_sample, controls_individuals, controls_households, maxiter):
+def fit_hipf(reference_sample, controls_individuals, controls_households, maxiter,
+             weights_tol=None, residuals_tol=None):
     """Hierarchical Iterative Proportional Fitting.
 
     Algorithm taken from
@@ -14,6 +15,9 @@ def fit_hipf(reference_sample, controls_individuals, controls_households, maxite
     Can be used to fit a reference sample of households and individuals to control variables
     simultaneously. The algorithm supports only one dimensional control variables, and hence
     multi-dimensional control variables must be transformed to one dimensional ones first.
+
+    By default the algorithm runs exactly `maxiter` iterations. Convergence can be checked on
+    residuals and changes in the weights by giving the corresponding tolerances.
 
     Parameters:
         reference_sample:     The reference sample to be fited to the controls. Must be a pandas
@@ -25,6 +29,12 @@ def fit_hipf(reference_sample, controls_individuals, controls_households, maxite
                               e.g. {'age': {'below_50': 45, '50_or_older'}: 55}
         controls_households:  The control variables for households. Must be in the same format as
                               the controls for individuals.
+        weights_tol:          Convergence tolerance on the weights. Whenever the weights change
+                              between two iterations is smaller than the given tolerance, stop.
+                              (optional)
+        residuals_tol:        Convergence tolerance on the residuals (difference to control
+                              totals). Whenever the residuals are smaller than the given tolerance,
+                              stop. (optional)
         maxiter:              Maximum number of iterations.
     """
 
@@ -40,12 +50,60 @@ def fit_hipf(reference_sample, controls_individuals, controls_households, maxite
         weights_person = _fit(reference_sample, weights_person, controls_individuals)
         next_weights = _aggregate_person_weights_to_household(weights_person)
         next_weights = _rescale_weights(reference_sample, next_weights)
+        previous_weights = weights
         weights = next_weights
+        if (residuals_tol is not None and
+            _residuals_tolerance_reached(reference_sample, weights, controls_households,
+                                         controls_individuals, residuals_tol)):
+            print('Residuals tolerance reached in iteration {}.'.format(i))
+            break
+        if (weights_tol is not None and
+                _weights_tolerance_reached(next_weights, previous_weights, weights_tol)):
+            print("Weights haven't changed anymore in iteration {}.".format(i))
+            break
     return weights
 
 
 def _household_groups(reference_sample):
     return reference_sample.groupby(reference_sample.index.get_level_values(0))
+
+
+def _residuals_tolerance_reached(reference_sample, weights, controls_households,
+                                 controls_individuals, tol):
+    household_ref_sample = _household_groups(reference_sample).first()
+    residuals_household = _residuals(
+        reference_sample=_household_groups(reference_sample).first(),
+        weights=weights,
+        controls=controls_households
+    )
+    residuals_individual = _residuals(
+        reference_sample=reference_sample,
+        weights=_expand_weights_to_person(weights, reference_sample.index),
+        controls=controls_individuals
+    )
+    residuals = pd.Series(list(chain(residuals_household, residuals_individual)))
+    return residuals.abs().max() < tol
+
+
+def _residuals(reference_sample, weights, controls):
+    residuals = []
+    residuals.append(weights.sum() / _grand_total(controls) - 1)
+    for control_name, control_values in controls.items():
+        actual_values = {key: weights[reference_sample[control_name] == key].sum()
+                         for key, value in control_values.items()}
+        for key in control_values.keys():
+            residuals.append(actual_values[key] / control_values[key] - 1)
+    return residuals
+
+
+def _weights_tolerance_reached(weights, previous_weights, tol):
+    return (weights / previous_weights - 1).abs().max() < tol
+
+
+def _grand_total(controls):
+    grand_totals = [sum([value for key, value in category.items()])
+                    for category in controls.values()]
+    return grand_totals[0]
 
 
 def _fit(reference_sample, weights, controls):

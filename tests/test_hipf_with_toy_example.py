@@ -194,3 +194,57 @@ def test_convergence(reference_sample, expected_weights):
         maxiter=10
     )
     assert_weights_equal(expected_weights['infinity'], weights)
+
+
+@pytest.mark.parametrize("tol", [(10), (1), (0.1)]) # assertion below uses tolerance 0.01
+def test_residuals_tolerance_criteria_stops_early(reference_sample, expected_weights, tol):
+    weights = fit_hipf(
+        reference_sample=reference_sample,
+        controls_individuals={'alpha': {True: 227, False: 207}},
+        controls_households={'a': {True: 145, False: 45}},
+        residuals_tol=tol,
+        weights_tol=1e-16,
+        maxiter=10
+    )
+    with pytest.raises(AssertionError):
+        assert_weights_equal(expected_weights['infinity'], weights)
+
+
+@pytest.mark.parametrize("tol", [(0.01), (0.001)]) # assertion below uses tolerance 0.01
+def test_residuals_tolerance_criteria_does_not_stop_early(reference_sample, expected_weights, tol):
+    weights = fit_hipf(
+        reference_sample=reference_sample,
+        controls_individuals={'alpha': {True: 227, False: 207}},
+        controls_households={'a': {True: 145, False: 45}},
+        residuals_tol=tol,
+        weights_tol=1e-16,
+        maxiter=10
+    )
+    assert_weights_equal(expected_weights['infinity'], weights)
+
+
+@pytest.mark.parametrize("tol", [(10), (1), (0.1)]) # assertion below uses tolerance 0.01
+def test_weights_tolerance_criteria_stops_early(reference_sample, expected_weights, tol):
+    weights = fit_hipf(
+        reference_sample=reference_sample,
+        controls_individuals={'alpha': {True: 227, False: 207}},
+        controls_households={'a': {True: 145, False: 45}},
+        residuals_tol=1e-16,
+        weights_tol=tol,
+        maxiter=10
+    )
+    with pytest.raises(AssertionError):
+        assert_weights_equal(expected_weights['infinity'], weights)
+
+
+@pytest.mark.parametrize("tol", [(0.01), (0.001)]) # assertion below uses tolerance 0.01
+def test_weights_tolerance_criteria_does_not_stop_early(reference_sample, expected_weights, tol):
+    weights = fit_hipf(
+        reference_sample=reference_sample,
+        controls_individuals={'alpha': {True: 227, False: 207}},
+        controls_households={'a': {True: 145, False: 45}},
+        residuals_tol=1e-16,
+        weights_tol=tol,
+        maxiter=10
+    )
+    assert_weights_equal(expected_weights['infinity'], weights)
