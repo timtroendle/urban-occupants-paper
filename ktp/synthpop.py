@@ -34,9 +34,10 @@ def fit_hipf(reference_sample, controls_individuals, controls_households, maxite
         dtype=np.float64
     )
     for i in range(0, maxiter):
-        next_weights = _fit_households(reference_sample, weights, controls_households)
+        next_weights = _fit(_household_groups(reference_sample).first(), weights,
+                            controls_households)
         weights_person = _expand_weights_to_person(next_weights, reference_sample.index)
-        weights_person = _fit_person(reference_sample, weights_person, controls_individuals)
+        weights_person = _fit(reference_sample, weights_person, controls_individuals)
         next_weights = _aggregate_person_weights_to_household(weights_person)
         next_weights = _rescale_weights(reference_sample, next_weights)
         weights = next_weights
@@ -47,25 +48,19 @@ def _household_groups(reference_sample):
     return reference_sample.groupby(reference_sample.index.get_level_values(0))
 
 
-def _fit_households(reference_sample, weights, controls_households):
+def _fit(reference_sample, weights, controls):
     new_weights = weights.copy()
-    for control_name, control_values in controls_households.items():
-        for household_id in new_weights.index:
-            hh_value = reference_sample.loc[(household_id, 1), control_name]
-            mask = _household_groups(reference_sample)[control_name].first() == hh_value
-            new_weights[household_id] = (weights.loc[household_id] *
-                                         control_values[hh_value] / weights[mask].sum())
-    return new_weights
-
-
-def _fit_person(reference_sample, weights, controls_individuals):
-    new_weights = weights.copy()
-    for control_name, control_values in controls_individuals.items():
-        for person_id in weights.index:
-            value = reference_sample.loc[person_id, control_name]
-            mask = reference_sample[control_name] == value
-            new_weights.loc[person_id] = (weights.loc[person_id] *
-                                          control_values[value] / weights[mask].sum())
+    for control_name, control_values in controls.items():
+        summed_weights = {key: weights[reference_sample[control_name] == key].sum()
+                          for key, value in control_values.items()}
+        df = pd.DataFrame( # temporary data frame to work on
+            index=weights.index,
+            data={'weight': weights, 'value': reference_sample[control_name]}
+        )
+        new_weights = df.apply(
+            lambda row: row.weight * control_values[row.value] / summed_weights[row.value],
+            axis='columns'
+        )
     return new_weights
 
 
