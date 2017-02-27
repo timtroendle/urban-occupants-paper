@@ -13,7 +13,7 @@ setup(
     url='https://www.github.com/timtroendle/people',
     packages=find_packages(exclude=['tests*']),
     include_package_data=True,
-    install_requires=['pykov==1.1'],
+    install_requires=['pykov==1.1', 'pandas'],
     classifiers=[
         'Environment :: Console',
         'Intended Audience :: Science/Research',

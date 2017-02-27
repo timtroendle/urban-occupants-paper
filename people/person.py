@@ -3,6 +3,14 @@ import datetime
 from enum import Enum
 
 import pykov
+import pandas as pd
+
+
+MARKOV_CHAIN_DAY_COLUMN_NAME = 'day'
+MARKOV_CHAIN_TIME_OF_DAY_COLUMN_NAME = 'time'
+MARKOV_CHAIN_FROM_ACTIVITY_COLUMN_NAME = 'fromActivity'
+MARKOV_CHAIN_TO_ACTIVITY_COLUMN_NAME = 'toActivity'
+MARKOV_CHAIN_PROBABILITY_COLUMN_NAME = 'probability'
 
 
 class Activity(Enum):
@@ -12,6 +20,9 @@ class Activity(Enum):
     OTHER_HOME = 3
     SLEEP_AT_OTHER_HOME = 4
     NOT_AT_HOME = 5
+
+    def __str__(self):
+        return self.name
 
 
 class Person():
@@ -104,6 +115,38 @@ def week_markov_chain(weekday_time_series, weekend_time_series, time_step_size):
         'weekday': _day_markov_chain(weekday_time_series, time_step_size),
         'weekend': _day_markov_chain(weekend_time_series, time_step_size)
     }
+
+
+def week_markov_chain_to_dataframe(markov_chain):
+    """Creates a dataframe representation of a time heterogeneous markov chain.
+
+    Can be used to serialise the markov chain into csv or sql.
+    """
+    df = pd.DataFrame(columns=[
+        MARKOV_CHAIN_DAY_COLUMN_NAME,
+        MARKOV_CHAIN_TIME_OF_DAY_COLUMN_NAME,
+        MARKOV_CHAIN_FROM_ACTIVITY_COLUMN_NAME,
+        MARKOV_CHAIN_TO_ACTIVITY_COLUMN_NAME,
+        MARKOV_CHAIN_PROBABILITY_COLUMN_NAME
+    ])
+    for day, day_chain in markov_chain.items():
+        assert day in ['weekday', 'weekend']
+        for time_stamp, single_markov_chain in day_chain.items():
+            assert isinstance(time_stamp, datetime.time)
+            single_df = pd.DataFrame({
+                MARKOV_CHAIN_DAY_COLUMN_NAME: day,
+                MARKOV_CHAIN_TIME_OF_DAY_COLUMN_NAME: time_stamp,
+                MARKOV_CHAIN_FROM_ACTIVITY_COLUMN_NAME: [element[0]
+                                                         for element in single_markov_chain],
+                MARKOV_CHAIN_TO_ACTIVITY_COLUMN_NAME: [element[1]
+                                                       for element in single_markov_chain],
+                MARKOV_CHAIN_PROBABILITY_COLUMN_NAME: [single_markov_chain[element]
+                                                       for element in single_markov_chain]
+            })
+            df = df.append(single_df, ignore_index=True)
+    assert not df.isnull().any().any()
+    df.set_index([MARKOV_CHAIN_DAY_COLUMN_NAME, MARKOV_CHAIN_TIME_OF_DAY_COLUMN_NAME], inplace=True)
+    return df
 
 
 def _day_markov_chain(day_time_series, time_step_size):
