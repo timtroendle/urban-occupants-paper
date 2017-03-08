@@ -1,6 +1,7 @@
 from collections import OrderedDict
 import datetime
 from enum import Enum
+import math
 
 import pykov
 import pandas as pd
@@ -77,25 +78,7 @@ class Person():
 
 
 class WeekMarkovChain():
-
-    @property
-    def time_step_size(self):
-        pass
-
-    def move(current_state, current_time, random_func):
-        pass
-
-    def _weekday(self):
-        day_number = self.__time.weekday()
-        assert day_number in list(range(7))
-        if day_number in list(range(5)):
-            return 'weekday'
-        else:
-            return 'weekend'
-
-
-def week_markov_chain(weekday_time_series, weekend_time_series, time_step_size):
-    """Creates a time heterogeneous markov chain for one week from time series of activities.
+    """A time heterogeneous markov chain of people activities for one week.
 
     Parameters:
         * weekday_time_series: 24h time series of Activities with given time step size of a
@@ -105,81 +88,194 @@ def week_markov_chain(weekday_time_series, weekend_time_series, time_step_size):
         * weekend_time_series: As weekday_time_series, but for a weekend day.
         * time_step_size:      A timedelta representing the time step size of above time series.
     """
-    return {
-        'weekday': _day_markov_chain(weekday_time_series, time_step_size),
-        'weekend': _day_markov_chain(weekend_time_series, time_step_size)
-    }
 
+    def __init__(self, weekday_time_series, weekend_time_series, time_step_size):
+        self.__time_step_size = time_step_size
+        self.__chain = {
+            'weekday': WeekMarkovChain._day_markov_chain(weekday_time_series, time_step_size),
+            'weekend': WeekMarkovChain._day_markov_chain(weekend_time_series, time_step_size)
+        }
+        self._add_missing_transitions()
+        # there is a chance that after the first round of adding transitions, the markov chain is
+        # still not valid (the first element could have a new element now that the second doesn't
+        # have). This is ignored for the moment, as the chain is validated anyway again.
+        self._validate()
 
-def week_markov_chain_to_dataframe(markov_chain):
-    """Creates a dataframe representation of a time heterogeneous markov chain.
+    @property
+    def time_step_size(self):
+        return self.__time_step_size
 
-    Can be used to serialise the markov chain into csv or sql.
-    """
-    df = pd.DataFrame(columns=[
-        MARKOV_CHAIN_DAY_COLUMN_NAME,
-        MARKOV_CHAIN_TIME_OF_DAY_COLUMN_NAME,
-        MARKOV_CHAIN_FROM_ACTIVITY_COLUMN_NAME,
-        MARKOV_CHAIN_TO_ACTIVITY_COLUMN_NAME,
-        MARKOV_CHAIN_PROBABILITY_COLUMN_NAME
-    ])
-    for day, day_chain in markov_chain.items():
-        assert day in ['weekday', 'weekend']
-        for time_stamp, single_markov_chain in day_chain.items():
-            assert isinstance(time_stamp, datetime.time)
-            single_df = pd.DataFrame({
-                MARKOV_CHAIN_DAY_COLUMN_NAME: day,
-                MARKOV_CHAIN_TIME_OF_DAY_COLUMN_NAME: time_stamp,
-                MARKOV_CHAIN_FROM_ACTIVITY_COLUMN_NAME: [element[0]
-                                                         for element in single_markov_chain],
-                MARKOV_CHAIN_TO_ACTIVITY_COLUMN_NAME: [element[1]
-                                                       for element in single_markov_chain],
-                MARKOV_CHAIN_PROBABILITY_COLUMN_NAME: [single_markov_chain[element]
-                                                       for element in single_markov_chain]
-            })
-            df = df.append(single_df, ignore_index=True)
-    assert not df.isnull().any().any()
-    df.set_index([MARKOV_CHAIN_DAY_COLUMN_NAME, MARKOV_CHAIN_TIME_OF_DAY_COLUMN_NAME], inplace=True)
-    return df
+    def move(self, current_state, current_time, random_func):
+        return self.__chain[WeekMarkovChain._weekday(current_time)][current_time.time()].move(
+            state=current_state,
+            random_func=random_func
+        )
 
+    def to_dataframe(self):
+        """Creates a dataframe representation of a time heterogeneous markov chain.
 
-def _day_markov_chain(day_time_series, time_step_size):
-    return {
-        time_step: _markov_chain(time_step, day_time_series, time_step_size)
-        for time_step in _day_time_step_generator(time_step_size)
-    }
+        Can be used to serialise the markov chain into csv or sql.
+        """
+        df = pd.DataFrame(columns=[
+            MARKOV_CHAIN_DAY_COLUMN_NAME,
+            MARKOV_CHAIN_TIME_OF_DAY_COLUMN_NAME,
+            MARKOV_CHAIN_FROM_ACTIVITY_COLUMN_NAME,
+            MARKOV_CHAIN_TO_ACTIVITY_COLUMN_NAME,
+            MARKOV_CHAIN_PROBABILITY_COLUMN_NAME
+        ])
+        for day, day_chain in self.__chain.items():
+            assert day in ['weekday', 'weekend']
+            for time_stamp, single_markov_chain in day_chain.items():
+                assert isinstance(time_stamp, datetime.time)
+                single_df = pd.DataFrame({
+                    MARKOV_CHAIN_DAY_COLUMN_NAME: day,
+                    MARKOV_CHAIN_TIME_OF_DAY_COLUMN_NAME: time_stamp,
+                    MARKOV_CHAIN_FROM_ACTIVITY_COLUMN_NAME: [element[0]
+                                                             for element in single_markov_chain],
+                    MARKOV_CHAIN_TO_ACTIVITY_COLUMN_NAME: [element[1]
+                                                           for element in single_markov_chain],
+                    MARKOV_CHAIN_PROBABILITY_COLUMN_NAME: [single_markov_chain[element]
+                                                           for element in single_markov_chain]
+                })
+                df = df.append(single_df, ignore_index=True)
+        assert not df.isnull().any().any()
+        df.set_index(
+            [MARKOV_CHAIN_DAY_COLUMN_NAME, MARKOV_CHAIN_TIME_OF_DAY_COLUMN_NAME],
+            inplace=True
+        )
+        return df
 
+    def _validate(self):
+        assert 'weekday' in self.__chain.keys()
+        assert 'weekend' in self.__chain.keys()
+        assert all(isinstance(time_step, datetime.time)
+                   for time_step in self.__chain['weekday'].keys())
+        assert all(isinstance(time_step, datetime.time)
+                   for time_step in self.__chain['weekend'].keys())
+        assert all(isinstance(activity, Activity)
+                   for chain in self.__chain['weekday'].values()
+                   for activity in chain.states())
+        assert all(isinstance(activity, Activity)
+                   for chain in self.__chain['weekend'].values()
+                   for activity in chain.states())
+        assert self._valid_transitions()
+        # TODO check probabilities
 
-def _day_time_step_generator(time_step_size):
-    assert time_step_size % datetime.timedelta(minutes=1) == datetime.timedelta(minutes=0)
-    start_time = datetime.time(0, 0)
-    for minutes in range(0, 24 * 60, int(time_step_size.total_seconds() / 60)):
-        yield _add_delta_to_time(start_time, datetime.timedelta(minutes=minutes))
+    def _valid_transitions(self):
+        flags = [WeekMarkovChain._valid_transition(self.__chain[day][time],
+                                                   self.__chain[next_day][next_time])
+                 for day, time, next_day, next_time
+                 in WeekMarkovChain._all_possible_time_combinations(self.__time_step_size)]
+        return all(flags)
 
+    @staticmethod
+    def _valid_transition(single_markov_chain, next_single_markov_chain):
+        end_states_first = [x[0][1] for x in single_markov_chain.items()]
+        start_states_second = [x[0][0] for x in next_single_markov_chain.items()]
+        return all([state in start_states_second for state in end_states_first])
 
-def _markov_chain(time_step, day_time_series, time_step_size):
-    next_time_step = _add_delta_to_time(time_step, time_step_size)
-    current_vector = day_time_series.ix[time_step]
-    next_vector = day_time_series.ix[next_time_step]
-    chain_elements = [((current_state, next_state), _probability(current_state, next_state,
-                                                                 current_vector, next_vector))
-                      for current_state in Activity
-                      for next_state in Activity]
-    return pykov.Chain(OrderedDict(chain_elements))
+    def _add_missing_transitions(self):
+        for day, time in WeekMarkovChain._week_time_steps_generator(self.__time_step_size):
+            next_day, next_time = WeekMarkovChain._add_delta_to_day_and_time(day, time,
+                                                                             self.__time_step_size)
+            current_chain = self.__chain[day][time].items()
+            next_chain = self.__chain[next_day][next_time].items()
+            end_states_current_chain = [x[0][1] for x in current_chain]
+            start_states_next_chain = [x[0][0] for x in next_chain]
+            missing_start_states = [state for state in end_states_current_chain
+                                    if state not in start_states_next_chain]
+            for missing_state in missing_start_states:
+                self._add_transition(
+                    day=next_day,
+                    time=next_time,
+                    from_activity=missing_state,
+                    to_activity=missing_state,
+                    probability=1.0
+                )
 
+    def _add_transition(self, day, time, from_activity, to_activity, probability):
+        chain = self.__chain[day][time]
+        elements = OrderedDict(chain)
+        elements[(from_activity, to_activity)] = probability
+        self.__chain[day][time] = pykov.Chain(elements)
 
-def _probability(current_state, next_state, current_vector, next_vector):
-    if current_state in current_vector.unique():
-        current_mask = current_vector == current_state
-        next_mask = next_vector == next_state
-        next_instances = len(next_vector[current_mask & next_mask])
-        current_instances = len(current_vector[current_mask])
-        return next_instances / current_instances
-    else:
-        return 0
+    @staticmethod
+    def _weekday(time_stamp):
+        day_number = time_stamp.weekday()
+        assert day_number in list(range(7))
+        if day_number in list(range(5)):
+            return 'weekday'
+        else:
+            return 'weekend'
 
+    @staticmethod
+    def _day_markov_chain(day_time_series, time_step_size):
+        return {
+            time_step: WeekMarkovChain._markov_chain(time_step, day_time_series, time_step_size)
+            for time_step in WeekMarkovChain._day_time_step_generator(time_step_size)
+        }
 
-def _add_delta_to_time(time_step, delta):
-    fulldate = datetime.datetime.combine(datetime.datetime(100, 1, 1), time_step)
-    fulldate = fulldate + delta
-    return fulldate.time()
+    @staticmethod
+    def _day_time_step_generator(time_step_size):
+        assert time_step_size % datetime.timedelta(minutes=1) == datetime.timedelta(minutes=0)
+        start_time = datetime.time(0, 0)
+        for minutes in range(0, 24 * 60, int(time_step_size.total_seconds() / 60)):
+            yield WeekMarkovChain._add_delta_to_time(start_time,
+                                                     datetime.timedelta(minutes=minutes))
+
+    @staticmethod
+    def _week_time_steps_generator(time_step_size):
+        # starts Tuesday so that there are all possible combinations between work and weekend days
+        for day in ['weekday', 'weekday', 'weekday', 'weekday', 'weekend', 'weekend', 'weekday']:
+            for time_step in WeekMarkovChain._day_time_step_generator(time_step_size):
+                yield day, time_step
+
+    @staticmethod
+    def _all_possible_time_combinations(time_step_size):
+        # starts Tuesday so that there are all possible combinations between work and weekend days
+        for day in ['weekday', 'weekday', 'weekday', 'weekday', 'weekend', 'weekend', 'weekday']:
+            for time_step in WeekMarkovChain._day_time_step_generator(time_step_size):
+                next_day, next_time = WeekMarkovChain._add_delta_to_day_and_time(
+                    day, time_step, time_step_size
+                )
+                yield day, time_step, next_day, next_time
+
+    @staticmethod
+    def _markov_chain(time_step, day_time_series, time_step_size):
+        next_time_step = WeekMarkovChain._add_delta_to_time(time_step, time_step_size)
+        current_vector = day_time_series.ix[time_step]
+        next_vector = day_time_series.ix[next_time_step]
+        chain_elements = [((current_state, next_state), WeekMarkovChain._probability(current_state,
+                                                                                     next_state,
+                                                                                     current_vector,
+                                                                                     next_vector))
+                          for current_state in Activity
+                          for next_state in Activity]
+        return pykov.Chain(OrderedDict(chain_elements))
+
+    @staticmethod
+    def _probability(current_state, next_state, current_vector, next_vector):
+        if current_state in current_vector.unique():
+            current_mask = current_vector == current_state
+            next_mask = next_vector == next_state
+            next_instances = len(next_vector[current_mask & next_mask])
+            current_instances = len(current_vector[current_mask])
+            return next_instances / current_instances
+        else:
+            return 0
+
+    @staticmethod
+    def _add_delta_to_time(time_step, delta):
+        fulldate = datetime.datetime.combine(datetime.datetime(100, 1, 1), time_step)
+        fulldate = fulldate + delta
+        return fulldate.time()
+
+    @staticmethod
+    def _add_delta_to_day_and_time(day, time_step, delta):
+        random_date = datetime.datetime.combine(datetime.datetime(100, 1, 1), time_step)
+        updated_date = random_date + delta
+        if (random_date.date() == updated_date.date()):
+            return day, updated_date.time()
+        else:
+            next_day = 'weekend' if day == 'weekday' else 'weekday'
+            return next_day, updated_date.time()
