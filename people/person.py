@@ -159,7 +159,21 @@ class WeekMarkovChain():
                    for chain in self.__chain['weekend'].values()
                    for activity in chain.states())
         assert self._valid_transitions()
-        # TODO check probabilities
+        assert self._valid_probabilities()
+
+    def _valid_probabilities(self):
+        return all(WeekMarkovChain._probabilities_add_to_one(self.__chain[day][time])
+                   for day in ['weekday', 'weekend']
+                   for time in WeekMarkovChain._day_time_step_generator(self.__time_step_size))
+
+    @staticmethod
+    def _probabilities_add_to_one(markov_chain):
+        start_states = [item[0][0] for item in markov_chain.items()]
+        return all(math.isclose(
+                   sum(item[1] for item in markov_chain.items() if item[0][0] == start_state),
+                   1.0,
+                   abs_tol=0.001
+                   ) for start_state in start_states)
 
     def _valid_transitions(self):
         flags = [WeekMarkovChain._valid_transition(self.__chain[day][time],
