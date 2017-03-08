@@ -29,8 +29,8 @@ class Person():
     """The model of a citizen making choices on activities and locations.
 
     Parameters:
-        * activity_markov_chains: one pykov.Chain markov chain for each timestep per day of each,
-                                  weekday and weekend day
+        * week_markov_chain:      a heterogeneous markov chain for a week of type
+                                  people.WeekMarkovChain
         * number_generator:       a callable returning a random number between min and max
                                   parameters
         * initial_activity:       the activity at initial time
@@ -41,10 +41,7 @@ class Person():
     For example:
 
     Person(
-        activity_markov_chains={
-            'weekday': {hour: pykov.Chain(...) for hour in range(24)},
-            'weekend': {hour: pykov.Chain(...) for hour in range(24)}
-        },
+        week_markov_chain=week_markov_chain
         number_generator=random.uniform,
         initial_activity=HOME,
         initial_time=datetime(2016, 12, 15, 12, 06),
@@ -52,24 +49,10 @@ class Person():
     )
     """
 
-    def __init__(self, activity_markov_chains, initial_activity, number_generator,
+    def __init__(self, week_markov_chain, initial_activity, number_generator,
                  initial_time, time_step_size):
-        assert 'weekday' in activity_markov_chains.keys()
-        assert 'weekend' in activity_markov_chains.keys()
-        assert all(isinstance(time_step, datetime.time)
-                   for time_step in activity_markov_chains['weekday'].keys())
-        assert all(isinstance(time_step, datetime.time)
-                   for time_step in activity_markov_chains['weekend'].keys())
-        assert all(isinstance(activity, Activity)
-                   for chain in activity_markov_chains['weekday'].values()
-                   for activity in chain.states())
-        assert all(isinstance(activity, Activity)
-                   for chain in activity_markov_chains['weekend'].values()
-                   for activity in chain.states())
-        n_time_steps_per_day = datetime.timedelta(hours=24) / time_step_size
-        assert len(activity_markov_chains['weekday']) == n_time_steps_per_day
-        assert len(activity_markov_chains['weekend']) == n_time_steps_per_day
-        self.__chain = activity_markov_chains
+        assert week_markov_chain.time_step_size == time_step_size
+        self.__chain = week_markov_chain
         assert isinstance(initial_activity, Activity)
         self.activity = initial_activity
         self.__number_generator = number_generator
@@ -86,10 +69,21 @@ class Person():
         self.__time += self.__time_step_size
 
     def _choose_next_activity(self):
-        return self.__chain[self._weekday()][self.__time.time()].move(
-            state=self.activity,
+        return self.__chain.move(
+            current_state=self.activity,
+            current_time=self.__time,
             random_func=self.__number_generator
         )
+
+
+class WeekMarkovChain():
+
+    @property
+    def time_step_size(self):
+        pass
+
+    def move(current_state, current_time, random_func):
+        pass
 
     def _weekday(self):
         day_number = self.__time.weekday()
