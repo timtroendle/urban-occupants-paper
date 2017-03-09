@@ -91,6 +91,10 @@ class WeekMarkovChain():
 
     def __init__(self, weekday_time_series, weekend_time_series, time_step_size):
         self.__time_step_size = time_step_size
+        if weekday_time_series.isnull().any().any():
+            raise ValueError('Weekday time series contains missing values.')
+        if weekend_time_series.isnull().any().any():
+            raise ValueError('Weekend time series contains missing values.')
         self.__chain = {
             'weekday': WeekMarkovChain._day_markov_chain(weekday_time_series, time_step_size),
             'weekend': WeekMarkovChain._day_markov_chain(weekend_time_series, time_step_size)
