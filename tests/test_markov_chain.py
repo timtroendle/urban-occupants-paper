@@ -14,7 +14,9 @@ from people import person
 
 
 MIDNIGHT_WEEKDAY = datetime(2017, 3, 8, 0, 0)
+NOON_WEEKDAY = datetime(2017, 3, 8, 12, 0)
 MIDNIGHT_WEEKEND = datetime(2017, 3, 5, 0, 0)
+NOON_WEEKEND = datetime(2017, 3, 5, 12, 0)
 
 
 @pytest.fixture
@@ -130,6 +132,16 @@ def test_probabilities(markov_chain, random_func, time_stamp, from_activity, to_
         probability,
         abs_tol=0.05
     )
+
+
+@pytest.mark.parametrize('time_stamp,expected_valid_states', [
+    (MIDNIGHT_WEEKDAY, [Activity.HOME]),
+    (NOON_WEEKDAY, [Activity.HOME, Activity.NOT_AT_HOME]),
+    (MIDNIGHT_WEEKEND, [Activity.HOME]),
+    (NOON_WEEKEND, [Activity.HOME, Activity.NOT_AT_HOME])
+])
+def test_valid_states(markov_chain, time_stamp, expected_valid_states):
+    assert set(expected_valid_states) == set(markov_chain.valid_states(time_stamp))
 
 
 def test_dead_locks_are_handled(dead_locked_markov_chain, random_func):

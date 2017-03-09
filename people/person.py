@@ -115,6 +115,11 @@ class WeekMarkovChain():
             random_func=random_func
         )
 
+    def valid_states(self, time_stamp):
+        """Returns all valid states at given time stamp."""
+        return [item[0][0] for item in
+                self.__chain[WeekMarkovChain._weekday(time_stamp)][time_stamp.time()].items()]
+
     def to_dataframe(self):
         """Creates a dataframe representation of a time heterogeneous markov chain.
 
