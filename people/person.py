@@ -281,8 +281,8 @@ class WeekMarkovChain():
         if current_state in current_vector.unique():
             current_mask = current_vector == current_state
             next_mask = next_vector == next_state
-            next_instances = len(next_vector[current_mask & next_mask])
-            current_instances = len(current_vector[current_mask])
+            next_instances = (current_mask & next_mask).sum()
+            current_instances = current_mask.sum()
             return next_instances / current_instances
         else:
             return 0
