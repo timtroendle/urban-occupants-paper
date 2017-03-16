@@ -13,9 +13,8 @@ dependencies:
   - ipykernel=4.5.2
   - ipywidgets=6.0.0
   - requests=2.13.0
-  #- requests-cache=0.4.12
+  - requests-cache=0.4.12
   - xlrd=1.0.0
   - pip:
       - git+git://github.com/riccardoscalco/Pykov@master
       - git+git://github.com/timtroendle/people@develop
-      - requests-cache # currently not available on anaconda for Py 3.6
