@@ -1,6 +1,10 @@
 # Energy Impact of Occupant Activity in Urban Built Environments
 
+// TODO update title
+
 ## Abstract
+
+// TODO update abstract
 
 Occupants are driving the energy demand in buildings, either directly for example through the use of appliances, or more indirectly through comfort preferences like heating set points and the energy demand of auxiliary functions like fridges. The significance of occupants and their activities and behaviours for energy demand estimations has been identified in former studies and a lot of work is undertaken in quantifying this relationship and explicitly modelling occupants to understand and predict choices of activities and behaviours and their impact on energy demands in single households, public buildings and offices, and settlements of detached buildings.
 
@@ -8,23 +12,110 @@ On the district and urban scale occupants are still typically represented by imp
 
 ## Introduction and Related Works
 
+* heating system set points have high impact on building energy usage, as shown in former research
+
+* if, contrary to normative building energy assessment, one is interested in _actual_ energy usage and not normative energy usage, exact heating set points are hence of high importance
+
+* generally, the heating set point for a heating Zone z can be described by &theta;<sub>set, z</sub> = &theta;<sub>set, z</sub>(CZ<sub>P<sub>z</sub></sub>, L<sub>P<sub>z</sub></sub>, A<sub>P<sub>z</sub></sub>, B<sub>P<sub>z</sub></sub>), where:
+
+    * P<sub>z</sub>: set of people inside the heating zone or related to it
+    * CZ<sub>P<sub>z</sub></sub> comfort zone of People P<sub>z</sub>
+    * L<sub>P<sub>z</sub></sub> location of People P<sub>z</sub>
+    * A<sub>P<sub>z</sub></sub> activity of People P<sub>z</sub>
+    * B<sub>P<sub>z</sub></sub> heating behaviour (awareness, financial situation, usage pattern) of People P<sub>z</sub>
+
+* for all (comfort zone, location, activity, heating behaviour), the social context is important, which brings spatial dimension into play
+
 ## Methodology
 
-### Energy Simulation
+### Conceptual Model
 
-See description of [conceptual model](https://github.com/timtroendle/spatial-cimo/blob/develop/doc/conceptual-model.md).
+#### Set Point Model
 
-Mainly focusing on domestic buildings.
+Here the following simplifications are made compared to the general model above:
 
-### Occupant Activity
+* ignoring comfort zone, as it cannot be estimated
+* zones = entire dwellings
+* location = presence
+* simplified categories of heating behaviour
 
-See description of [conceptual activity model](https://github.com/timtroendle/spatial-cimo/blob/develop/doc/conceptual-activity-model.md).
+This leads to the dynamic model of a heating set point for a dwelling d: &theta;<sub>set, d, k</sub> = &theta;<sub>set, d, k</sub>(P<sub>d, k</sub>, a<sub>P, k</sub>, B<sub>d</sub>), where:
 
-### (Optional) Identification of control strategies
+* k in K = {all time steps}
+* P<sub>d, k</sub> = {p in P<sub>d</sub> | p is in dwelling d at time step k}
+* a<sub>P, k</sub> = 1 if at least someone in P<sub>k</sub> awake, 0 otherwise
+* B<sub>d</sub> = {'constant set point', 'time triggered', 'presence & activity triggered'}, time invariant heating behaviour for dwelling d
 
-Based on measured data. Identify which control strategy is likely to be used by which fraction of households in spatial area.
+#### People Model
 
-## Results
+Time heterogeneous markov chain with the following states:
+
+* not at home
+* active at home
+* asleep at home
+* active at other people's home
+* asleep at other people's home
+
+Location choice model:
+
+* each person has a home
+* when at other home must decide which (//TODO how? this is important as it links dwellings/households)
+
+#### Thermal Model of Dwelling
+
+See description of [conceptual model](https://github.com/timtroendle/spatial-cimo/blob/develop/doc/conceptual-model.md). // TODO update
+
+Simplified 1 zone building energy model. Using the same model for each dwelling (?).
+
+Rational for using the exact same model for each dwelling: this can be seen similar to the normative building energy assessment where the object of study is the building and its impact on energy demand. Heating behaviour is considered external *and always equal*. Here, the object of study is the heating behaviour of people and its impact on energy demand. The building could be considered external *and always equal*.
+
+### Simulation Platform
+
+agent based simulation
+
+### Model Calibration
+
+using time use survey data: classify set of people by certain attributes (for example work status, role in household, household income, ...) and derive markov chain for all classes of people.
+
+Location choice model: // TODO unknown
+
+Synthetic population using Hierarchical Iterative Proportional Fitting: fitting households and individuals at the same time
+
+### Optional: Identification of Heating behaviour
+
+Using measured energy data and using Bayesian inference, estimate the likelihood for a certain heating behaviour in a region.
+
+## Case Study
+
+short intro to London Haringey
+
+describe data sets: UK Time Use Survey 2000, Census 2011, (UKBuildings?)
+
+### Model Calibration Results
+
+which attributes are significant in terms of energy usage?
+
+// TODO should this be done with or without linkage of people (=other people's home)?
+
+### Simulation Results
+
+#### Impact of Population attributes on Energy Demand using Presence&Activity based heating
+
+using the presence&activity based heating behaviour, run full simulation (for a week?) and discuss spatial patterns: different energy usage in certain regions based on population structure
+
+#### Energy Savings Potential
+
+Run another full simulation with a baseline heating behaviour (only time triggered or a mix //TODO howto define realistically?) and compare to the presence&activity based heating. Are there spatial patterns?
+
+#### Likelihood of disaggregated heating behaviour
+
+(optional): if possible, discuss likelihood of certain disaggregated heating behaviour per ward/lsoa
+
+## Discussion & Conclusion
+
+---
+
+## Optional
 
 Validate people's schedule against test data set.
 
@@ -32,12 +123,4 @@ Validate people's travels against London data set.
 
 Validate energy simulation results. Goal: stay in certain *plausible* ranges.
 
-Compare heating/cooling energy needed for different HVAC control strategies.
-
 Compare comfort level (temperature when home) for different HVAC control strategies.
-
-Show and discuss 'Energy Pathways' of people: their energy footprint while they move through the city.
-
-Optional: Discuss likelihood of certain HVAC control strategies for certain spatial areas. For example the fraction of an LSOA following a certain control strategy.
-
-## Conclusion
