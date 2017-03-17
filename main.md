@@ -16,15 +16,14 @@ On the district and urban scale occupants are still typically represented by imp
 
 * if, contrary to normative building energy assessment, one is interested in _actual_ energy usage and not normative energy usage, exact heating set points are hence of high importance
 
-* generally, the heating set point for a heating Zone z can be described by &theta;<sub>set, z</sub> = &theta;<sub>set, z</sub>(CZ<sub>P<sub>z</sub></sub>, L<sub>P<sub>z</sub></sub>, A<sub>P<sub>z</sub></sub>, B<sub>P<sub>z</sub></sub>), where:
+* generally, the heating set point for a heating Zone z can be described by &theta;<sub>set, z</sub> = &theta;<sub>set, z</sub>(L<sub>P<sub>z</sub></sub>, A<sub>P<sub>z</sub></sub>, B<sub>P<sub>z</sub></sub>), where:
 
     * P<sub>z</sub>: set of people inside the heating zone or related to it
-    * CZ<sub>P<sub>z</sub></sub> comfort zone of People P<sub>z</sub>
     * L<sub>P<sub>z</sub></sub> location of People P<sub>z</sub>
     * A<sub>P<sub>z</sub></sub> activity of People P<sub>z</sub>
-    * B<sub>P<sub>z</sub></sub> heating behaviour (awareness, financial situation, usage pattern) of People P<sub>z</sub>
+    * B<sub>P<sub>z</sub></sub> heating behaviour (comfort zone, awareness, financial situation, usage pattern) of People P<sub>z</sub>
 
-* for all (comfort zone, location, activity, heating behaviour), the social context is important, which brings spatial dimension into play
+* for all (comfort zone, location, activity, heating behaviour), the social context is important, which brings spatial dimension into play // TODO rational for the need of spatial dimension still weak
 
 ## Methodology
 
@@ -34,12 +33,12 @@ On the district and urban scale occupants are still typically represented by imp
 
 Here the following simplifications are made compared to the general model above:
 
-* ignoring comfort zone, as it cannot be estimated
 * zones = entire dwellings
 * location = presence
-* simplified categories of heating behaviour
+* discrete time with steps of 10 min length
+* heating behaviour reduced to simple categories
 
-This leads to the dynamic model of a heating set point for a dwelling d: &theta;<sub>set, d, k</sub> = &theta;<sub>set, d, k</sub>(P<sub>d, k</sub>, a<sub>P, k</sub>, B<sub>d</sub>), where:
+This leads to the simplified dynamic model of a heating set point for a dwelling d: &theta;<sub>set, d, k</sub> = &theta;<sub>set, d, k</sub>(P<sub>d, k</sub>, a<sub>P, k</sub>, B<sub>d</sub>), where:
 
 * k in K = {all time steps}
 * P<sub>d, k</sub> = {p in P<sub>d</sub> | p is in dwelling d at time step k}
@@ -53,7 +52,7 @@ Time heterogeneous markov chain with the following states:
 * not at home
 * active at home
 * asleep at home
-* active at other people's home
+* active at other people's home (// TODO are these relevant? probably rather rarely alone in other people's home. When not alone, this additional person has no impact on energy demand.)
 * asleep at other people's home
 
 Location choice model:
