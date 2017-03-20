@@ -74,7 +74,7 @@ agent based simulation
 
 ### Model Calibration
 
-using time use survey data: classify set of people by certain attributes (for example work status, role in household, household income, ...) and derive markov chain for all classes of people.
+using time use survey data: classify set of people by certain attributes (for example work status, role in household, household income, ...) and derive markov chain for all classes of people. (could be defined as classification problem, maybe?)
 
 Location choice model: // TODO unknown
 
