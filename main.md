@@ -74,7 +74,11 @@ agent based simulation
 
 ### Model Calibration
 
-using time use survey data: classify set of people by certain attributes (for example work status, role in household, household income, ...) and derive markov chain for all classes of people. Possible procedure:
+#### People Model
+
+using time use survey data: classify set of people by certain attributes (for example work status, role in household, household income, ...) and derive markov chain for all classes of people. Possible procedures:
+
+##### On the Household Level
 
 * map all people features (attributes) to household features (attributes); e.g. labour status of all residents is mapped to
     * household feature 1: number of unemployed residents
@@ -86,7 +90,16 @@ using time use survey data: classify set of people by certain attributes (for ex
 * choose 2-4 most significant features to cluster seed
 * calculate markov chain for each cluster
 
-Location choice model: // TODO unknown
+##### On the Individual Level
+
+* define norm dwelling used for all households (see above)
+* simulate energy demand (for one day or week) for every household
+* map energy demand to person (when that person is driving energy demand by being at home, associate fraction of energy demand to that person); this will give a distribution of energy demands for the entire population (seed)
+* use ANOVA (analysis of variance) to test whether clustering of individuals by certain attributes (for example labour status) explains the resulting per-person-energy-demand best
+
+#### Location choice model // TODO unknown
+
+#### Synthetic Population
 
 Synthetic population using Hierarchical Iterative Proportional Fitting: fitting households and individuals at the same time
 
