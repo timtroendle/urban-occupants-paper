@@ -74,7 +74,17 @@ agent based simulation
 
 ### Model Calibration
 
-using time use survey data: classify set of people by certain attributes (for example work status, role in household, household income, ...) and derive markov chain for all classes of people. (could be defined as classification problem, maybe?)
+using time use survey data: classify set of people by certain attributes (for example work status, role in household, household income, ...) and derive markov chain for all classes of people. Possible procedure:
+
+* map all people features (attributes) to household features (attributes); e.g. labour status of all residents is mapped to
+    * household feature 1: number of unemployed residents
+    * household feature 2: number of employed residents
+* // TODO why not doing everything on household level?!
+* define norm dwelling used for all households (see above)
+* simulate energy demand (for one day or week) for every household
+* use regression (e.g. principal component regression) to identify relationship of all (categorical) features of the household with energy demand
+* choose 2-4 most significant features to cluster seed
+* calculate markov chain for each cluster
 
 Location choice model: // TODO unknown
 
