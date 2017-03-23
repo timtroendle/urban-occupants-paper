@@ -1,4 +1,4 @@
-# Energy Impact of Occupant Activity in Urban Built Environments
+# Agent-Based Modelling of Occupant Presence in Residential Built Environments
 
 // TODO update title
 
@@ -6,9 +6,15 @@
 
 // TODO update abstract
 
-Occupants are driving the energy demand in buildings, either directly for example through the use of appliances, or more indirectly through comfort preferences like heating set points and the energy demand of auxiliary functions like fridges. The significance of occupants and their activities and behaviours for energy demand estimations has been identified in former studies and a lot of work is undertaken in quantifying this relationship and explicitly modelling occupants to understand and predict choices of activities and behaviours and their impact on energy demands in single households, public buildings and offices, and settlements of detached buildings.
+Energy use in the urban residential sector corresponds directly to operation of energy consuming devices. For instance, space-heating  is a substantial element of residential energy consumption in the UK, but it is as much tied to occupant preferences and timing of their presence in a home, as it is to the physical characterstics of the dwelling. Timing, duration, and in-use efficiency of residential energy consumption are essential for increasing the utilization of district energy systems and demand-side management of (eg. through time-of-use tariffs). The study of occupant driven activities is inherently stochastic and multi-disciplinary. The ongoing IEA-EBC Annex 66 and our own recent work attests that there is a need to develop new methods to represent occupant presence and energy consuming activities in energy demand modelling. Indeed, few studies investigate micro-use patterns of energy use in detail at the urban-scale. This is as much a multi-scale simulation issue, as it is a computational challenge. 
 
-On the district and urban scale occupants are still typically represented by implicit and general load profiles ignoring occupant activities as the main driver for energy demand, and ignoring spatial and temporal dependencies. This work aims at identifying the impact of occupant activity on the heating and cooling energy demand in buildings on an urban scale by representing occupants as agents in a city-wide model with high spatial and temporal resolution. The agent-based approach of the model allows for representing spatial variability and analysing space-time relationships by linking energy usage in space and time through occupants, their locations and activities. The model is applied in a case study of London.
+Agent-Based Models (ABMs) are able to simulate the distribution of people across the city at high spatial and temporal resolutions. This paper presents a proof-of-concept ABM model in....
+
+Two step approach: (a) occupant presence or absence (b) occupant behaviour when present (setpoint) or absent (heating on timer)
+
+In the near future, we envision that these models will also become crucial tools in optimizing the use of future digital innovations, e.g. smart metering and Internet of Things. 
+
+This work aims at identifying the impact of occupant 'presence' on the heating and cooling energy demand in buildings on an urban scale by representing occupants as agents in a city-wide model with high spatial and temporal resolution. The agent-based approach of the model allows for representing spatial variability and analysing space-time relationships by linking energy usage in space and time through occupants, their locations and activities. The model is applied in a case study of London.
 
 ## Introduction and Related Works
 
@@ -109,6 +115,8 @@ describe data sets: UK Time Use Survey 2000, Census 2011, (UKBuildings?)
 which attributes are significant in terms of energy usage?
 
 ### Simulation Results
+
+test beds: (a) deterministic versus proposed ABM apporach -- compare timing and magnitude of peak; (b) relative importance of setpoint versus timing and duration of use; (c) relative importance of physical characterstics of dwelling versus stochastic representation of occupant activities
 
 #### Impact of Population attributes on Energy Demand using Presence&Activity based heating
 
