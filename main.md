@@ -52,13 +52,6 @@ Time heterogeneous markov chain with the following states:
 * not at home
 * active at home
 * asleep at home
-* active at other people's home (// TODO are these relevant? probably rather rarely alone in other people's home. When not alone, this additional person has no impact on energy demand.)
-* asleep at other people's home
-
-Location choice model:
-
-* each person has a home
-* when at other home must decide which (//TODO how? this is important as it links dwellings/households)
 
 #### Thermal Model of Dwelling
 
@@ -97,8 +90,6 @@ using time use survey data: classify set of people by certain attributes (for ex
 * map energy demand to person (when that person is driving energy demand by being at home, associate fraction of energy demand to that person); this will give a distribution of energy demands for the entire population (seed)
 * use ANOVA (analysis of variance) to test whether clustering of individuals by certain attributes (for example labour status) explains the resulting per-person-energy-demand best
 
-#### Location choice model // TODO unknown
-
 #### Synthetic Population
 
 Synthetic population using Hierarchical Iterative Proportional Fitting: fitting households and individuals at the same time
@@ -116,8 +107,6 @@ describe data sets: UK Time Use Survey 2000, Census 2011, (UKBuildings?)
 ### Model Calibration Results
 
 which attributes are significant in terms of energy usage?
-
-// TODO should this be done with or without linkage of people (=other people's home)?
 
 ### Simulation Results
 
