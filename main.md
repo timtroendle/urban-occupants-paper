@@ -6,13 +6,13 @@
 
 // TODO update abstract
 
-Energy use in the urban residential sector corresponds directly to operation of energy consuming devices. For instance, space-heating  is a substantial element of residential energy consumption in the UK, but it is as much tied to occupant preferences and timing of their presence in a home, as it is to the physical characterstics of the dwelling. Timing, duration, and in-use efficiency of residential energy consumption are essential for increasing the utilization of district energy systems and demand-side management of (eg. through time-of-use tariffs). The study of occupant driven activities is inherently stochastic and multi-disciplinary. The ongoing IEA-EBC Annex 66 and our own recent work attests that there is a need to develop new methods to represent occupant presence and energy consuming activities in energy demand modelling. Indeed, few studies investigate micro-use patterns of energy use in detail at the urban-scale. This is as much a multi-scale simulation issue, as it is a computational challenge. 
+Energy use in the urban residential sector corresponds directly to operation of energy consuming devices. For instance, space-heating  is a substantial element of residential energy consumption in the UK, but it is as much tied to occupant preferences and timing of their presence in a home, as it is to the physical characterstics of the dwelling. Timing, duration, and in-use efficiency of residential energy consumption are essential for increasing the utilization of district energy systems and demand-side management of (eg. through time-of-use tariffs). The study of occupant driven activities is inherently stochastic and multi-disciplinary. The ongoing IEA-EBC Annex 66 and our own recent work attests that there is a need to develop new methods to represent occupant presence and energy consuming activities in energy demand modelling. Indeed, few studies investigate micro-use patterns of energy use in detail at the urban-scale. This is as much a multi-scale simulation issue, as it is a computational challenge.
 
 Agent-Based Models (ABMs) are able to simulate the distribution of people across the city at high spatial and temporal resolutions. This paper presents a proof-of-concept ABM model in....
 
 Two step approach: (a) occupant presence or absence (b) occupant behaviour when present (setpoint) or absent (heating on timer)
 
-In the near future, we envision that these models will also become crucial tools in optimizing the use of future digital innovations, e.g. smart metering and Internet of Things. 
+In the near future, we envision that these models will also become crucial tools in optimizing the use of future digital innovations, e.g. smart metering and Internet of Things.
 
 This work aims at identifying the impact of occupant 'presence' on the heating and cooling energy demand in buildings on an urban scale by representing occupants as agents in a city-wide model with high spatial and temporal resolution. The agent-based approach of the model allows for representing spatial variability and analysing space-time relationships by linking energy usage in space and time through occupants, their locations and activities. The model is applied in a case study of London.
 
@@ -75,26 +75,17 @@ agent based simulation
 
 #### People Model
 
-using time use survey data: classify set of people by certain attributes (for example work status, role in household, household income, ...) and derive markov chain for all classes of people. Possible procedures:
+using time use survey data: cluster set of people by certain attributes (for example work status, role in household, household income, ...) and derive markov chain for all cluster of people.
 
-##### On the Household Level
+The clustering must use and retain the features that will later be used for the synthetic population.
 
-* map all people features (attributes) to household features (attributes); e.g. labour status of all residents is mapped to
-    * household feature 1: number of unemployed residents
-    * household feature 2: number of employed residents
-* // TODO why not doing everything on household level?!
-* define norm dwelling used for all households (see above)
-* simulate energy demand (for one day or week) for every household
-* use regression (e.g. principal component regression) to identify relationship of all (categorical) features of the household with energy demand
-* choose 2-4 most significant features to cluster seed
-* calculate markov chain for each cluster
+Possible procedure:
 
-##### On the Individual Level
-
-* define norm dwelling used for all households (see above)
-* simulate energy demand (for one day or week) for every household
-* map energy demand to person (when that person is driving energy demand by being at home, associate fraction of energy demand to that person); this will give a distribution of energy demands for the entire population (seed)
-* use ANOVA (analysis of variance) to test whether clustering of individuals by certain attributes (for example labour status) explains the resulting per-person-energy-demand best
+* create a people-model time series for each individual in the time use survey
+* through feature selection identify the features of individuals that explain their day time series best
+* start selecting features starting from the most important one, as long as the remaining cluster will stay large enough (must be at at least > 20) (maybe using ANOVA, analysis of variance)
+* cluster people by those features (simply by their different values) and calculate markov chain for all cluster
+* (later below: use those features as control features for the synthetic population)
 
 #### Synthetic Population
 
