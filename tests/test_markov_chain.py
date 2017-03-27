@@ -62,6 +62,16 @@ def not_matching_weekend_day_time_series():
 
 
 @pytest.fixture
+def single_time_series():
+    index = [time(0, 0), time(12, 0)]
+    values1 = [Activity.NOT_AT_HOME, Activity.HOME]
+    return pd.DataFrame(
+        index=index,
+        data={'person1': values1}
+    )
+
+
+@pytest.fixture
 def markov_chain(weekday_time_series, weekend_day_time_series):
     return WeekMarkovChain(
         weekday_time_series=weekday_time_series,
@@ -75,6 +85,15 @@ def dead_locked_markov_chain(weekday_time_series, not_matching_weekend_day_time_
     return WeekMarkovChain(
         weekday_time_series=weekday_time_series,
         weekend_time_series=not_matching_weekend_day_time_series,
+        time_step_size=timedelta(hours=12)
+    )
+
+
+@pytest.fixture
+def markov_chain_from_single_time_series(single_time_series):
+    return WeekMarkovChain(
+        weekday_time_series=single_time_series,
+        weekend_time_series=single_time_series,
         time_step_size=timedelta(hours=12)
     )
 
@@ -158,6 +177,39 @@ def test_dead_locks_are_handled(dead_locked_markov_chain, random_func):
         random_func=random_func
     )
     assert next_state == Activity.NOT_AT_HOME
+
+
+@pytest.mark.parametrize('time_stamp,from_activity,to_activity', [
+    (MIDNIGHT_WEEKDAY, Activity.NOT_AT_HOME, Activity.HOME),
+    (NOON_WEEKDAY, Activity.HOME, Activity.NOT_AT_HOME),
+    (MIDNIGHT_WEEKEND, Activity.NOT_AT_HOME, Activity.HOME),
+    (NOON_WEEKEND, Activity.HOME, Activity.NOT_AT_HOME),
+])
+def test_single_time_series_results_in_deterministic_model(markov_chain_from_single_time_series,
+                                                           time_stamp, from_activity, to_activity,
+                                                           random_func):
+    next_states = [markov_chain_from_single_time_series.move(current_state=from_activity,
+                                                             current_time=time_stamp,
+                                                             random_func=random_func)
+                   for unused in range(500)]
+    actual_probability = (len([state for state in next_states if state == to_activity]) /
+                          len(next_states))
+    assert math.isclose(
+        actual_probability,
+        1.0,
+        abs_tol=0.0001
+    )
+
+
+@pytest.mark.parametrize('time_stamp', [
+    (MIDNIGHT_WEEKDAY),
+    (NOON_WEEKDAY),
+    (MIDNIGHT_WEEKEND),
+    (NOON_WEEKEND),
+])
+def test_single_time_series_results_in_single_valid_state(markov_chain_from_single_time_series,
+                                                          time_stamp):
+    assert len(set(markov_chain_from_single_time_series.valid_states(time_stamp))) == 1
 
 
 def test_dataframe_representation(markov_chain, markov_chain_as_dataframe):
