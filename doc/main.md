@@ -109,6 +109,8 @@ which attributes are significant in terms of energy usage?
 
 test beds: (a) deterministic versus proposed ABM apporach -- compare timing and magnitude of peak; (b) relative importance of setpoint versus timing and duration of use; (c) relative importance of physical characterstics of dwelling versus stochastic representation of occupant activities
 
+![Average thermal power per ward](../doc/figures/thermal_power_per_ward.png)
+
 #### Impact of Population attributes on Energy Demand using Presence&Activity based heating
 
 using the presence&activity based heating behaviour, run full simulation (for a week?) and discuss spatial patterns: different energy usage in certain regions based on population structure
