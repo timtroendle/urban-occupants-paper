@@ -111,6 +111,9 @@ test beds: (a) deterministic versus proposed ABM apporach -- compare timing and 
 
 ![Average thermal power per ward](../doc/figures/thermal_power_per_ward.png)
 ![Average thermal power per LSOA](../doc/figures/thermal_power_per_lsoa.png)
+![Average thermal power per LSOA choropleth](../doc/figures/thermal_power_lsoa_choropleth.png)
+![Distribution of average power](../doc/figures/distributation-average-power.png)
+![Thermal power vs household size](../doc/figures/thermal-power-vs-household-size.png)
 
 #### Impact of Population attributes on Energy Demand using Presence&Activity based heating
 
