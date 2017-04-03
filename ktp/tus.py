@@ -10,7 +10,7 @@ import pandas as pd
 
 from pytus2000 import diary, individual
 import people as ppl
-from .census import Labour, Qualification, HouseholdType
+from .types import Labour, Qualification, HouseholdType
 
 
 class Location(Enum):
