@@ -13,7 +13,7 @@ import requests
 import numpy as np
 import pandas as pd
 
-from .types import AgeStructure, Labour, Qualification, HouseholdType
+from .types import AgeStructure, EconomicActivity, Qualification, HouseholdType
 
 NOMIS_KS102EW_DATASET_ID = "NM_145_1"
 NOMIS_QS116EW_DATASET_ID = "NM_516_1"
@@ -82,18 +82,18 @@ AGE_STRUCTURE_MAP = {
 }
 
 
-LABOUR_MAP = {
-    'Economically active: Employee: Part-time': Labour.EMPLOYEE_PART_TIME,
-    'Economically active: Employee: Full-time': Labour.EMPLOYEE_FULL_TIME,
-    'Economically active: Self-employed': Labour.SELF_EMPLOYED,
-    'Economically active: Unemployed': Labour.UNEMPLOYED,
-    'Economically active: Full-time student': Labour.ACTIVE_FULL_TIME_STUDENT,
-    'Economically inactive: Retired': Labour.RETIRED,
+ECONOMIC_ACTIVITY_MAP = {
+    'Economically active: Employee: Part-time': EconomicActivity.EMPLOYEE_PART_TIME,
+    'Economically active: Employee: Full-time': EconomicActivity.EMPLOYEE_FULL_TIME,
+    'Economically active: Self-employed': EconomicActivity.SELF_EMPLOYED,
+    'Economically active: Unemployed': EconomicActivity.UNEMPLOYED,
+    'Economically active: Full-time student': EconomicActivity.ACTIVE_FULL_TIME_STUDENT,
+    'Economically inactive: Retired': EconomicActivity.RETIRED,
     'Economically inactive: Student (including full-time students)':
-        Labour.INACTIVE_FULL_TIME_STUDENT,
-    'Economically inactive: Looking after home or family': Labour.LOOKING_AFTER_HOME,
-    'Economically inactive: Long-term sick or disabled': Labour.LONG_TERM_SICK,
-    'Economically inactive: Other': Labour.INACTIVE_OTHER
+        EconomicActivity.INACTIVE_FULL_TIME_STUDENT,
+    'Economically inactive: Looking after home or family': EconomicActivity.LOOKING_AFTER_HOME,
+    'Economically inactive: Long-term sick or disabled': EconomicActivity.LONG_TERM_SICK,
+    'Economically inactive: Other': EconomicActivity.INACTIVE_OTHER
 }
 
 
@@ -213,6 +213,6 @@ def read_economic_activity_data(geographical_layer=GeographicalLayer.LSOA):
         index='GEOGRAPHY_CODE',
         columns='CELL_NAME',
         values='OBS_VALUE'
-    )[list(LABOUR_MAP.keys())].astype(np.int64)
-    df = df.rename(columns=LABOUR_MAP).groupby(lambda x: x, axis=1).sum()
+    )[list(ECONOMIC_ACTIVITY_MAP.keys())].astype(np.int64)
+    df = df.rename(columns=ECONOMIC_ACTIVITY_MAP).groupby(lambda x: x, axis=1).sum()
     return df

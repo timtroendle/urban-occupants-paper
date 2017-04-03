@@ -64,7 +64,7 @@ class Qualification(OrderedEnum):
     BELOW_16 = 7
 
 
-class Labour(OrderedEnum):
+class EconomicActivity(OrderedEnum):
     EMPLOYEE_PART_TIME = 1
     EMPLOYEE_FULL_TIME = 2
     SELF_EMPLOYED = 3
