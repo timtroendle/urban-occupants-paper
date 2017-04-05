@@ -22,6 +22,8 @@ This work aims at identifying the impact of occupant 'presence' on the heating a
 
 * if, contrary to normative building energy assessment, one is interested in _actual_ energy usage and not normative energy usage, exact heating set points are hence of high importance
 
+* predictions of status quo could be made with data analysis, but predictions involving system changes, simulation is necessary
+
 * generally, the heating set point for a heating Zone z can be described by &theta;<sub>set, z</sub> = &theta;<sub>set, z</sub>(L<sub>P<sub>z</sub></sub>, A<sub>P<sub>z</sub></sub>, B<sub>P<sub>z</sub></sub>), where:
 
     * P<sub>z</sub>: set of people inside the heating zone or related to it
