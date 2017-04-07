@@ -5,7 +5,10 @@ import math
 from .hipf import fit_hipf
 
 Household = namedtuple('Household', ['id', 'seedId', 'householdType', 'region'])
-Citizen = namedtuple('Citizen', ['householdId', 'markovId', 'initialActivity'])
+Citizen = namedtuple('Citizen', ['householdId', 'markovId', 'initialActivity', 'randomSeed'])
+
+RANDOM_SEED = 123456789
+MAX_HOUSEHOLD_SIZE = 70
 
 
 def run_hipf(param_tuple):
@@ -85,8 +88,14 @@ def sample_citizen(param_tuple):
         a list of Citizens
     """
     households, seed = param_tuple
-    return list(chain(*([Citizen(householdId=household.id,
-                                 markovId=row.markov_id,
-                                 initialActivity=row.initial_activity)
-                        for index, row in seed.ix[household.seedId, :].iterrows()]
-                        for household in households)))
+    return list(chain(
+        *([Citizen(householdId=household.id,
+                   markovId=row.markov_id,
+                   initialActivity=row.initial_activity,
+                   randomSeed=_citizen_random_seed(household.id, occupant_id))
+          for occupant_id, (index, row) in enumerate(seed.ix[household.seedId, :].iterrows())]
+          for household in households)))
+
+
+def _citizen_random_seed(household_id, occupant_id):
+    return RANDOM_SEED + household_id * MAX_HOUSEHOLD_SIZE + occupant_id
