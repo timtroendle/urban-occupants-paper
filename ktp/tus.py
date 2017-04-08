@@ -10,13 +10,13 @@ import pandas as pd
 
 from pytus2000 import diary, individual
 import people as ppl
-from .types import EconomicActivity, Qualification, HouseholdType
+from .types import EconomicActivity, Qualification, HouseholdType, AgeStructure
 
 
 def markov_chain_for_cluster(param_tuple):
     """Creating a heterogenous markov chain for a cluster of the TUS sample.
 
-    This function is intened to be used with `multiprocessing.imap_unordered` which allows
+    This function is intended to be used with `multiprocessing.imap_unordered` which allows
     only one parameter, hence the inconvenient tuple parameter design.
 
     Parameters:
@@ -486,4 +486,100 @@ HOUSEHOLDTYPE_MAP = {
         HouseholdType.COUPLE_WITH_DEPENDENT_CHILDREN,
     individual.HHTYPE4.SINGLE_PARENT____WITH_CHILDREN_SMALLEREQUAL_15:
         HouseholdType.LONE_PARENT_WITH_DEPENDENT_CHILDREN
+}
+
+
+AGE_MAP = {
+    8: AgeStructure.AGE_8_TO_9,
+    9: AgeStructure.AGE_8_TO_9,
+    10: AgeStructure.AGE_10_TO_14,
+    11: AgeStructure.AGE_10_TO_14,
+    12: AgeStructure.AGE_10_TO_14,
+    13: AgeStructure.AGE_10_TO_14,
+    14: AgeStructure.AGE_10_TO_14,
+    15: AgeStructure.AGE_15,
+    16: AgeStructure.AGE_16_TO_17,
+    17: AgeStructure.AGE_16_TO_17,
+    18: AgeStructure.AGE_18_TO_19,
+    19: AgeStructure.AGE_18_TO_19,
+    20: AgeStructure.AGE_20_TO_24,
+    21: AgeStructure.AGE_20_TO_24,
+    22: AgeStructure.AGE_20_TO_24,
+    23: AgeStructure.AGE_20_TO_24,
+    24: AgeStructure.AGE_20_TO_24,
+    25: AgeStructure.AGE_25_TO_29,
+    26: AgeStructure.AGE_25_TO_29,
+    27: AgeStructure.AGE_25_TO_29,
+    28: AgeStructure.AGE_25_TO_29,
+    29: AgeStructure.AGE_25_TO_29,
+    30: AgeStructure.AGE_30_TO_44,
+    31: AgeStructure.AGE_30_TO_44,
+    32: AgeStructure.AGE_30_TO_44,
+    33: AgeStructure.AGE_30_TO_44,
+    34: AgeStructure.AGE_30_TO_44,
+    35: AgeStructure.AGE_30_TO_44,
+    36: AgeStructure.AGE_30_TO_44,
+    37: AgeStructure.AGE_30_TO_44,
+    38: AgeStructure.AGE_30_TO_44,
+    39: AgeStructure.AGE_30_TO_44,
+    40: AgeStructure.AGE_30_TO_44,
+    41: AgeStructure.AGE_30_TO_44,
+    42: AgeStructure.AGE_30_TO_44,
+    43: AgeStructure.AGE_30_TO_44,
+    44: AgeStructure.AGE_30_TO_44,
+    45: AgeStructure.AGE_45_TO_59,
+    46: AgeStructure.AGE_45_TO_59,
+    47: AgeStructure.AGE_45_TO_59,
+    48: AgeStructure.AGE_45_TO_59,
+    49: AgeStructure.AGE_45_TO_59,
+    50: AgeStructure.AGE_45_TO_59,
+    51: AgeStructure.AGE_45_TO_59,
+    52: AgeStructure.AGE_45_TO_59,
+    53: AgeStructure.AGE_45_TO_59,
+    54: AgeStructure.AGE_45_TO_59,
+    55: AgeStructure.AGE_45_TO_59,
+    56: AgeStructure.AGE_45_TO_59,
+    57: AgeStructure.AGE_45_TO_59,
+    58: AgeStructure.AGE_45_TO_59,
+    59: AgeStructure.AGE_45_TO_59,
+    60: AgeStructure.AGE_60_TO_64,
+    61: AgeStructure.AGE_60_TO_64,
+    62: AgeStructure.AGE_60_TO_64,
+    63: AgeStructure.AGE_60_TO_64,
+    64: AgeStructure.AGE_60_TO_64,
+    65: AgeStructure.AGE_65_TO_74,
+    66: AgeStructure.AGE_65_TO_74,
+    67: AgeStructure.AGE_65_TO_74,
+    68: AgeStructure.AGE_65_TO_74,
+    69: AgeStructure.AGE_65_TO_74,
+    70: AgeStructure.AGE_65_TO_74,
+    71: AgeStructure.AGE_65_TO_74,
+    72: AgeStructure.AGE_65_TO_74,
+    73: AgeStructure.AGE_65_TO_74,
+    74: AgeStructure.AGE_65_TO_74,
+    75: AgeStructure.AGE_75_TO_84,
+    76: AgeStructure.AGE_75_TO_84,
+    77: AgeStructure.AGE_75_TO_84,
+    78: AgeStructure.AGE_75_TO_84,
+    79: AgeStructure.AGE_75_TO_84,
+    80: AgeStructure.AGE_75_TO_84,
+    81: AgeStructure.AGE_75_TO_84,
+    82: AgeStructure.AGE_75_TO_84,
+    83: AgeStructure.AGE_75_TO_84,
+    84: AgeStructure.AGE_75_TO_84,
+    85: AgeStructure.AGE_85_TO_89,
+    86: AgeStructure.AGE_85_TO_89,
+    87: AgeStructure.AGE_85_TO_89,
+    88: AgeStructure.AGE_85_TO_89,
+    89: AgeStructure.AGE_85_TO_89,
+    90: AgeStructure.AGE_90_AND_OVER,
+    91: AgeStructure.AGE_90_AND_OVER,
+    92: AgeStructure.AGE_90_AND_OVER,
+    93: AgeStructure.AGE_90_AND_OVER,
+    94: AgeStructure.AGE_90_AND_OVER,
+    95: AgeStructure.AGE_90_AND_OVER,
+    96: AgeStructure.AGE_90_AND_OVER,
+    97: AgeStructure.AGE_90_AND_OVER,
+    98: AgeStructure.AGE_90_AND_OVER,
+    99: AgeStructure.AGE_90_AND_OVER
 }
