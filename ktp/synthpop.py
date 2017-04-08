@@ -4,10 +4,11 @@ from itertools import chain
 import math
 
 from .hipf import fit_hipf
-from .types import AgeStructure, EconomicActivity, HouseholdType, Qualification
-from .tus import AGE_MAP, ECONOMIC_ACTIVITY_MAP, HOUSEHOLDTYPE_MAP, QUALIFICATION_MAP
+from .types import AgeStructure, EconomicActivity, HouseholdType, Qualification, Pseudo
+from .tus import AGE_MAP, ECONOMIC_ACTIVITY_MAP, HOUSEHOLDTYPE_MAP, QUALIFICATION_MAP, PSEUDO_MAP
 from .census import read_age_structure_data, read_household_type_data, \
-    read_qualification_level_data, read_economic_activity_data
+    read_qualification_level_data, read_economic_activity_data,\
+    read_pseudo_individual_data, read_pseudo_household_data
 
 Household = namedtuple('Household', ['id', 'seedId', 'region'])
 Citizen = namedtuple('Citizen', ['householdId', 'markovId', 'initialActivity', 'randomSeed'])
@@ -18,6 +19,7 @@ MAX_HOUSEHOLD_SIZE = 70
 
 class HouseholdFeature(Enum):
     """Household features to be used as controls in the creation of a synthetic population."""
+    PSEUDO = (Pseudo, 'CHILD', PSEUDO_MAP, read_pseudo_household_data) # 'CHILD' is arbitrary
     HOUSEHOLD_TYPE = (HouseholdType, 'HHTYPE4', HOUSEHOLDTYPE_MAP, read_household_type_data)
 
     def __init__(self, ktp_type, tus_variable_name, tus_mapping, census_read_function):
@@ -40,6 +42,7 @@ class PeopleFeature(Enum):
     These features are as well used to cluster the seed in order to form markov chains
     for these clusters.
     """
+    PSEUDO = (Pseudo, True, True, 'CHILD', PSEUDO_MAP, read_pseudo_individual_data)
     AGE = (AgeStructure, True, True, 'IAGE', AGE_MAP, read_age_structure_data)
     ECONOMIC_ACTIVITY = (EconomicActivity, False, False, 'ECONACT2',
                          ECONOMIC_ACTIVITY_MAP, read_economic_activity_data)

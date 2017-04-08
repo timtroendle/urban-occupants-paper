@@ -13,7 +13,7 @@ import requests
 import numpy as np
 import pandas as pd
 
-from .types import AgeStructure, EconomicActivity, Qualification, HouseholdType
+from .types import AgeStructure, EconomicActivity, Qualification, HouseholdType, Pseudo
 
 NOMIS_KS102EW_DATASET_ID = "NM_145_1"
 NOMIS_QS116EW_DATASET_ID = "NM_516_1"
@@ -216,3 +216,23 @@ def read_economic_activity_data(geographical_layer=GeographicalLayer.LSOA):
     )[list(ECONOMIC_ACTIVITY_MAP.keys())].astype(np.int64)
     df = df.rename(columns=ECONOMIC_ACTIVITY_MAP).groupby(lambda x: x, axis=1).sum()
     return df
+
+
+def read_pseudo_individual_data(geographical_layer=GeographicalLayer.LSOA):
+    """Creates pseudo feature data for people.
+
+    The data set will be equivalent to the population sum.
+    """
+    data = read_age_structure_data(geographical_layer)
+    data[Pseudo.SINGLETON] = data.sum(axis=1)
+    return data[[Pseudo.SINGLETON]]
+
+
+def read_pseudo_household_data(geographical_layer=GeographicalLayer.LSOA):
+    """Creates pseudo feature data for households.
+
+    The data set will be equivalent to the household sum.
+    """
+    data = read_household_type_data(geographical_layer)
+    data[Pseudo.SINGLETON] = data.sum(axis=1)
+    return data[[Pseudo.SINGLETON]]

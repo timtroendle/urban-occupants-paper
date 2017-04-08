@@ -24,6 +24,11 @@ class OrderedEnum(Enum):
         return NotImplemented
 
 
+class Pseudo(OrderedEnum):
+    """This is a pseudo feature, that can be used instead of any real feature."""
+    SINGLETON = 1
+
+
 class AgeStructure(OrderedEnum):
     """The age structure of the population."""
     AGE_0_TO_4 = 0

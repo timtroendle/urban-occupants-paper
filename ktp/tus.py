@@ -10,7 +10,7 @@ import pandas as pd
 
 from pytus2000 import diary, individual
 import people as ppl
-from .types import EconomicActivity, Qualification, HouseholdType, AgeStructure
+from .types import EconomicActivity, Qualification, HouseholdType, AgeStructure, Pseudo
 
 
 def markov_chain_for_cluster(param_tuple):
@@ -582,4 +582,11 @@ AGE_MAP = {
     97: AgeStructure.AGE_90_AND_OVER,
     98: AgeStructure.AGE_90_AND_OVER,
     99: AgeStructure.AGE_90_AND_OVER
+}
+
+
+PSEUDO_MAP = { # mapping from child is arbitrary, could be any other feature
+    individual.CHILD.YES: Pseudo.SINGLETON,
+    individual.CHILD.NO: Pseudo.SINGLETON,
+    np.nan: Pseudo.SINGLETON
 }
