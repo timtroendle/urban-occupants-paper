@@ -8,10 +8,14 @@ Census data is retrieved from nomis, see https://www.nomisweb.co.uk.
 """
 from enum import Enum
 import io
+from pathlib import Path
+import tempfile
+import zipfile
 
 import requests
 import numpy as np
 import pandas as pd
+import geopandas as gpd
 
 from .types import AgeStructure, EconomicActivity, Qualification, HouseholdType, Pseudo
 
@@ -50,16 +54,34 @@ NOMIS_GEOGRAPHY_CODE_COLUMN_NAME = "GEOGRAPHY_CODE"
 NOMIS_VALUE_NAME_COLUMN_NAME = "CELL_NAME"
 NOMIS_VALUE_COLUMN_NAME = "OBS_VALUE"
 
+LONDON_BOUNDARY_FILE_URL = ('https://files.datapress.com/london/dataset/statistical-gis-boundary-'
+                            'files-london/2016-10-03T13:52:28/statistical-gis-boundaries-'
+                            'london.zip')
+WARD_SHAPE_FILE_PATH = Path('./statistical-gis-boundaries-london/ESRI/London_Ward.shp')
+MSOA_SHAPE_FILE_PATH = Path('./statistical-gis-boundaries-london/ESRI/MSOA_2011_London_gen_MHW.shp')
+LSOA_SHAPE_FILE_PATH = Path('./statistical-gis-boundaries-london/ESRI/LSOA_2011_London_gen_MHW.shp')
+OA_SHAPE_FILE_PATH = Path('./statistical-gis-boundaries-london/ESRI/OA_2011_London_gen_MHW.shp')
+BOROUGH_ID_IN_WARD_DATA_SET = 'BOROUGH'
+BOROUGH_ID_COLUMN_NAME = 'LAD11NM'
+WARD_ID_COLUMN_NAME = 'GSS_CODE'
+MSOA_ID_COLUMN_NAME = 'MSOA11CD'
+LSOA_ID_COLUMN_NAME = 'LSOA11CD'
+OA_ID_COLUMN_NAME = 'OA11CD'
+
 
 class GeographicalLayer(Enum):
     """The geographical layer at which census data should be retrieved."""
-    OA = (NOMIS_OA_GEOGRAPHY)
-    LSOA = (NOMIS_LSOA_GEOGRAPHY)
-    MSOA = (NOMIS_MSOA_GEOGRPAHY)
-    WARD = (NOMIS_WARD_GEOGRAPHY)
+    OA = (NOMIS_OA_GEOGRAPHY, OA_SHAPE_FILE_PATH, BOROUGH_ID_COLUMN_NAME, OA_ID_COLUMN_NAME)
+    LSOA = (NOMIS_LSOA_GEOGRAPHY, LSOA_SHAPE_FILE_PATH, BOROUGH_ID_COLUMN_NAME, LSOA_ID_COLUMN_NAME)
+    MSOA = (NOMIS_MSOA_GEOGRPAHY, MSOA_SHAPE_FILE_PATH, BOROUGH_ID_COLUMN_NAME, MSOA_ID_COLUMN_NAME)
+    WARD = (NOMIS_WARD_GEOGRAPHY, WARD_SHAPE_FILE_PATH, BOROUGH_ID_IN_WARD_DATA_SET,
+            WARD_ID_COLUMN_NAME)
 
-    def __init__(self, geo_codes):
-        self.geo_codes = geo_codes
+    def __init__(self, nomis_geo_codes, shape_file_path, borough_col_name, index_col_name):
+        self.nomis_geo_codes = nomis_geo_codes
+        self.shape_file_path = shape_file_path
+        self.borough_col_name = borough_col_name
+        self.index_col_name = index_col_name
 
 
 AGE_STRUCTURE_MAP = {
@@ -133,6 +155,21 @@ HOUSEHOLDTYPE_MAP = {
 }
 
 
+def read_haringey_shape_file(geographical_layer=GeographicalLayer.LSOA):
+    """Reads shape file of Haringey from London Data Store.
+
+    Make sure to use requests_cache to cache the retrieved data.
+    """
+    r = requests.get(LONDON_BOUNDARY_FILE_URL)
+    z = zipfile.ZipFile(io.BytesIO(r.content))
+    with tempfile.TemporaryDirectory(prefix='london-boundary-files') as tmpdir:
+        z.extractall(path=tmpdir)
+        shape_file = Path(tmpdir) / geographical_layer.shape_file_path
+        data = gpd.read_file(shape_file.as_posix())
+    data = data[data[geographical_layer.borough_col_name] == 'Haringey']
+    return data.set_index(geographical_layer.index_col_name)
+
+
 def read_age_structure_data(geographical_layer=GeographicalLayer.LSOA):
     """Retrieves age structure date from Census 2011 for Haringey.
 
@@ -142,7 +179,7 @@ def read_age_structure_data(geographical_layer=GeographicalLayer.LSOA):
     url = ("https://www.nomisweb.co.uk/api/v01/dataset/{}.data.csv" +
            "?date=latest&geography={}&rural_urban=0&measures=20100" +
            "&select=geography_code,cell_name,obs_value").format(NOMIS_KS102EW_DATASET_ID,
-                                                                geographical_layer.geo_codes)
+                                                                geographical_layer.nomis_geo_codes)
     r = requests.get(url)
     df = pd.read_csv(io.BytesIO(r.content))
     df = df.pivot(
@@ -162,8 +199,9 @@ def read_household_type_data(geographical_layer=GeographicalLayer.LSOA):
     """
     url = ("https://www.nomisweb.co.uk/api/v01/dataset/{}.data.csv" +
            "?date=latest&geography={}&rural_urban=0&measures=20100" +
-           "&select=geography_code,c_ahthuk11_name,obs_value").format(NOMIS_QS116EW_DATASET_ID,
-                                                                      geographical_layer.geo_codes)
+           "&select=geography_code,c_ahthuk11_name," +
+           "obs_value").format(NOMIS_QS116EW_DATASET_ID,
+                               geographical_layer.nomis_geo_codes)
     r = requests.get(url)
     df = pd.read_csv(io.BytesIO(r.content))
     df = df.pivot(
@@ -184,7 +222,7 @@ def read_qualification_level_data(geographical_layer=GeographicalLayer.LSOA):
     url = ("https://www.nomisweb.co.uk/api/v01/dataset/{}.data.csv" +
            "?date=latest&geography={}&rural_urban=0&measures=20100" +
            "&select=geography_code,cell_name,obs_value").format(NOMIS_KS501EW_DATASET_ID,
-                                                                geographical_layer.geo_codes)
+                                                                geographical_layer.nomis_geo_codes)
     r = requests.get(url)
     df = pd.read_csv(io.BytesIO(r.content))
     df = df.pivot(
@@ -206,7 +244,7 @@ def read_economic_activity_data(geographical_layer=GeographicalLayer.LSOA):
            "?date=latest&geography={}&rural_urban=0&measures=20100" +
            "&c_sex=0" +
            "&select=geography_code,cell_name,obs_value").format(NOMIS_KS601EW_DATASET_ID,
-                                                                geographical_layer.geo_codes)
+                                                                geographical_layer.nomis_geo_codes)
     r = requests.get(url)
     df = pd.read_csv(io.BytesIO(r.content))
     df = df.pivot(
