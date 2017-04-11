@@ -11,7 +11,8 @@ from .census import read_age_structure_data, read_household_type_data, \
     read_pseudo_individual_data, read_pseudo_household_data
 
 Household = namedtuple('Household', ['id', 'seedId', 'region'])
-Citizen = namedtuple('Citizen', ['householdId', 'markovId', 'initialActivity', 'randomSeed'])
+Citizen = namedtuple('Citizen', ['householdId', 'markovId', 'initialActivity',
+                                 'activeMetabolicRate', 'passiveMetabolicRate', 'randomSeed'])
 
 RANDOM_SEED = 123456789
 MAX_HOUSEHOLD_SIZE = 70
@@ -160,6 +161,8 @@ def sample_citizen(param_tuple):
         *([Citizen(householdId=household.id,
                    markovId=row.markov_id,
                    initialActivity=row.initial_activity,
+                   activeMetabolicRate=row.metabolic_rate_active,
+                   passiveMetabolicRate=row.metabolic_rate_passive,
                    randomSeed=_citizen_random_seed(household.id, occupant_id))
           for occupant_id, (index, row) in enumerate(seed.ix[household.seedId, :].iterrows())]
           for household in households)))
