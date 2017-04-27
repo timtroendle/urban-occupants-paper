@@ -1,19 +1,19 @@
 # Introduction and Related Works
 
-* heating system set points have high impact on building energy usage, as shown in former research
+* people have high impact on energy use for space heating, especially with buildings become more efficient, through:
 
-* if, contrary to normative building energy assessment, one is interested in _actual_ energy usage and not normative energy usage, exact heating set points are hence of high importance
+    * control of heating/cooling system <!--- TODO add ref --->
+    * ventilation <!--- TODO add ref --->
+    * shading <!--- TODO add ref --->
 
-* predictions of status quo could be made with data analysis, but predictions involving system changes, simulation is necessary
+* here: focus on control of heating/cooling system
 
-* generally, the heating set point for a heating Zone z can be described by $\theta_{set, z} = \theta_{set, z}(L_{P_z}, A_{P_z}, B_{P_z})$, where:
+* differentiate between statistical and top down methods and "physical" and bottom up methods
+    * predictions of status quo could be made with data analysis, but predictions involving system changes, simulation is necessary
 
-    * $P_z$: set of people inside the heating zone or related to it
-    * $L_{P_z}$ location of People $P_z$
-    * $A_{P_z}$ activity of People $P_z$
-    * $B_{P_z}$ heating behaviour (comfort zone, awareness, financial situation, usage pattern) of People $P_z$
+* similar work has been done on building, or district level, but not on the city scale incorporating people traits <!-- TODO add references --->
 
-* for all (comfort zone, location, activity, heating behaviour), the social context is important, which brings spatial dimension into play // TODO rational for the need of spatial dimension still weak
+* somewhere here add vision, proof of concept model
 
 [@Richardson:2008dj; @Muller:2010vx] shows a test citation. See also [Synthetic Population](#synthetic_population).
 
@@ -21,21 +21,36 @@
 
 ## Conceptual Model
 
-### Set Point Model
+### Model of Heating System Control
+
+* generally, the heating set point for a heating Zone z can be described by $\theta_{set, z} = \theta_{set, z}(L_{P_z}, A_{P_z}, B_{P_z})$, where:
+
+    * $P_z$: set of people inside the heating zone or related to it
+    * $L_{P_z}$: location of People $P_z$
+    * $A_{P_z}$: activity of People $P_z$
+    * $B_{P_z}$: heating behaviour (comfort zone, awareness, financial situation, usage pattern) of People $P_z$
 
 Here the following simplifications are made compared to the general model above:
 
 * zones = entire dwellings
 * location = presence
 * discrete time with steps of 10 min length
-* heating behaviour reduced to simple categories
+* heating behaviour ignored
 
-This leads to the simplified dynamic model of a heating set point for a dwelling d: $\theta_{set, d, k} = \theta_{set, d, k}(P_{d, k}, a_{P, k}, B_{d})$, where:
+This leads to the simplified dynamic model of a heating set point for a dwelling d:
+
+$\theta_{set, d, k} = \begin{cases}
+    \text{off},             & \text{if } P_{d, k} = \varnothing\\
+    \theta_{set, active},   & \text{if } \{p \in P_{d, k} | \text{p is active}\} \neq \varnothing\\
+    \theta_{set, passive},  & \text{otherwise}
+\end{cases}$
+
+where:
 
 * $k \in K = \text{{all time steps}}$
 * $P_{d, k} = \{p \in P_d | \text{p is in dwelling d at time step k}\}$
-* $a_{P, k} = 1$ if at least someone in $P_k$ awake, 0 otherwise
-* $B_d = \text{{'constant set point', 'time triggered', 'presence & activity triggered'}}$, time invariant heating behaviour for dwelling d
+* $\theta_{set, active}$: assumed static set point whenever dwelling is occupied by at least one active person
+* $\theta_{set, passive}$: assumed static set point whenever dwelling is occupied by only passive people
 
 ### People Model
 
@@ -47,11 +62,35 @@ Time heterogeneous markov chain with the following states:
 
 ### Thermal Model of Dwelling
 
-See description of [conceptual model](https://github.com/timtroendle/spatial-cimo/blob/develop/doc/conceptual-model.md). // TODO update
+Simplified 1 zone building energy model.
 
-Simplified 1 zone building energy model. Using the same model for each dwelling (?).
+The model is derived from the hourly dynamic model in ISO 13790. It has only one capacity and one resistance.
 
-Rational for using the exact same model for each dwelling: this can be seen similar to the normative building energy assessment where the object of study is the building and its impact on energy demand. Heating behaviour is considered external *and always equal*. Here, the object of study is the heating behaviour of people and its impact on energy demand. The building could be considered external *and always equal*.
+Compared to the ISO 13790 there is
+
+* only metabolic heat gain,
+* full shading of the building, no direct or indirect sun light,
+* no windows or doors,
+* no ventilation,
+* immediate heat transfer between air and surface.
+
+![Average thermal power per ward](../doc/figures/simple-simple.jpg){#simple-simple .class width=300}
+
+$\theta_{m, k} = \theta_{m, k-1} \cdot (1 - \frac{\Delta{t}}{C_{m}} \cdot H_{tr, em}) + \frac{\Delta{t}}{C_m} \cdot (\Phi_{HC, nd, k-1} + H_{tr, em} \cdot \theta_{e, k-1})$
+
+where
+
+<!--- FIXME many of the following not in equation --->
+<!--- TODO add metabolic heat gain --->
+* $\Phi_{HC, nd, t}$: cooling or heating power at time k
+* $\theta_{m, k}$: building temperature [℃] at time k
+* $\theta_{e, k}$: outside temperature [℃] at time k
+* $A_f$: conditioned floor area [m^2^]
+* $C_m$: capacity of the building's heat mass [J/K]
+* $\Delta{t}$: time step size [s]
+* $H_{tr, em}$: heat transmission to the outside [W/K]
+* $\theta_{int, set}$: heating set point temperature [℃]
+* $\Phi_{max}$: maximum heating power [W]
 
 ## Simulation Platform
 
@@ -68,32 +107,42 @@ The clustering must use and retain the features that will later be used for the 
 Possible procedure:
 
 * create a people-model time series for each individual in the time use survey
-* through feature selection identify the features of individuals that explain their day time series best
+* through feature selection identify the features of individuals that explain their day time series best using Cramer's V
 * start selecting features starting from the most important one, as long as the remaining cluster will stay large enough (must be at at least > 20) (maybe using ANOVA, analysis of variance)
 * cluster people by those features (simply by their different values) and calculate markov chain for all cluster
 * (later below: use those features as control features for the synthetic population)
+
+Discuss difficulty of problem: there is no _correct_ way of doing this.
 
 ### Synthetic Population {#synthetic_population}
 
 Synthetic population using Hierarchical Iterative Proportional Fitting: fitting households and individuals at the same time
 
-## Optional: Identification of Heating behaviour
+### Building Energy Model
 
-Using measured energy data and using Bayesian inference, estimate the likelihood for a certain heating behaviour in a region.
+Using the same model for each dwelling
+
+Rational for using the exact same model for each dwelling: this can be seen similar to the normative building energy assessment where the object of study is the building and its impact on energy demand. Heating behaviour is considered external *and always equal*. Here, the object of study is the heating behaviour of people and its impact on energy demand. The building could be considered external *and always equal*.
 
 # Case Study
 
 short intro to London Haringey
 
-describe data sets: UK Time Use Survey 2000, Census 2011, (UKBuildings?)
+describe data sets: UK Time Use Survey 2000, Census 2011
 
-## Model Calibration Results
+## Feature Selection Results
 
-which attributes are significant in terms of energy usage?
+Discuss correlation of features between features and to the time series.
 
 ## Simulation Results
 
-test beds: (a) deterministic versus proposed ABM apporach -- compare timing and magnitude of peak; (b) relative importance of setpoint versus timing and duration of use; (c) relative importance of physical characterstics of dwelling versus stochastic representation of occupant activities
+### Results for Time Triggered Strategy (optional)
+
+### Results for Preferred Features
+
+* discuss variation between wards in terms of energy usage and in terms of dynamic load profile
+
+### Results for Alternative Feature Selection
 
 ![Average thermal power per ward](../doc/figures/thermal_power_per_ward.png)
 ![Average thermal power per LSOA](../doc/figures/thermal_power_per_lsoa.png)
@@ -101,30 +150,6 @@ test beds: (a) deterministic versus proposed ABM apporach -- compare timing and 
 ![Distribution of average power](../doc/figures/distributation-average-power.png)
 ![Thermal power vs household size](../doc/figures/thermal-power-vs-household-size.png)
 
-### Impact of Population attributes on Energy Demand using Presence&Activity based heating
-
-using the presence&activity based heating behaviour, run full simulation (for a week?) and discuss spatial patterns: different energy usage in certain regions based on population structure
-
-### Energy Savings Potential
-
-Run another full simulation with a baseline heating behaviour (only time triggered or a mix //TODO howto define realistically?) and compare to the presence&activity based heating. Are there spatial patterns?
-
-### Likelihood of disaggregated heating behaviour
-
-(optional): if possible, discuss likelihood of certain disaggregated heating behaviour per ward/lsoa
-
 # Discussion & Conclusion
-
----
-
-# Optional
-
-Validate people's schedule against test data set.
-
-Validate people's travels against London data set.
-
-Validate energy simulation results. Goal: stay in certain *plausible* ranges.
-
-Compare comfort level (temperature when home) for different HVAC control strategies.
 
 # References
