@@ -1,21 +1,16 @@
 # Introduction and Related Works
 
-* people have high impact on energy use for space heating, especially with buildings become more efficient, through:
+Accounting for 34% of global energy end-use, the building sector is the largest energy sink and a major contributor to global CO~2~ emissions [@GEA:2012us]. Three quarters of this amount are accountable for space heating and cooling purposes. When trying to reduce this energy impact as it is done by the European Union [@Parliament:2012ut] understanding the energy demand originating in the building sector and its drivers is crucial. With more than half of the global population living in cities and with on-going urbanisation [@UnitedNations:2014uy], urban build environments are becoming more important in this regard. This is even more so true when looking at America or Europe where the urban population exceeds 70% of the total population already today [@UnitedNations:2014uy]. Estimations of energy demand for space heating are valuable during the design phase of urban build environment and its energy supply infrastructure, but also for effective retrofitting actions and performance evaluations. In particular the task of designing efficient energy supply systems asks for a high temporal resolution of the estimation [@Omu:0ca]. The built infrastructure and other factors impacting energy demand for space heating are diversely distributed in urban environments and hence analyses have recently been done on a high spatial resolution as well [@Choudhary:0kp; @Li:wp; @Anonymous:0gi].
 
-    * control of heating/cooling system <!--- TODO add ref --->
-    * ventilation <!--- TODO add ref --->
-    * shading <!--- TODO add ref --->
+While thermodynamic models of buildings are well understood and assumed to achieve good results, simulated energy demand for space heating in urban environments deviate largely from measured data which is often accounted to micro-climate effects [@Kolokotroni:2008kg; @Steemers:2003kd] and to the impact of occupants [@GuerraSantin:2012im; @Seryak:2003hn; @Fabi:2012gu; @Janda:2011cy]. "Buildings don't use energy: people do" [@Janda:2011cy] and hence the energy usage in a building can be accounted directly or indirectly to the way people use buildings. In residential homes people's impact on space heating demands stems mostly from the way people control the heating, cooling, and ventilation (HVAC) systems, the way people actively ventilate their buildings through window and door opening, the way people shade their rooms through blinds and curtains, the way people functionally divide their residential homes, and people's occupancy and activities performed at home which attribute in the form of heat gains [@VanRaaij:1983kt; @Paauw:2009uw]. Given the complex nature of human behaviour a comprehensive understanding of the driving forces, relationships, and feedbacks is difficult, several factors like awareness [@Janda:2011cy], socio-economic situations [@Druckman:2009kx], and rebound effects are discussed [@Edelson:1980gj; @Brannlund:2007jg]. Given the trend towards zero-energy buildings in which thermal losses are largely reduced, the impact of occupants on energy demand is relatively increasing [@Janda:2011cy] stressing the importance to account for and understand the relationships.
 
-* here: focus on control of heating/cooling system
+Several methods for modelling energy demand in buildings have been proposed. Swan and Ugursal [@Swan:2009fb] differentiate methods for modelling end-use energy demand in the residential sector into those following a top-down approach, and those following a bottom-up approach, depending on whether input data from the hierarchical level below the system under consideration is incorporated or not. For the bottom up models a differentiation is made between statistical methods in which historic consumption data is regressed onto explaining variables, and those which incorporate physical models of the building envelope and the thermodynamic processes in them which are typically referred to as engineering methods. While the data driven methods yield models that can be applied to buildings of the same archetype, only the latter allows to simulate so far unseen effects, e.g. through the introduction of new technologies. Occupants must be modelled explicitly in engineering models. On the city scale, former work include high resolution building by building models without explicit influence of occupancy [@tian2015high; @zhang2015gshp; @Li:wp], and models including people behaviour but only in aggregated form on lower spatial resolution [@BustosTuru:2016ee].
 
-* differentiate between statistical and top down methods and "physical" and bottom up methods
-    * predictions of status quo could be made with data analysis, but predictions involving system changes, simulation is necessary
+The comprehensive behaviour of occupants is typically tried to represent through several sub-models. A foundation to most of them form occupancy models determining at which point of time the building is occupied [@Richardson:2008dj; @Aerts:2015ko; @Widen:2009fo]; sometimes even disaggregated into zones of the building [@Liao:2012et]. On top of those, activity models [@Widen:2009kx; @Aerts:2015ko], window opening models [@Andersen:2013cn; @Fabi:2013tl], and HVAC control models [@Fabi:2013ch] are placed. Behaviour models are typically differentiated between deterministic and probabilistic types. Deterministic models assume a direct causal link between a driver of a certain behaviour and the actual derived action. While different methods exist, these types of models are based on rational decision making. Probabilistic models in contrast are based on likelihoods of different actions. The data source for occupancy and activity models form in many cases so called time use survey (TUS) data sets for which a standardising research centre exists [@CentreforTimeUse:wa].
 
-* similar work has been done on building, or district level, but not on the city scale incorporating people traits <!-- TODO add references --->
+This paper reports the progress of on-going work of introducing models of people behaviour to high resolution bottom up city models. The model estimates energy demand for space heating in residential buildings on a city scale. Energy demand is driven by the occupancy of people in their household which itself is modelled through a time-heterogeneous markov-chain based on TUS data. Citizens are clustered through features of themselves and their households they live in. A statistically viable urban population is formed through population synthesis. The model allows to analyse spatial patterns of energy use for space heating. It is implemented as an open-source agent-based model [@energyagents:Eadj6C-U] which allows easy integration of other bottom-up effects impacting energy demand for space heating like people movement, people interactions, activity models, and urban microclimates, other energy uses like water heating and electricity, other environmental impacts e.g. on air quality, or the supply side of building energy.
 
-* somewhere here add vision, proof of concept model
-
-[@Richardson:2008dj; @Muller:2010vx] shows a test citation. See also [Synthetic Population](#synthetic_population).
+This paper is structured as follows: section 2 describes the conceptual model and a general way how time use data and census data can be used to calibrate it. Simulation results for a case study of Haringey, a borough of London are presented in section 3, and section 4 concludes the findings.
 
 # Methodology
 
@@ -124,6 +119,10 @@ Using the same model for each dwelling
 
 Rational for using the exact same model for each dwelling: this can be seen similar to the normative building energy assessment where the object of study is the building and its impact on energy demand. Heating behaviour is considered external *and always equal*. Here, the object of study is the heating behaviour of people and its impact on energy demand. The building could be considered external *and always equal*.
 
+## Assumptions
+
+summary of assumptions
+
 # Case Study
 
 short intro to London Haringey
@@ -152,4 +151,4 @@ Discuss correlation of features between features and to the time series.
 
 # Discussion & Conclusion
 
-# References
+# References <!--- filled automatically by pandoc --->
