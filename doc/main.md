@@ -16,40 +16,35 @@ This paper is structured as follows: section 2 describes the conceptual model an
 
 ## Conceptual Model
 
-The general urban energy system as applied in this study consists of three distinct entities: citizens, HVAC controls, and dwellings whose models will be described in detail in the following sub sections. A dwelling forms a home for one to $n$ citizens and incorporates exactly one HVAC control system. [Fig. 1](#model-overview) shows a flow-chart of the model. The model is time-step based where in each time step $k$, each entity updates its state: first all citizen update their occupancy, i.e. determine whether they are at home or not. Second, the HVAC control system of each dwelling updates its heating set point, potentially taken into account the occupancy of the dwelling. Lastly, each dwelling updates its indoor temperature and the thermal power needed for reaching it.
+The general urban energy system as applied in this study consists of three distinct entities: citizens, HVAC controls, and dwellings whose models will be described in detail in the following sub sections. A dwelling forms a home for one to $n$ citizens and incorporates exactly one HVAC control system. [Fig. 1](#model-overview) shows a flow-chart of the model. The model is time-step based where in each time step $k$, each entity updates its state: first all citizens update their occupancy, i.e. determine whether they are at home or not. Second, the HVAC control system of each dwelling updates its heating set point, potentially taken into account the occupancy of the dwelling. Lastly, each dwelling updates its indoor temperature and the thermal power needed for reaching it.
 
 ![Figure 1: Model overview](../doc/figures/model-overview.png){#model-overview .class width=500}
 
 ### Model of Heating System Control
 
-* generally, the heating set point for a heating Zone z can be described by $\theta_{set, z} = \theta_{set, z}(L_{P_z}, A_{P_z}, B_{P_z})$, where:
+Generally, the heating set point for a heating zone $z$ can be described by $\theta_{set, z} = \theta_{set, z}(L_{P_z}, A_{P_z}, B_{P_z})$, where:
 
-    * $P_z$: set of people inside the heating zone or related to it
-    * $L_{P_z}$: location of People $P_z$
-    * $A_{P_z}$: activity of People $P_z$
-    * $B_{P_z}$: heating behaviour (comfort zone, awareness, financial situation, usage pattern) of People $P_z$
+* $P_z$: set of people inside the heating zone or related to it;
+* $L_{P_z}$: locations of people $P_z$;
+* $A_{P_z}$: activities of people $P_z$;
+* $B_{P_z}$: heating behaviour, defined by the comfort zone, awareness, socio-economic situation, usage pattern, etc. of people $P_z$.
 
-Here the following simplifications are made compared to the general model above:
+For the simulation model of the heating system controls applied in this study the following simplifications are made compared to the general model as defined above:
 
-* zones = entire dwellings
-* location = presence
-* discrete time with steps of 10 min length
-* heating behaviour ignored
+* zones are entire dwellings;
+* time is discrete;
+* location is equal to presence, i.e. we do not incorporate indoor positions;
+* heating behaviour is based on occupancy only.
 
-This leads to the simplified dynamic model of a heating set point for a dwelling d:
+The smallest unit considered is a dwelling $d$, by which we mean the fraction of a building that has a distinct energy meter and is occupied by a single household. Each dwelling $d$ is of the set $D$, i.e. of the urban residential building stock. $P_d$ is defined as a subset of the entire urban population $P$ comprising of all people that live in dwelling $d$. Every person has exactly one home and hence the family of sets $P_D$ form a partition of population $P$ and $\cup_{d \in D} P_d = P$ and $P_{d_1} \cap P_{d_2} = \varnothing \ \forall \ d_1 \neq d_2$ hold. Given these definitions, the heating set point for dwelling $d$ at time $k \in K$ is defined as:
 
-$\theta_{set, d, k} = \begin{cases}
-    \text{off},             & \text{if } P_{d, k} = \varnothing\\
-    \theta_{set, active},   & \text{if } \{p \in P_{d, k} | \text{p is active}\} \neq \varnothing\\
-    \theta_{set, passive},  & \text{otherwise}
-\end{cases}$
+$$\theta_{set, d, k} = \begin{cases}
+    \theta_{set, d, absent},   & \text{if } P_{d, k} = \varnothing\\
+    \theta_{set, d, active},   & \text{if } \{p \in P_{d, k} | \text{p is active}\} \neq \varnothing\\
+    \theta_{set, d, passive},  & \text{otherwise}
+\end{cases}$$
 
-where:
-
-* $k \in K = \text{{all time steps}}$
-* $P_{d, k} = \{p \in P_d | \text{p is in dwelling d at time step k}\}$
-* $\theta_{set, active}$: assumed static set point whenever dwelling is occupied by at least one active person
-* $\theta_{set, passive}$: assumed static set point whenever dwelling is occupied by only passive people
+In this model, there are there are three distinct heating set points between which the control system toggles depending on occupancy. It shall be noted that given the desired comfort level defined by the set point temperatures $\theta_{set, d, absent} \leq \theta_{set, d, passive} \leq \theta_{set, d, active}$ this controller is close to optimal in terms of energy efficiency as the dwelling is minimally heated. As indoor temperature lags behind occupancy it is not optimal in terms of comfort level. This effect is particularly strong when occupants enter a dwelling whose indoor temperature is far from $\theta_{set, d, active}$ or $\theta_{set, d, passive}$.
 
 ### People Model
 
