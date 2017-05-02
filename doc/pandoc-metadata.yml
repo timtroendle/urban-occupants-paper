@@ -15,7 +15,9 @@ abstract: |
     In the near future, we envision that these models will also become crucial tools in optimizing the use of future digital innovations, e.g. smart metering and Internet of Things.
 
     This work aims at identifying the impact of occupant 'presence' on the heating and cooling energy demand in buildings on an urban scale by representing occupants as agents in a city-wide model with high spatial and temporal resolution. The agent-based approach of the model allows for representing spatial variability and analysing space-time relationships by linking energy usage in space and time through occupants, their locations and activities. The model is applied in a case study of London.
-bibliography: 'literature.bib'
+bibliography:
+    - 'literature.bib'
+    - 'online.bib'
 csl: 'vancouver.csl'
 link-citations: true
 
