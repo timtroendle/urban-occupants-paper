@@ -16,6 +16,10 @@ This paper is structured as follows: section 2 describes the conceptual model an
 
 ## Conceptual Model
 
+The general urban energy system as applied in this study consists of three distinct entities: citizens, HVAC controls, and dwellings whose models will be described in detail in the following sub sections. A dwelling forms a home for one to $n$ citizens and incorporates exactly one HVAC control system. [Fig. 1](#model-overview) shows a flow-chart of the model. The model is time-step based where in each time step $k$, each entity updates its state: first all citizen update their occupancy, i.e. determine whether they are at home or not. Second, the HVAC control system of each dwelling updates its heating set point, potentially taken into account the occupancy of the dwelling. Lastly, each dwelling updates its indoor temperature and the thermal power needed for reaching it.
+
+![Figure 1: Model overview](../doc/figures/model-overview.png){#model-overview .class width=500}
+
 ### Model of Heating System Control
 
 * generally, the heating set point for a heating Zone z can be described by $\theta_{set, z} = \theta_{set, z}(L_{P_z}, A_{P_z}, B_{P_z})$, where:
