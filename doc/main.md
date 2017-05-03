@@ -8,7 +8,7 @@ Several methods for modelling energy demand in buildings have been proposed. Swa
 
 The comprehensive behaviour of occupants is typically tried to represent through several sub-models. A foundation to most of them form occupancy models determining at which point of time the building is occupied [@Richardson:2008dj; @Aerts:2015ko; @Widen:2009fo]; sometimes even disaggregated into zones of the building [@Liao:2012et]. On top of those, activity models [@Widen:2009kx; @Aerts:2015ko], window opening models [@Andersen:2013cn; @Fabi:2013tl], and HVAC control models [@Fabi:2013ch] are placed. Behaviour models are typically differentiated between deterministic and probabilistic types. Deterministic models assume a direct causal link between a driver of a certain behaviour and the actual derived action. While different methods exist, these types of models are based on rational decision making. Probabilistic models in contrast are based on likelihoods of different actions. The data source for occupancy and activity models form in many cases so called time use survey (TUS) data sets for which a standardising research centre exists [@ctus].
 
-This paper reports the progress of on-going work of introducing models of people behaviour to high resolution bottom up city models. The model estimates energy demand for space heating in residential buildings on a city scale. Energy demand is driven by the occupancy of people in their households which itself is modelled through a time-heterogeneous markov-chain based on TUS data. Citizens are clustered through features of themselves and of the households they live in. A statistically viable urban population is formed through population synthesis. The model allows to analyse spatial patterns of energy use for space heating. It is implemented as an open-source agent-based model [@energyagents] which allows easy integration of other bottom-up effects impacting energy demand for space heating like people movement, people interactions, activity models, and urban microclimates, other energy uses like water heating and electricity, other environmental impacts e.g. on air quality, or the supply side of building energy.
+This paper reports the progress of on-going work of introducing models of people behaviour to high resolution bottom up city models. The model estimates energy demand for space heating in residential buildings on a city scale. Energy demand is driven by the occupancy of people in their households which itself is modelled through a time-heterogeneous Markov chain based on TUS data. Citizens are clustered through features of themselves and of the households they live in. A statistically viable urban population is formed through population synthesis. The model allows to analyse spatial patterns of energy use for space heating. It is implemented as an open-source agent-based model [@energyagents] which allows easy integration of other bottom-up effects impacting energy demand for space heating like people movement, people interactions, activity models, and urban microclimates, other energy uses like water heating and electricity, other environmental impacts e.g. on air quality, or the supply side of building energy.
 
 This paper is structured as follows: section 2 describes the conceptual model and a general way how time use data and census data can be used to calibrate it. Simulation results for a case study of Haringey, a borough of London are presented in section 3, and section 4 concludes the findings.
 
@@ -48,7 +48,7 @@ In this model, there are there are three distinct heating set points between whi
 
 ### Occupancy Model
 
-Citizens are modelled by the occupancy in their respective dwellings only, using a probabilistic occupancy model that has been applied in several similar studies [@Richardson:2008dj; @Widen:2009fo; @Aerts:2015ko]. The occupancy model consists of a time-heterogeneous markov chain with the following states: (1) not at home, (2) active at home, and (3) asleep at home. As the markov chain is time heterogeneous, transition probabilities between the states of the markov chain are time dependent, and hence the transition matrix for person $p$ at time $k$ can be given as:
+Citizens are modelled by the occupancy in their respective dwellings only, using a probabilistic occupancy model that has been applied in several similar studies [@Richardson:2008dj; @Widen:2009fo; @Aerts:2015ko]. The occupancy model consists of a time-heterogeneous Markov chain with the following states: (1) not at home, (2) active at home, and (3) asleep at home. As the Markov chain is time heterogeneous, transition probabilities between the states of the Markov chain are time dependent, and hence the transition matrix for person $p$ at time $k$ can be given as:
 
 $$
 Pr^p =
@@ -90,31 +90,25 @@ The distinct sub models of the heating control systems, the dwellings, and the c
 
 ## Model Calibration
 
-### People Model
+The following subsection describes methods to calibrate the conceptual model as defined above. In particular two types of data sets are taken into account: (1) time use survey (TUS) data and (2) aggregated census data, which both are available for many regions of the world, in the case of TUS data even in a standardised manner [@ctus]. The TUS data is used to calibrate the occupancy model, whereas the aggregated census data is used to generate a synthetic population. In addition to these, a micro sample of census data is necessary, i.e. fully detailed census data for a fraction of the population. For the approach describe in this study, that data must be available in the TUS data set, i.e. for each participant whose time use is recorded in the study, we will demand features of the participant as well, e.g. their socio-economic situation.
 
-using time use survey data: cluster set of people by certain attributes (for example work status, role in household, household income, ...) and derive markov chain for all cluster of people.
+### Occupancy Model
 
-The clustering must use and retain the features that will later be used for the synthetic population.
+The transition matrix $Pr^p$ for each citizen is derived from the TUS data set. The TUS data set contains location and activity data for each participant at a high temporal resolution in the form of a diary. Diaries span at least a day, though typically a weekday and a weekend day are recorded as time use varies between these days [@ctus]. In the following, a mapping is performed from each tuple of location and activity to one of the states of the Markov chain. As an example, the tuple (location = 'workplace or school', activity = 'lunch break') is mapped to 1 = not at home, as is (location = 'second home or weekend house', activity = 'sleep'). After the mapping, each diary can be understood as a concrete instance of a stochastic process that is described by the time heterogeneous Markov chain of the occupancy model. The set of participants is clustered by one or more household or people features $F$, e.g. age, which is available in both, the TUS data set and the aggregated census, and a time-heterogeneous Markov chain for each cluster following the approach used e.g. by [@Richardson:2008dj; @Widen:2009fo] is created. The resulting set of transition matrices $\{Pr^f| \forall f \in F\}$ then allows us to deterministically allocate a transition matrix to a citizen based on the citizens feature value $f^p$: $Pr^p = Pr^{f^p}$.
 
-Possible procedure:
-
-* create a people-model time series for each individual in the time use survey
-* through feature selection identify the features of individuals that explain their day time series best using Cramer's V
-* start selecting features starting from the most important one, as long as the remaining cluster will stay large enough (must be at at least > 20) (maybe using ANOVA, analysis of variance)
-* cluster people by those features (simply by their different values) and calculate markov chain for all cluster
-* (later below: use those features as control features for the synthetic population)
-
-Discuss difficulty of problem: there is no _correct_ way of doing this.
+The choice of household or people features is important for the quality of this approach. Unfortunately we are not aware of a deterministic way of choosing the _correct_ set of features. We instead acknowledge the inherent uncertainty and analyse features, their correlation among each other, and their correlation to the derived time series. We furthermore discuss the sensitivity of the results to the choice of features in the case study performed.
 
 ### Synthetic Population {#synthetic_population}
 
 Synthetic population using Hierarchical Iterative Proportional Fitting: fitting households and individuals at the same time
 
-### Building Energy Model
+### Thermal Dwelling Model and Heating Control System
 
 Using the same model for each dwelling
 
 Rational for using the exact same model for each dwelling: this can be seen similar to the normative building energy assessment where the object of study is the building and its impact on energy demand. Heating behaviour is considered external *and always equal*. Here, the object of study is the heating behaviour of people and its impact on energy demand. The building could be considered external *and always equal*.
+
+[@Baetens:2015gm; @Leidelmeijer:2005vu] discuss set points and fraction of room heated
 
 ## Assumptions
 
@@ -125,6 +119,8 @@ summary of assumptions
 short intro to London Haringey
 
 describe data sets: UK Time Use Survey 2000, Census 2011
+
+## Parameterisation
 
 ## Feature Selection Results
 
