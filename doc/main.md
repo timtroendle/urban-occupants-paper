@@ -20,7 +20,7 @@ The general urban energy system as applied in this study consists of three disti
 
 ![Figure 1: Model overview](../doc/figures/model-overview.png){#model-overview .class width=500}
 
-### Model of Heating System Control
+### Heating System Control Model
 
 Generally, the heating set point for a heating zone $z$ can be described by $\theta_{set, z} = \theta_{set, z}(L_{P_z}, A_{P_z}, B_{P_z})$, where:
 
@@ -36,15 +36,15 @@ For the simulation model of the heating system controls applied in this study th
 * location is equal to presence, i.e. we do not incorporate indoor positions;
 * heating behaviour is based on occupancy only.
 
-The smallest unit considered is a dwelling $d$, by which we mean the fraction of a building that has a distinct energy meter and is occupied by a single household. Each dwelling $d$ is of the set $D$, i.e. of the urban residential building stock. $P_d$ is defined as a subset of the entire urban population $P$ comprising of all people that live in dwelling $d$. Every person has exactly one home and hence the family of sets $P_D$ form a partition of population $P$ and $\cup_{d \in D} P_d = P$ and $P_{d_1} \cap P_{d_2} = \varnothing \ \forall \ d_1 \neq d_2$ hold. Given these definitions, the heating set point for dwelling $d$ at time $k \in K$ is defined as:
+The smallest unit considered is a dwelling $d$, by which we mean the fraction of a building that has a distinct energy meter and is occupied by a single household. Each dwelling $d$ is of the set $D$, i.e. of the urban residential building stock. $P_k^d$ is defined as a subset of the entire urban population $P$ comprising of all people that occupy dwelling $d$ at time $k$. Given these definitions, the heating set point for dwelling $d$ at time $k \in K$ is defined as:
 
-$$\theta_{set, d, k} = \begin{cases}
-    \theta_{set, d, absent},   & \text{if } P_{d, k} = \varnothing\\
-    \theta_{set, d, active},   & \text{if } \{p \in P_{d, k} | \text{p is active}\} \neq \varnothing\\
-    \theta_{set, d, passive},  & \text{otherwise}
-\end{cases}$$
+$$\theta_{set, k}^d = \begin{cases}
+    \theta_{set, absent}^d,   & \text{if } P_k^d = \varnothing\\
+    \theta_{set, active}^d,   & \text{if } \{p \in P_k^d | \text{p is active}\} \neq \varnothing\\
+    \theta_{set, passive}^d,  & \text{otherwise}
+\end{cases}.$$
 
-In this model, there are there are three distinct heating set points between which the control system toggles depending on occupancy. It shall be noted that given the desired comfort level defined by the set point temperatures $\theta_{set, d, absent} \leq \theta_{set, d, passive} \leq \theta_{set, d, active}$ this controller is close to optimal in terms of energy efficiency as the dwelling is minimally heated. As indoor temperature lags behind occupancy it is not optimal in terms of comfort level. This effect is particularly strong when occupants enter a dwelling whose indoor temperature is far from $\theta_{set, d, active}$ or $\theta_{set, d, passive}$.
+In this model, there are there are three distinct heating set points between which the control system toggles depending on occupancy. It shall be noted that given the desired comfort level defined by the set point temperatures $\theta_{set, absent}^d \leq \theta_{set, passive}^d \leq \theta_{set, active}^d$ this controller is close to optimal in terms of energy efficiency as the dwelling is minimally heated. As indoor temperature lags behind occupancy it is not optimal in terms of comfort level. This effect is particularly strong when occupants enter a dwelling whose indoor temperature is far from $\theta_{set, active}^d$ or $\theta_{set, passive}^d$.
 
 ### Occupancy Model
 
@@ -56,40 +56,31 @@ Pr^p =
     p_{11}^p(k)&p_{12}^p(k)&p_{13}^p(k)\\
     p_{21}^p(k)&p_{22}^p(k)&p_{23}^p(k)\\
     p_{31}^p(k)&p_{32}^p(k)&p_{33}^p(k)
-\end{bmatrix}
+\end{bmatrix}.
 $$
 
-### Thermal Model of Dwelling
+Every person has exactly one home, so we can define a time-invariant set of people $P_d$ for every dwelling $d$ such that the family of sets $P_D = \{P_d | \forall d \in D\}$ form a partition of population $P$ and $\cup_{d \in D} P_d = P$ and $P_{d_1} \cap P_{d_2} = \varnothing \ \forall \ d_1 \neq d_2$ hold. The time dependent set of occupancy of dwelling $d$ at time $k$ as used in the heating system control model can then be given as $P_k^d = \{p \in P_d | \text{p is active at home or p is asleep at home} \}$.
 
-Simplified 1 zone building energy model.
+### Thermal Dwelling Model
 
-The model is derived from the hourly dynamic model in ISO 13790. It has only one capacity and one resistance.
+Dwellings are modelled as single thermal zones following the conceptual model of EN ISO 13790 [@cen13790:2008]. The model is derived from the simple hourly dynamic model as described in the standard but is reduced to a single capacity and a single resistance as depicted in [Fig. 2](#simple-simple). Compared to the full model there is no other than metabolic heat gain, full shading of the building, i.e. no direct or indirect sun light, no windows or doors, no ventilation, and immediate heat transfer between air and surface.
 
-Compared to the ISO 13790 there is
+![Figure 2: RC network of the applied dynamic thermal model of a dwelling](../doc/figures/simple-simple.jpg){#simple-simple .class width=300}
 
-* only metabolic heat gain,
-* full shading of the building, no direct or indirect sun light,
-* no windows or doors,
-* no ventilation,
-* immediate heat transfer between air and surface.
+The time discrete difference equation of the indoor temperature $\theta_{m, k}^d$ of dwelling $d$ is given as:
 
-![Average thermal power per ward](../doc/figures/simple-simple.jpg){#simple-simple .class width=300}
-
-$\theta_{m, k} = \theta_{m, k-1} \cdot (1 - \frac{\Delta{t}}{C_{m}} \cdot H_{tr, em}) + \frac{\Delta{t}}{C_m} \cdot (\Phi_{HC, nd, k-1} + H_{tr, em} \cdot \theta_{e, k-1})$
+$$\theta_{m, k}^d = \theta_{m, k-1}^d \cdot (1 - \frac{\Delta{t}}{C_{m}^d} \cdot H_{tr, em}^d) + \frac{\Delta{t}}{C_m^d} \cdot (\Phi_{HC, nd, k-1}^d + \Phi_{int,Oc, k}^d + H_{tr, em}^d \cdot \theta_{e, k-1}),$$
 
 where
 
-<!--- FIXME many of the following not in equation --->
-<!--- TODO add metabolic heat gain --->
-* $\Phi_{HC, nd, t}$: cooling or heating power at time k
-* $\theta_{m, k}$: building temperature [℃] at time k
-* $\theta_{e, k}$: outside temperature [℃] at time k
-* $A_f$: conditioned floor area [m^2^]
-* $C_m$: capacity of the building's heat mass [J/K]
-* $\Delta{t}$: time step size [s]
-* $H_{tr, em}$: heat transmission to the outside [W/K]
-* $\theta_{int, set}$: heating set point temperature [℃]
-* $\Phi_{max}$: maximum heating power [W]
+* $\Phi_{HC, nd, k}^d$: heating power at time k [W],
+* $\Phi_{int,Oc, k}^d$: metabolic heat gain of occupants at time k [W],
+* $C_m^d$: capacity of the dwellings's heat mass [J/K],
+* $H_{tr, em}^d$: heat transmission to the outside [W/K],
+* $\theta_{e, k}$: outside temperature [℃] at time k,
+* $\Delta{t}$: time step size [s].
+
+The unknown and bounded heating power $\Phi_{HC, nd, k}^d$ is determined by the need to reach the set point temperature as defined by the heating system control. According to [@cen13790:2008] it is assumed that the controller has a perfect dwelling model and can hence determine the necessary heating power in an precise manner.
 
 ## Simulation Platform
 
