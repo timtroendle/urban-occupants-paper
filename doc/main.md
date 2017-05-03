@@ -46,13 +46,18 @@ $$\theta_{set, d, k} = \begin{cases}
 
 In this model, there are there are three distinct heating set points between which the control system toggles depending on occupancy. It shall be noted that given the desired comfort level defined by the set point temperatures $\theta_{set, d, absent} \leq \theta_{set, d, passive} \leq \theta_{set, d, active}$ this controller is close to optimal in terms of energy efficiency as the dwelling is minimally heated. As indoor temperature lags behind occupancy it is not optimal in terms of comfort level. This effect is particularly strong when occupants enter a dwelling whose indoor temperature is far from $\theta_{set, d, active}$ or $\theta_{set, d, passive}$.
 
-### People Model
+### Occupancy Model
 
-Time heterogeneous markov chain with the following states:
+Citizens are modelled by the occupancy in their respective dwellings only, using a probabilistic occupancy model that has been applied in several similar studies [@Richardson:2008dj; @Widen:2009fo; @Aerts:2015ko]. The occupancy model consists of a time-heterogeneous markov chain with the following states: (1) not at home, (2) active at home, and (3) asleep at home. As the markov chain is time heterogeneous, transition probabilities between the states of the markov chain are time dependent, and hence the transition matrix for person $p$ at time $k$ can be given as:
 
-* not at home
-* active at home
-* asleep at home
+$$
+Pr^p =
+\begin{bmatrix}
+    p_{11}^p(k)&p_{12}^p(k)&p_{13}^p(k)\\
+    p_{21}^p(k)&p_{22}^p(k)&p_{23}^p(k)\\
+    p_{31}^p(k)&p_{32}^p(k)&p_{33}^p(k)
+\end{bmatrix}
+$$
 
 ### Thermal Model of Dwelling
 
@@ -149,5 +154,13 @@ Discuss correlation of features between features and to the time series.
 ![Thermal power vs household size](../doc/figures/thermal-power-vs-household-size.png)
 
 # Discussion & Conclusion
+
+Future work:
+
+* use survival models for occupancy, as done by [@Aerts:2015ko; @Baetens:2015gm]
+* use clustering approach as used by [@Aerts:2015ko]
+* use set point preference as introduced by [@Baetens:2015gm; @Leidelmeijer:2005vu]
+* use newly released uk TUS data set
+
 
 # References <!--- filled automatically by pandoc --->
