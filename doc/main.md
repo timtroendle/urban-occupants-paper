@@ -104,11 +104,7 @@ Synthetic population using Hierarchical Iterative Proportional Fitting: fitting 
 
 ### Thermal Dwelling Model and Heating Control System
 
-Using the same model for each dwelling
-
-Rational for using the exact same model for each dwelling: this can be seen similar to the normative building energy assessment where the object of study is the building and its impact on energy demand. Heating behaviour is considered external *and always equal*. Here, the object of study is the heating behaviour of people and its impact on energy demand. The building could be considered external *and always equal*.
-
-[@Baetens:2015gm; @Leidelmeijer:2005vu] discuss set points and fraction of room heated
+To be able to analyse the impact of occupants on the space heating energy demand in buildings, we are assuming the same physical conditions for all dwellings. We are hence defining a default dwelling and are allocating it to each household in the study area. This can be compared to normative building energy assessment where the object of study is the building and its impact on energy demand. Heating behaviour in these assessments is considered external to the object of study and equal among all buildings which allows to compare the physical structure of buildings only. Here, the object of study is the heating behaviour of occupants and its impact on energy demand. The physical structure of the building is considered external to the object of study and always equal among all households. Equal configuration is assumed for the heating control system as well.
 
 ## Assumptions
 
@@ -149,6 +145,7 @@ Future work:
 * use survival models for occupancy, as done by [@Aerts:2015ko; @Baetens:2015gm]
 * use clustering approach as used by [@Aerts:2015ko]
 * use set point preference as introduced by [@Baetens:2015gm; @Leidelmeijer:2005vu]
+* use fraction of room heated as in [@Baetens:2015gm; @Leidelmeijer:2005vu]
 * use newly released uk TUS data set
 
 
