@@ -20,3 +20,4 @@ dependencies:
       - git+git://github.com/riccardoscalco/Pykov@master
       - git+git://github.com/timtroendle/people@develop
       - pandoc-tablenos
+      - pandoc-fignos

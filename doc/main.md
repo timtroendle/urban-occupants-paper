@@ -16,9 +16,9 @@ This paper is structured as follows: section 2 describes the conceptual model an
 
 ## Conceptual Model
 
-The general urban energy system as applied in this study consists of three distinct entities: citizens, HVAC controls, and dwellings whose models will be described in detail in the following sub sections. A dwelling forms a home for one to $n$ citizens and incorporates exactly one HVAC control system. [Fig. 1](#flow-chart-time-step) shows a flow-chart of the model. The model is time-step based where in each time step $k$, each entity updates its state: first all citizens update their occupancy, i.e. determine whether they are at home or not. Second, the HVAC control system of each dwelling updates its heating set point, potentially taken into account the occupancy of the dwelling. Lastly, each dwelling updates its indoor temperature and the thermal power needed for reaching it.
+The general urban energy system as applied in this study consists of three distinct entities: citizens, HVAC controls, and dwellings whose models will be described in detail in the following sub sections. A dwelling forms a home for one to $n$ citizens and incorporates exactly one HVAC control system. Fig. @fig:flow-chart-time-step shows a flow-chart of the model. The model is time-step based where in each time step $k$, each entity updates its state: first all citizens update their occupancy, i.e. determine whether they are at home or not. Second, the HVAC control system of each dwelling updates its heating set point, potentially taken into account the occupancy of the dwelling. Lastly, each dwelling updates its indoor temperature and the thermal power needed for reaching it.
 
-![Figure 1: Flow chart of a single time step](../doc/figures/flow-chart-time-step.png){#flow-chart-time-step .class width=500}
+![Flow chart of a single time step](../doc/figures/flow-chart-time-step.png){#fig:flow-chart-time-step .class width=500}
 
 ### Heating System Control Model
 
@@ -65,9 +65,9 @@ Every person has exactly one home, so we can define a time-invariant set of peop
 
 ### Thermal Dwelling Model
 
-Dwellings are modelled as single thermal zones following the conceptual model of EN ISO 13790 [@cen13790:2008]. The model is derived from the simple hourly dynamic model as described in the standard but is reduced to a single capacity and a single resistance as depicted in [Fig. 2](#simple-simple). Compared to the full model there is no other than metabolic heat gain, full shading of the building, i.e. no direct or indirect sun light, no windows or doors, no ventilation, and immediate heat transfer between air and surface. Furthermore, heat transfer between dwellings is ignored.
+Dwellings are modelled as single thermal zones following the conceptual model of EN ISO 13790 [@cen13790:2008]. The model is derived from the simple hourly dynamic model as described in the standard but is reduced to a single capacity and a single resistance as depicted in Fig. @fig:simple-simple. Compared to the full model there is no other than metabolic heat gain, full shading of the building, i.e. no direct or indirect sun light, no windows or doors, no ventilation, and immediate heat transfer between air and surface. Furthermore, heat transfer between dwellings is ignored.
 
-![Figure 2: RC network of the applied dynamic thermal model of a dwelling](../doc/figures/simple-simple.jpg){#simple-simple .class width=300}
+![RC network of the applied dynamic thermal model of a dwelling](../doc/figures/simple-simple.jpg){#fig:simple-simple .class width=300}
 
 The time discrete difference equation of the indoor temperature $\theta_{m, k}^d$ of dwelling $d$ is given as:
 
@@ -86,7 +86,7 @@ The unknown and bounded heating power $\Phi_{HC, nd, k}^d$ is determined by the 
 
 ## Simulation Model
 
-The distinct sub models of the heating control systems, the dwellings, and the citizens, are linked and implemented in an open-source simulation model [@energyagents]. While the conceptual models as defined above would allow for a separate, three stages approach of simulation, in which citizens occupancy is simulated first, heating set points are simulated consecutively, and indoor temperatures and thermal powers of dwellings are simulated as a last step, the model has been implemented in an agent-based manner in which these three stages are simulated consecutively. This will allow amending the model by aspects which add other relationships between the layers than the one depicting in [Fig. 1](#flow-chart-time-step).
+The distinct sub models of the heating control systems, the dwellings, and the citizens, are linked and implemented in an open-source simulation model [@energyagents]. While the conceptual models as defined above would allow for a separate, three stages approach of simulation, in which citizens occupancy is simulated first, heating set points are simulated consecutively, and indoor temperatures and thermal powers of dwellings are simulated as a last step, the model has been implemented in an agent-based manner in which these three stages are simulated consecutively. This will allow amending the model by aspects which add other relationships between the layers than the one depicting in Fig. @fig:flow-chart-time-step.
 
 ## Model Calibration
 
