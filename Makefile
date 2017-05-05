@@ -11,4 +11,4 @@ clean:
 
 build/paper.docx: ./build doc/literature.bib doc/main.md doc/pandoc-metadata.yml
 	cd ./doc && \
-	pandoc --filter pandoc-citeproc --reference-docx ./paper-template.docx main.md pandoc-metadata.yml -t docx -o ../build/paper.docx
+	pandoc --filter pandoc-tablenos --filter pandoc-citeproc --reference-docx ./paper-template.docx main.md pandoc-metadata.yml -t docx -o ../build/paper.docx

@@ -98,17 +98,33 @@ The transition matrix $Pr^p$ for each citizen is derived from the TUS data set. 
 
 The choice of household or people features is important for the quality of this approach. Unfortunately we are not aware of a deterministic way of choosing the _correct_ set of features. We instead acknowledge the inherent uncertainty and analyse features, their correlation among each other, and their correlation to the derived time series. We furthermore discuss the sensitivity of the results to the choice of features in the case study performed.
 
-### Synthetic Population {#synthetic_population}
+### Synthetic Population
 
-Synthetic population using Hierarchical Iterative Proportional Fitting: fitting households and individuals at the same time
+The urban scale occupancy model as described above needs information on household composition of every household, and household and people feature vectors $f^p$ for every individual in the population of the study area. Such disaggregated data is typically not available and hence the population is synthesised from aggregated census data. Population synthesis as a way to initialise microsimulations has been applied in the past mainly in land use and transportation models [@Beckman:1996hv; @Arentze:2007cf] but more recently in energy models as well [@Anonymous:sQCtxREz]. [@Muller:2010vx; @Barthelemy:2012ws] provide overviews over the different approaches that are available.
+
+In population synthesis the aim is to estimate the joint probability mass function $p_{F}$ for a set of $n$ features $F = \{F_1, F_2, ..., F_n\}$ which describes the correct distribution of those features in the actual population, given a set of marginal probability mass functions $p_{\tilde{F}}$ for a subset of features $\tilde{F} \subset F$. A simple example for the two-dimensional case of $F = \{\text{sex, age}\}$ is given in Table @tbl:popsynth-example, a contingency table in which the last column shows the probability mass function for the feature 'sex', the last row shows the probability mass function for the feature 'age', and the centre shows the unknown joint probability mass function $p_F$.
+
++--------+----------------------------+----------------------------+-------------------+
+|        | below age 50               | above age 50               |                   |
++--------+----------------------------+----------------------------+-------------------+
+|  male  | $p_F(\text{male, < 50)}$   | $p_F(\text{male, > 50)}$   | $p_{sex}(male)$   |
++--------+----------------------------+----------------------------+-------------------+
+|  female| $p_F(\text{female, < 50)}$ | $p_F(\text{female, > 50)}$ | $p_{sex}(female)$ |
++--------+----------------------------+----------------------------+-------------------+
+|        | $p_{age}(< 50)$            | $p_{age}(> 50)$             |                   |
++--------+----------------------------+----------------------------+-------------------+
+
+Table: A two dimensional population synthesis problem. {#tbl:popsynth-example}
+
+In the case of this study, the relationship between households and people must be retained when creating the synthetic population. Solutions for such hierarchical problems have been discussed in the past [@Ye:2009uw; @Muller:vs0R1Q2; @Pritchard:2011gy], and in our case we are following the approach of [@Muller:vs0R1Q2].
 
 ### Thermal Dwelling Model and Heating Control System
 
 To be able to analyse the impact of occupants on the space heating energy demand in buildings, we are assuming the same physical conditions for all dwellings. We are hence defining a default dwelling and are allocating it to each household in the study area. This can be compared to normative building energy assessment where the object of study is the building and its impact on energy demand. Heating behaviour in these assessments is considered external to the object of study and equal among all buildings which allows to compare the physical structure of buildings only. Here, the object of study is the heating behaviour of occupants and its impact on energy demand. The physical structure of the building is considered external to the object of study and always equal among all households. Equal configuration is assumed for the heating control system as well.
 
-## Assumptions
+## Summary of Assumptions
 
-summary of assumptions
+* results valid for aggregated area only
 
 # Case Study
 
