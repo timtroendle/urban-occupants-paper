@@ -124,7 +124,7 @@ To be able to analyse the impact of occupants on the space heating energy demand
 
 ## Summary of Assumptions
 
-* results valid for aggregated area only
+Given the conceptual model and its calibration using census data and TUS data as described above, the resulting model allows to study spatial patterns of energy usage for space heating in the hypothetical case in which the heating behaviour is identical in all dwellings and is based on occupancy only. Using identically parameterised thermal models for dwellings allows to study the impact of occupancy in isolation ignoring the variance stemming from the physical structure. Due to the population synthesis, model results are only valid for the smallest spatial region for which aggregated census data is available.
 
 # Case Study
 
