@@ -111,7 +111,7 @@ In population synthesis the aim is to estimate the joint probability mass functi
 +--------+----------------------------+----------------------------+-------------------+
 |  female| $p_F(\text{female, < 50)}$ | $p_F(\text{female, > 50)}$ | $p_{sex}(female)$ |
 +--------+----------------------------+----------------------------+-------------------+
-|        | $p_{age}(< 50)$            | $p_{age}(> 50)$             |                   |
+|        | $p_{age}(< 50)$            | $p_{age}(> 50)$            |                   |
 +--------+----------------------------+----------------------------+-------------------+
 
 Table: A two dimensional population synthesis problem. {#tbl:popsynth-example}
@@ -130,29 +130,56 @@ Given the conceptual model and its calibration using census data and TUS data as
 
 short intro to London Haringey
 
-describe data sets: UK Time Use Survey 2000, Census 2011
+describe data sets:
+
+* UK Time Use Survey 2000,
+    * all over the UK
+    * amount of individuals, households, and diaries
+    * used as seed for synthetic population
+* Census 2011
+    * spatial resolution
+    * no microcensus available
 
 ## Parameterisation
 
+* dwelling parameters
+* set points
+
 ## Feature Selection Results
 
-Discuss correlation of features between features and to the time series.
+![Time dependent association between people features and occupancy](../notebooks/build/markov_ts_cramer_1d.png){#fig:1d-association .class width=500}
 
-## Simulation Results
+feature tuple            $\Phi_C$
+-------------            --------
+age, economic act        0.183522
+age, income              0.180527
+economic act, hh type    0.177692
 
-### Results for Time Triggered Strategy (optional)
+Table: Average of time dependent association between people and household features using Cramér's V $\Phi_C$. {#tbl:2d-association}
 
-### Results for Preferred Features
+![Raw occupancy time series](../notebooks/build/all-diaries-original.png){#fig:all-diaries-original .class width=500}
 
-* discuss variation between wards in terms of energy usage and in terms of dynamic load profile
+![Occupancy time series clustered by economic activity](../notebooks/build/all-diaries-economic-activity-cluster.png){#fig:all-diaries-economic-activity-cluster .class width=500}
 
-### Results for Alternative Feature Selection
+![Occupancy time series clustered by age group](../notebooks/build/all-diaries-age-group-cluster.png){#fig:all-diaries-age-group-cluster .class width=500}
 
-![Average thermal power per ward](../doc/figures/thermal_power_per_ward.png)
-![Average thermal power per LSOA](../doc/figures/thermal_power_per_lsoa.png)
-![Average thermal power per LSOA choropleth](../doc/figures/thermal_power_lsoa_choropleth.png)
-![Distribution of average power](../doc/figures/distributation-average-power.png)
-![Thermal power vs household size](../doc/figures/thermal-power-vs-household-size.png)
+## Results for Economic Activity and Age
+
+energy wise no strong difference:
+
+![Simulated average energy demand in Haringey](../notebooks/build/haringey-ward-economic-hhtype/power_std_choropleth.png){#fig:energy-choropleth .class width=500}
+
+dynamic load profiles vary between wards:
+
+![Average thermal power in different wards](../notebooks/build/haringey-ward-economic-hhtype/thermal_power_average.png){#fig:thermal-power-average .class width=500}
+
+in particular the variance inside wards varies, especially in the evening hours:
+
+![Standard deviation of thermal power in different wards](../notebooks/build/haringey-ward-economic-hhtype/thermal_power.png){#fig:thermal-power-std .class width=500}
+
+## Results for Alternative Feature Selection
+
+compare numerically the two runs
 
 # Discussion & Conclusion
 
