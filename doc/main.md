@@ -128,32 +128,49 @@ Given the conceptual model and its calibration using census data and TUS data as
 
 # Case Study
 
-short intro to London Haringey
+The model is applied in a case study of the London Borough of Haringey which according to latest census data [@ukcensus2011] is the home of 254,926 usual residents and comprises of 101,955 households. For this case study two data sets have been used: the UK Time Use Survey 2000 [@uktus2000], and the UK 2011 Census [@ukcensus2011]. The former contains time use diaries for a weekday and a weekend day for more than 11,500 individuals of nearly 6,500 households in the UK. The latter contains aggregated census data for so called output areas (OA) comprising of at least 40 resident households and 100 resident people to ensure confidentiality. Haringey is divided into 753 distinct output areas which are aggregated into 145 Lower Super Output Areas (LSOA) on which this analysis is based.
 
-describe data sets:
+Table @tbl:parameters summarises the parameters of the thermal dwelling model applied for the dwelling of each household in Haringey including set point temperatures of their heating control systems, and metabolic heat gains.
 
-* UK Time Use Survey 2000,
-    * all over the UK
-    * amount of individuals, households, and diaries
-    * used as seed for synthetic population
-* Census 2011
-    * spatial resolution
-    * no microcensus available
+------------------------------------------------------------
+parameter name                                  value
+------------------------------------            -----
+$C_m$: heat mass capacity                       16.5 MJ/K
 
-## Parameterisation
+$H_{tr, em}$: heat transmission                 200 W/K
 
-* dwelling parameters
-* set points
+$\Phi_{HC, nd, max}$: max heating power         10 kW
+
+$\theta_{m, 0}$: initial indoor temperature     22 ˚C
+
+$\theta_{set, absent}$: absent set point        0 ˚C
+
+$\theta_{set, passive}$: passive set point      18 ˚C
+
+$\theta_{set, active}$: active set point        22 ˚C
+
+metabolic heat gain while active                140 W
+
+metabolic heat gain while passive               70 W
+
+metabolic heat gain ratio below age 18          0.75
+------------------------------------------------------------
+
+Table: Model parameters applied in Haringey study. {#tbl:parameters}
 
 ## Feature Selection Results
 
 ![Time dependent association between people features and occupancy](../notebooks/build/markov_ts_cramer_1d.png){#fig:1d-association .class width=500}
 
-feature tuple            $\Phi_C$
--------------            --------
-age, economic act        0.183522
-age, income              0.180527
-economic act, hh type    0.177692
+---------------------------------------
+feature tuple               $\Phi_C$
+--------------------------- -----------
+age, economic act           0.183522
+
+age, income                 0.180527
+
+economic act, hh type       0.177692
+---------------------------------------
 
 Table: Average of time dependent association between people and household features using Cramér's V $\Phi_C$. {#tbl:2d-association}
 
