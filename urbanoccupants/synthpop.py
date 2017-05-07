@@ -23,13 +23,13 @@ class HouseholdFeature(Enum):
     PSEUDO = (Pseudo, 'CHILD', PSEUDO_MAP, read_pseudo_household_data) # 'CHILD' is arbitrary
     HOUSEHOLD_TYPE = (HouseholdType, 'HHTYPE4', HOUSEHOLDTYPE_MAP, read_household_type_data)
 
-    def __init__(self, ktp_type, tus_variable_name, tus_mapping, census_read_function):
-        self.ktp_type = ktp_type
+    def __init__(self, uo_type, tus_variable_name, tus_mapping, census_read_function):
+        self.uo_type = uo_type
         self.tus_variable_name = tus_variable_name
         self.tus_mapping = tus_mapping
         self._census_read_function = census_read_function
 
-    def tus_value_to_ktp_value(self, feature_values):
+    def tus_value_to_uo_value(self, feature_values):
         return feature_values.map(self.tus_mapping)
         return new_values
 
@@ -50,21 +50,21 @@ class PeopleFeature(Enum):
     QUALIFICATION = (Qualification, False, True, 'HIQUAL4', QUALIFICATION_MAP,
                      read_qualification_level_data)
 
-    def __init__(self, ktp_type, includes_below_16, includes_above_74,
+    def __init__(self, uo_type, includes_below_16, includes_above_74,
                  tus_variable_name, tus_mapping, census_read_function):
-        self.ktp_type = ktp_type
+        self.uo_type = uo_type
         self.tus_variable_name = tus_variable_name
         self.tus_mapping = tus_mapping
         self._includes_below_16 = includes_below_16
         self._includes_above_74 = includes_above_74
         self._census_read_function = census_read_function
 
-    def tus_value_to_ktp_value(self, feature_values, age):
+    def tus_value_to_uo_value(self, feature_values, age):
         new_values = feature_values.map(self.tus_mapping)
         if not self._includes_below_16:
-            new_values[age < 16] = self.ktp_type.BELOW_16
+            new_values[age < 16] = self.uo_type.BELOW_16
         if not self._includes_above_74:
-            new_values[age > 74] = self.ktp_type.ABOVE_74
+            new_values[age > 74] = self.uo_type.ABOVE_74
         return new_values
 
     def read_census_data(self, geographical_layer):
@@ -72,11 +72,11 @@ class PeopleFeature(Enum):
         if not self._includes_below_16:
             usual_residents = PeopleFeature.AGE.read_census_data(geographical_layer)
             younger_than_sixteen = usual_residents.ix[:, :AgeStructure.AGE_15].sum(axis=1)
-            data[self.ktp_type.BELOW_16] = younger_than_sixteen
+            data[self.uo_type.BELOW_16] = younger_than_sixteen
         if not self._includes_above_74:
             usual_residents = PeopleFeature.AGE.read_census_data(geographical_layer)
             older_than_74 = usual_residents.ix[:, AgeStructure.AGE_75_TO_84:].sum(axis=1)
-            data[self.ktp_type.ABOVE_74] = older_than_74
+            data[self.uo_type.ABOVE_74] = older_than_74
         return data
 
 
@@ -86,7 +86,7 @@ def run_hipf(param_tuple):
     This function is intened to be used with `multiprocessing.imap_unordered` which allows
     only one parameter, hence the inconvenient tuple parameter design.
 
-    See `ktp.hipf.fit_hipf` for further information on the algorithm and parameters.
+    See `urbanoccupants.hipf.fit_hipf` for further information on the algorithm and parameters.
 
     Parameters:
         * param_tuple(0): the seed for the fitting

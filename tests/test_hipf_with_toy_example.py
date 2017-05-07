@@ -14,7 +14,7 @@ from pandas.util.testing import assert_series_equal
 import pytest
 
 sys.path.append('.')
-from ktp.synthpop import fit_hipf
+from urbanoccupants.hipf import fit_hipf
 
 
 HouseholdType = namedtuple('HouseholdType', ['household_ids', 'a', 'alpha', 'weights'])

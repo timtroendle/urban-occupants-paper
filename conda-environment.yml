@@ -1,4 +1,4 @@
-name: ktp-paper
+name: urban-occupants
 channels:
   - conda-forge
 dependencies:
@@ -16,6 +16,7 @@ dependencies:
   - requests-cache=0.4.12
   - xlrd=1.0.0
   - pandoc=1.19.2.1
+  - pytest=3.0.7
   - pip:
       - git+git://github.com/riccardoscalco/Pykov@master
       - git+git://github.com/timtroendle/people@develop

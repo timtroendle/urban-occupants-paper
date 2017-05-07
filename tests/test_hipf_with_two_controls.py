@@ -17,7 +17,7 @@ from pandas.util.testing import assert_series_equal
 import pytest
 
 sys.path.append('.')
-from ktp.synthpop import fit_hipf, _all_residuals
+from urbanoccupants.hipf import fit_hipf, _all_residuals
 
 
 RESOURCES_PATH = Path(__file__).parent / 'resources'
