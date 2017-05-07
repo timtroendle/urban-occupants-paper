@@ -4,8 +4,10 @@ from itertools import chain
 import math
 
 from .hipf import fit_hipf
-from .types import AgeStructure, EconomicActivity, HouseholdType, Qualification, Pseudo
-from .tus import AGE_MAP, ECONOMIC_ACTIVITY_MAP, HOUSEHOLDTYPE_MAP, QUALIFICATION_MAP, PSEUDO_MAP
+from .types import AgeStructure, EconomicActivity, HouseholdType, Qualification, Pseudo, Carer,\
+    PersonalIncome, PopulationDensity, Region
+from .tus import AGE_MAP, ECONOMIC_ACTIVITY_MAP, HOUSEHOLDTYPE_MAP, QUALIFICATION_MAP, PSEUDO_MAP,\
+    CARER_MAP, PERSONAL_INCOME_MAP, POPULATION_DENSITY_MAP, REGION_MAP
 from .census import read_age_structure_data, read_household_type_data, \
     read_qualification_level_data, read_economic_activity_data,\
     read_pseudo_individual_data, read_pseudo_household_data
@@ -18,10 +20,18 @@ RANDOM_SEED = 123456789
 MAX_HOUSEHOLD_SIZE = 70
 
 
+def _unimplemented_census_read_function(geographical_layer):
+    # lambda function cannot raise errors, hence the function definition here
+    raise NotImplementedError()
+
+
 class HouseholdFeature(Enum):
     """Household features to be used as controls in the creation of a synthetic population."""
     PSEUDO = (Pseudo, 'CHILD', PSEUDO_MAP, read_pseudo_household_data) # 'CHILD' is arbitrary
     HOUSEHOLD_TYPE = (HouseholdType, 'HHTYPE4', HOUSEHOLDTYPE_MAP, read_household_type_data)
+    POPULATION_DENSITY = (PopulationDensity, 'POP_DEN2', POPULATION_DENSITY_MAP,
+                          _unimplemented_census_read_function)
+    REGION = (Region, 'GORPAF', REGION_MAP, _unimplemented_census_read_function)
 
     def __init__(self, uo_type, tus_variable_name, tus_mapping, census_read_function):
         self.uo_type = uo_type
@@ -29,7 +39,10 @@ class HouseholdFeature(Enum):
         self.tus_mapping = tus_mapping
         self._census_read_function = census_read_function
 
-    def tus_value_to_uo_value(self, feature_values):
+    def __repr__(self):
+        return str(self)
+
+    def tus_value_to_uo_value(self, feature_values, age):
         return feature_values.map(self.tus_mapping)
         return new_values
 
@@ -49,6 +62,9 @@ class PeopleFeature(Enum):
                          ECONOMIC_ACTIVITY_MAP, read_economic_activity_data)
     QUALIFICATION = (Qualification, False, True, 'HIQUAL4', QUALIFICATION_MAP,
                      read_qualification_level_data)
+    CARER = (Carer, True, True, 'PROVCARE', CARER_MAP, _unimplemented_census_read_function)
+    PERSONAL_INCOME = (PersonalIncome, False, True, 'TOTPINC', PERSONAL_INCOME_MAP,
+                       _unimplemented_census_read_function)
 
     def __init__(self, uo_type, includes_below_16, includes_above_74,
                  tus_variable_name, tus_mapping, census_read_function):
@@ -58,6 +74,9 @@ class PeopleFeature(Enum):
         self._includes_below_16 = includes_below_16
         self._includes_above_74 = includes_above_74
         self._census_read_function = census_read_function
+
+    def __repr__(self):
+        return str(self)
 
     def tus_value_to_uo_value(self, feature_values, age):
         new_values = feature_values.map(self.tus_mapping)

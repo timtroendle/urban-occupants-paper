@@ -10,7 +10,8 @@ import pandas as pd
 
 from pytus2000 import diary, individual
 import people as ppl
-from .types import EconomicActivity, Qualification, HouseholdType, AgeStructure, Pseudo
+from .types import EconomicActivity, Qualification, HouseholdType, AgeStructure, Pseudo, Carer,\
+    PersonalIncome, PopulationDensity, Region
 
 
 def markov_chain_for_cluster(param_tuple):
@@ -589,4 +590,57 @@ PSEUDO_MAP = { # mapping from child is arbitrary, could be any other feature
     individual.CHILD.YES: Pseudo.SINGLETON,
     individual.CHILD.NO: Pseudo.SINGLETON,
     np.nan: Pseudo.SINGLETON
+}
+
+
+CARER_MAP = {
+    individual.PROVCARE.YES: Carer.CARER,
+    individual.PROVCARE.NO: Carer.NO_CARER,
+    individual.PROVCARE.DKREFUSE: np.nan
+}
+
+
+PERSONAL_INCOME_MAP = {
+    individual.TOTPINC.INELIGIBLE___UNDER_16YRS: PersonalIncome.BELOW_16,
+    individual.TOTPINC.INELIGIBLE___NOT_CURRENTLY_EMPLOYED_SELF_EMPLOYED: np.nan,
+    individual.TOTPINC._TOTPINC_____________LESS_THAN_GBP__215: PersonalIncome.LESS_THAN_GBP_215,
+    individual.TOTPINC.GBP4580_TO_LESS_THAN_GBP6670: PersonalIncome.BETWEEN_GBP_4590_AND_6670,
+    individual.TOTPINC.GBP6670_OR_MORE: PersonalIncome.ABOVE_GBP_6670,
+    individual.TOTPINC.ELIGIBLE_CURRENT_EMPLOYEE_OR_SELF_EMP___DK_REFUSE_INCOME: np.nan,
+    individual.TOTPINC.GBP__215_TO_LESS_THAN_GBP__435: PersonalIncome.BETWEEN_GBP_215_AND_435,
+    individual.TOTPINC.GBP__435_TO_LESS_THAN_GBP__870: PersonalIncome.BETWEEN_GBP_435_AND_870,
+    individual.TOTPINC.GBP__870_TO_LESS_THAN_GBP1305: PersonalIncome.BETWEEN_GBP_870_AND_1305,
+    individual.TOTPINC.GBP1305_TO_LESS_THAN_GBP1740: PersonalIncome.BETWEEN_GBP_1305_AND_1740,
+    individual.TOTPINC.GBP1740_TO_LESS_THAN_GBP2820: PersonalIncome.BETWEEN_GBP_1740_AND_2820,
+    individual.TOTPINC.GBP2820_TO_LESS_THAN_GBP3420: PersonalIncome.BETWEEN_GBP_2820_AND_3420,
+    individual.TOTPINC.GBP3420_TO_LESS_THAN_GBP3830: PersonalIncome.BETWEEN_GBP_3420_AND_3830,
+    individual.TOTPINC.GBP3830_TO_LESS_THAN_GBP4580: PersonalIncome.BETWEEN_GBP_3830_AND_4580
+}
+
+
+POPULATION_DENSITY_MAP = {
+    individual.POP_DEN2.MISSING: np.nan,
+    individual.POP_DEN2._POP_DEN2____0______249: PopulationDensity.UP_TO_249,
+    individual.POP_DEN2._250______999: PopulationDensity.BETWEEN_250_AND_999,
+    individual.POP_DEN2.N1000___1999: PopulationDensity.BETWEEN_1000_AND_1999,
+    individual.POP_DEN2.N2000___2999: PopulationDensity.BETWEEN_2000_AND_2999,
+    individual.POP_DEN2.N3000___3999: PopulationDensity.BETWEEN_3000_AND_3999,
+    individual.POP_DEN2.N4000___4999: PopulationDensity.BETWEEN_4000_AND_4999,
+    individual.POP_DEN2.N5000_OR_MORE_MAX_WAS_JUST_OVER_10_000: PopulationDensity.MORE_THAN_5000
+}
+
+
+REGION_MAP = {
+    individual.GORPAF.NORTH_EAST: Region.NORTH_EAST,
+    individual.GORPAF.WALES: Region.WALES,
+    individual.GORPAF.SCOTLAND: Region.SCOTLAND,
+    individual.GORPAF.NORTHERN_IRELAND: Region.NORTHERN_IRELAND,
+    individual.GORPAF.NORTH_WEST_INCL_MERSEYSIDE: Region.NORTH_WEST_INCL_MERSEYSIDE,
+    individual.GORPAF.YORKSHIRE_AND_HUMBERSIDE: Region.YORKSHIRE_AND_HUMBERSIDE,
+    individual.GORPAF.EAST_MIDLANDS: Region.EAST_MIDLANDS,
+    individual.GORPAF.WEST_MIDLANDS: Region.WEST_MIDLANDS,
+    individual.GORPAF.EASTERN: Region.EASTERN,
+    individual.GORPAF.LONDON: Region.LONDON,
+    individual.GORPAF.SOUTH_EAST_EXCL_LONDON: Region.SOUTH_EAST_EXCL_LONDON,
+    individual.GORPAF.SOUTH_WEST: Region.SOUTH_WEST
 }
