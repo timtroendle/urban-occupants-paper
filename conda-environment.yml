@@ -20,5 +20,6 @@ dependencies:
   - pip:
       - git+git://github.com/riccardoscalco/Pykov@master
       - git+git://github.com/timtroendle/people@develop
+      - git+git://github.com/timtroendle/pytus2000@v0.5.0
       - pandoc-tablenos
       - pandoc-fignos

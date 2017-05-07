@@ -9,8 +9,6 @@ To set up a environment in which the analysis can be run and the paper be build,
 
     conda env create -f conda-environment.yml
 
-For the moment you will need to install [pytus2000](https;//github.com/timtroendle/pytus2000) manually.
-
 ## Build the paper
 
     make paper
