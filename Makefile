@@ -2,15 +2,19 @@
 ./build:
 	mkdir ./build
 
-.PHONY: paper
+.PHONY: paper clean tus_data
 paper: ./build build/paper.docx
 
-.PHONY: clean
 clean:
 	rm -rf ./build/*
 
-build/seed.pickle: ./build ./data/UKDA-4504-tab/tab/Individual_data_5.tab
+tus_data: build/seed.pickle build/markov_ts.pickle
+
+build/seed.pickle: ./build ./data/UKDA-4504-tab/tab/Individual_data_5.tab ./urbanoccupants/tus/individuals.py
 	python urbanoccupants/urban.py read_seed ./data/UKDA-4504-tab/tab/Individual_data_5.tab ./build/seed.pickle
+
+build/markov_ts.pickle: ./build ./data/UKDA-4504-tab/tab/diary_data_8.tab ./urbanoccupants/tus/markovts.py
+	python urbanoccupants/urban.py read_markov_ts ./data/UKDA-4504-tab/tab/diary_data_8.tab ./build/markov_ts.pickle
 
 build/paper.docx: ./build doc/literature.bib doc/main.md doc/pandoc-metadata.yml
 	cd ./doc && \

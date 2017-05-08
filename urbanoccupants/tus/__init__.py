@@ -64,8 +64,7 @@ class Location(Enum):
     ARTS_OR_CULTURAL_CENTRE = 6
     OUTSIDE = 7
     TRAVELLING = 8
-    UNKNOWN = 9
-    IMPLICIT = 10
+    IMPLICIT = 9
 
 
 class Activity(Enum):
@@ -73,36 +72,14 @@ class Activity(Enum):
     SLEEP = 1
     WORK_OR_STUDY = 2
     OTHER = 3
-    UNKNOWN = 4
-
-
-def from_simplified_location_and_activity_to_people_model(df):
-    markov_states = pd.Series(index=df.index, dtype='category')
-    markov_states.cat.add_categories([state for state in ppl.Activity], inplace=True)
-    mask_home = (df.location == Location.HOME) & (df.activity != Activity.SLEEP)
-    mask_sleep = (((df.location == Location.HOME) | (df.location == Location.IMPLICIT)) &
-                  (df.activity == Activity.SLEEP))
-    mask_other_home = (df.location == Location.OTHER_HOME) & (df.activity != Activity.SLEEP)
-    mask_sleep_other_home = (df.location == Location.OTHER_HOME) & (df.activity == Activity.SLEEP)
-    mask_not_at_home = ((df.location != Location.HOME) &
-                        (df.location != Location.OTHER_HOME) &
-                        (df.activity != Activity.SLEEP))
-    mask_nan = pd.isnull(df.location) | pd.isnull(df.activity)
-    markov_states[mask_home] = ppl.Activity.HOME
-    markov_states[mask_sleep] = ppl.Activity.SLEEP_AT_HOME
-    markov_states[mask_other_home] = ppl.Activity.OTHER_HOME
-    markov_states[mask_sleep_other_home] = ppl.Activity.SLEEP_AT_OTHER_HOME
-    markov_states[mask_not_at_home] = ppl.Activity.NOT_AT_HOME
-    markov_states[mask_nan] = np.nan
-    return markov_states
 
 
 LOCATION_MAP = {
     diary.WHER_001.MAIN_ACTVTY_EQUAL_SLEEPWORKSTUDY___NO_CODE_REQUIRED: Location.IMPLICIT,
-    diary.WHER_001._MISSING: Location.UNKNOWN,
-    diary.WHER_001.MISSING2: Location.UNKNOWN,
-    diary.WHER_001._UNSPECIFIED_LOCATION: Location.UNKNOWN,
-    diary.WHER_001._UNSPECIFIED_LOCATION_NOT_TRAVELLING: Location.UNKNOWN,
+    diary.WHER_001._MISSING: np.nan,
+    diary.WHER_001.MISSING2: np.nan,
+    diary.WHER_001._UNSPECIFIED_LOCATION: np.nan,
+    diary.WHER_001._UNSPECIFIED_LOCATION_NOT_TRAVELLING: np.nan,
     diary.WHER_001._HOME: Location.HOME,
     diary.WHER_001._SECOND_HOME_OR_WEEKEND_HOUSE: Location.OTHER_HOME,
     diary.WHER_001._WORKING_PLACE_OR_SCHOOL: Location.WORK_OR_SCHOOL,
@@ -111,7 +88,7 @@ LOCATION_MAP = {
     diary.WHER_001._SPORTS_FACILITY: Location.SPORTS_FACILITY,
     diary.WHER_001._WHER_001__ARTS_OR_CULTURAL_CENTRE: Location.ARTS_OR_CULTURAL_CENTRE,
     diary.WHER_001._THE_COUNTRY_COUNTRYSIDE__SEASIDE__BEACH_OR_COAST: Location.OUTSIDE,
-    diary.WHER_001._OTHER_SPECIFIED_LOCATION_NOT_TRAVELLING: Location.UNKNOWN,
+    diary.WHER_001._OTHER_SPECIFIED_LOCATION_NOT_TRAVELLING: np.nan,
     diary.WHER_001._UNSPECIFIED_PRIVATE_TRANSPORT_MODE: Location.TRAVELLING,
     diary.WHER_001._TRAVELLING_ON_FOOT: Location.TRAVELLING,
     diary.WHER_001._TRAVELLING_BY_BICYCLE: Location.TRAVELLING,
@@ -133,7 +110,7 @@ LOCATION_MAP = {
     diary.WHER_001._WAITING_FOR_PUBLIC_TRANSPORT: Location.TRAVELLING,
     diary.WHER_001._OTHER_SPECIFIED_PUBLIC_TRANSPORT_MODE: Location.TRAVELLING,
     diary.WHER_001._UNSPECIFIED_TRANSPORT_MODE: Location.TRAVELLING,
-    diary.WHER_001._ILLEGIBLE_LOCATION_OR_TRANSPORT_MODE: Location.UNKNOWN
+    diary.WHER_001._ILLEGIBLE_LOCATION_OR_TRANSPORT_MODE: np.nan
 }
 
 
@@ -400,11 +377,11 @@ ACTIVITY_MAP = {
     diary.ACT1_001.OTHER_SPECIFIED_TRAVEL: Activity.OTHER,
     diary.ACT1_001.PUNCTUATING_ACTIVITY: Activity.OTHER,
     diary.ACT1_001.FILLING_IN_THE_TIME_USE_DIARY: Activity.OTHER,
-    diary.ACT1_001.NO_MAIN_ACTIVITY__NO_IDEA_WHAT_IT_MIGHT_BE: Activity.UNKNOWN,
-    diary.ACT1_001.NO_MAIN_ACTIVITY__SOME_IDEA_WHAT_IT_MIGHT_BE: Activity.UNKNOWN,
-    diary.ACT1_001.ILLEGIBLE_ACTIVITY: Activity.UNKNOWN,
-    diary.ACT1_001.UNSPECIFIED_TIME_USE: Activity.UNKNOWN,
-    diary.ACT1_001.MISSING1: Activity.UNKNOWN
+    diary.ACT1_001.NO_MAIN_ACTIVITY__NO_IDEA_WHAT_IT_MIGHT_BE: np.nan,
+    diary.ACT1_001.NO_MAIN_ACTIVITY__SOME_IDEA_WHAT_IT_MIGHT_BE: np.nan,
+    diary.ACT1_001.ILLEGIBLE_ACTIVITY: np.nan,
+    diary.ACT1_001.UNSPECIFIED_TIME_USE: np.nan,
+    diary.ACT1_001.MISSING1: np.nan
 }
 
 

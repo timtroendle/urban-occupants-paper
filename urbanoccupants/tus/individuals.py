@@ -2,7 +2,7 @@ from itertools import chain
 
 import click
 import pandas as pd
-from pytus2000 import read_individual_file
+import pytus2000
 
 from ..synthpop import PeopleFeature, HouseholdFeature
 from ..types import HouseholdType
@@ -15,7 +15,7 @@ HOUSEHOLD_TYPE_FEATURE_NAME = str(HouseholdFeature.HOUSEHOLD_TYPE)
 @click.argument('path_to_input')
 @click.argument('path_to_output')
 def read_seed(path_to_input, path_to_output):
-    """Reads, transforms, and filters the individual file from the TUS data set.
+    """Reads, transforms, and filters the individual data from the TUS data set.
 
     The raw data is mapped to people and household features of this study, all other
     features are discarded. Furthermore the data set is filtered by correct households,
@@ -33,7 +33,7 @@ def read_seed(path_to_input, path_to_output):
 
 
 def _read_raw_data(path_to_input):
-    return read_individual_file(path_to_input)
+    return pytus2000.read_individual_file(path_to_input)
 
 
 def _map_to_internal_types(individual_data):
