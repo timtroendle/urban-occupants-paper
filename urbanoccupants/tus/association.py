@@ -39,6 +39,45 @@ def association_of_features(path_to_seed, path_to_result):
     feature_correlation.to_pickle(path_to_result)
 
 
+@click.command()
+@click.argument('path_to_seed')
+@click.argument('path_to_markov_ts')
+@click.argument('path_to_result')
+def association_of_time_series_1d(path_to_seed, path_to_markov_ts, path_to_result):
+    """Calculates the association between features and markov time series.
+
+    Association is defined by Cramer's V method per time step.
+    """
+    seed = pd.read_pickle(path_to_seed)
+    markov_ts = pd.read_pickle(path_to_markov_ts)
+    markov_ts = markov_ts.unstack([0, 1, 2])
+    markov_ts.columns = markov_ts.columns.droplevel(0)
+    ts_corr_1d = pd.DataFrame({
+        feature: _cramers_phi_for_features(markov_ts, seed, feature)
+        for feature in [str(feature) for feature in ALL_FEATURES]
+    })
+    ts_corr_1d.to_pickle(path_to_result)
+
+
+def _cramers_phi_for_features(markov_ts, seed, features):
+    filtered_seed = filter_features(seed, features)
+    return markov_ts.loc[:, filtered_seed.index].apply(_cramers_phi_for_feature(filtered_seed),
+                                                       axis=1)
+
+
+def _cramers_phi_for_feature(feature):
+    if isinstance(feature, pd.Series): # 1D
+        feature_ids = feature.apply(uo.synthpop.feature_id)
+    elif isinstance(feature, pd.DataFrame): # 2D or more
+        feature_ids = feature.apply(uo.synthpop.feature_id, axis=1)
+    else:
+        raise ValueError('Feature must be pandas series or dataframe.')
+
+    def cramers_phi(series):
+        return cramers_corrected_stat(pd.crosstab(series.values, feature_ids))
+    return cramers_phi
+
+
 def cramers_corrected_stat(confusion_matrix):
     """ Calculate Cramers V statistic for categorial-categorial association.
         uses correction from Bergsma and Wicher,

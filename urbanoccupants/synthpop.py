@@ -3,6 +3,8 @@ from enum import Enum
 from itertools import chain
 import math
 
+import pandas as pd
+
 from .hipf import fit_hipf
 from .types import AgeStructure, EconomicActivity, HouseholdType, Qualification, Pseudo, Carer,\
     PersonalIncome, PopulationDensity, Region
@@ -97,6 +99,33 @@ class PeopleFeature(Enum):
             older_than_74 = usual_residents.ix[:, AgeStructure.AGE_75_TO_84:].sum(axis=1)
             data[self.uo_type.ABOVE_74] = older_than_74
         return data
+
+
+def _pairing_function(x, y):
+    # cantor pairing function, http://stackoverflow.com/a/919661/1856079
+    return int(1 / 2 * (x + y) * (x + y + 1) + y)
+
+
+def feature_id(feature_values):
+    """Calculates a unique id for a set of feature values.
+
+    Uses the cantor pairing function to do so.
+    """
+    # transform enums to ints
+    if not isinstance(feature_values, tuple) and not isinstance(feature_values, pd.Series): # 1D
+        if isinstance(feature_values, Enum):
+            feature_values = int(feature_values.value)
+    else:
+        if isinstance(feature_values[0], Enum):
+            feature_values = tuple(int(feature_value.value) for feature_value in feature_values)
+
+    # calculate id
+    if not isinstance(feature_values, tuple) and not isinstance(feature_values, pd.Series): # 1D
+        return feature_values
+    elif len(feature_values) == 2:
+        return _pairing_function(feature_values[0], feature_values[1])
+    else:
+        return _pairing_function(feature_id(feature_values[:-1]), feature_values[-1])
 
 
 def run_hipf(param_tuple):
