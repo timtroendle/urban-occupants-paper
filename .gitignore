@@ -3,6 +3,7 @@ notebooks/.ipynb_checkpoints
 
 ## data files
 notebooks/data/
+data/
 
 # output files
 notebooks/build/

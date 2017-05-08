@@ -10,7 +10,7 @@ import pandas as pd
 
 from pytus2000 import diary, individual
 import people as ppl
-from .types import EconomicActivity, Qualification, HouseholdType, AgeStructure, Pseudo, Carer,\
+from ..types import EconomicActivity, Qualification, HouseholdType, AgeStructure, Pseudo, Carer,\
     PersonalIncome, PopulationDensity, Region
 
 
