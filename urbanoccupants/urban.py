@@ -11,6 +11,7 @@ if module_path not in sys.path:
 
 from urbanoccupants.tus.individuals import read_seed
 from urbanoccupants.tus.markovts import read_markov_ts
+from urbanoccupants.tus.association import association_of_features
 
 CACHE_FOLDER_PATH = Path('./build/cache')
 
@@ -23,5 +24,6 @@ def cli():
 if __name__ == '__main__':
     cli.add_command(read_seed)
     cli.add_command(read_markov_ts)
+    cli.add_command(association_of_features)
     pytus2000.set_cache_location(CACHE_FOLDER_PATH)
     cli()

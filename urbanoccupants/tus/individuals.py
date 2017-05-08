@@ -32,6 +32,17 @@ def read_seed(path_to_input, path_to_output):
     seed.to_pickle(path_to_output)
 
 
+def filter_features_and_drop_nan(seed, features):
+    """Filters seed by chosen features and drops nans.
+
+    If there is any nan in any chosen feature for a certain individual in the seed, that
+    individual will be dropped.
+    """
+    if isinstance(features, tuple): # 2D
+        features = list(features)
+    return seed[features].dropna(axis='index', how='any')
+
+
 def _read_raw_data(path_to_input):
     return pytus2000.read_individual_file(path_to_input)
 

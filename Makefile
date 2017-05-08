@@ -16,6 +16,9 @@ build/seed.pickle: ./build ./data/UKDA-4504-tab/tab/Individual_data_5.tab ./urba
 build/markov_ts.pickle: ./build ./data/UKDA-4504-tab/tab/diary_data_8.tab ./urbanoccupants/tus/markovts.py
 	python urbanoccupants/urban.py read_markov_ts ./data/UKDA-4504-tab/tab/diary_data_8.tab ./build/markov_ts.pickle
 
+build/feature_association.pickle: ./build ./build/seed.pickle ./urbanoccupants/tus/association.py
+	python urbanoccupants/urban.py association_of_features ./build/seed.pickle ./build/feature_association.pickle
+
 build/paper.docx: ./build doc/literature.bib doc/main.md doc/pandoc-metadata.yml
 	cd ./doc && \
 	pandoc --filter pandoc-fignos --filter pandoc-tablenos --filter pandoc-citeproc --reference-docx ./paper-template.docx main.md pandoc-metadata.yml -t docx -o ../build/paper.docx
