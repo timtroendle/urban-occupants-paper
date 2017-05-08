@@ -162,7 +162,7 @@ Table: Model parameters applied in Haringey study. {#tbl:parameters}
 
 ## Feature Selection Results
 
-![Time dependent association between people features and occupancy](../notebooks/build/markov_ts_cramer_1d.png){#fig:1d-association .class width=500}
+![Time dependent association between people features and occupancy](../build/ts-association.png){#fig:1d-association .class width=500}
 
 ---------------------------------------
 feature tuple               $\Phi_C$
