@@ -40,9 +40,7 @@ class Activity(OrderedEnum):
     """Activities of citizens."""
     HOME = 1
     SLEEP_AT_HOME = 2
-    OTHER_HOME = 3
-    SLEEP_AT_OTHER_HOME = 4
-    NOT_AT_HOME = 5
+    NOT_AT_HOME = 3
 
     def __str__(self):
         return self.name
