@@ -13,3 +13,7 @@ def association_plots(path_to_ts_association, path_to_plot):
     _ = plt.ylabel("Cramer's phi")
     _ = plt.xlabel("time step")
     plt.savefig(path_to_plot, dpi=300)
+
+
+if __name__ == '__main__':
+    association_plots()

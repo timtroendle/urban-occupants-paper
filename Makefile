@@ -13,23 +13,20 @@ test: | build
 
 tus-data: build/seed.pickle build/markov-ts.pickle
 
-build/seed.pickle: | build ./data/UKDA-4504-tab/tab/Individual_data_5.tab ./urbanoccupants/tus/individuals.py
-	python urbanoccupants/urban.py read_seed ./data/UKDA-4504-tab/tab/Individual_data_5.tab ./build/seed.pickle
+build/seed.pickle: | build ./data/UKDA-4504-tab/tab/Individual_data_5.tab ./scripts/tus/seed.py
+	python ./scripts/tus/seed.py ./data/UKDA-4504-tab/tab/Individual_data_5.tab ./build/seed.pickle
 
-build/markov-ts.pickle: | build ./data/UKDA-4504-tab/tab/diary_data_8.tab ./urbanoccupants/tus/markovts.py
-	python urbanoccupants/urban.py read_markov_ts ./data/UKDA-4504-tab/tab/diary_data_8.tab ./build/markov-ts.pickle
+build/markov-ts.pickle: | build ./data/UKDA-4504-tab/tab/diary_data_8.tab ./scripts/tus/markovts.py
+	python ./scripts/tus/markovts.py ./data/UKDA-4504-tab/tab/diary_data_8.tab ./build/markov-ts.pickle
 
-build/feature-association.pickle: ./build/seed.pickle ./urbanoccupants/tus/association.py
-	python urbanoccupants/urban.py association_of_features ./build/seed.pickle ./build/feature-association.pickle
+build/feature-association.pickle build/ts-association.pickle: ./build/seed.pickle ./build/markov-ts.pickle ./scripts/tus/association.py
+	python ./scripts/tus/association.py ./build/seed.pickle ./build/markov-ts.pickle ./build/feature-association.pickle ./build/ts-association.pickle
 
-build/ts-association.pickle: ./build/seed.pickle ./build/markov-ts.pickle ./urbanoccupants/tus/association.py
-	python urbanoccupants/urban.py association_of_time_series_1d ./build/seed.pickle ./build/markov-ts.pickle ./build/ts-association.pickle
+build/ts-association.png: ./build/ts-association.pickle ./scripts/plot/association.py
+	python ./scripts/plot/association.py ./build/ts-association.pickle ./build/ts-association.png
 
-build/ts-association.png: ./build/ts-association.pickle ./urbanoccupants/plot/association.py
-	python urbanoccupants/urban.py association_plots ./build/ts-association.pickle ./build/ts-association.png
-
-build/population-cluster.png: ./build/seed.pickle ./build/markov-ts.pickle ./urbanoccupants/plot/popcluster.py
-	python urbanoccupants/urban.py population_cluster ./build/seed.pickle ./build/markov_ts.pickle ./build/population-cluster.png
+build/population-cluster.png: ./build/seed.pickle ./build/markov-ts.pickle ./scripts/plot/popcluster.py
+	python ./scripts/plot/popcluster.py ./build/seed.pickle ./build/markov-ts.pickle ./build/population-cluster.png
 
 build/paper.docx: doc/literature.bib doc/main.md doc/pandoc-metadata.yml build/ts-association.png build/population-cluster.png
 	cd ./doc && \

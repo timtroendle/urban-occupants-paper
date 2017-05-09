@@ -4,7 +4,7 @@ import people as ppl
 import pandas as pd
 import numpy as np
 
-import urbanoccupants as uo
+from urbanoccupants.tus import Activity, Location, ACTIVITY_MAP, LOCATION_MAP
 
 EXPECTED_NUMBER_OF_DIARY_ENTRIES = 2 * 24 * 6
 
@@ -49,16 +49,16 @@ def _read_diary_data_as_timeseries(input_file_path):
 
 def _transform_to_markov_timeseries(diary_data_ts):
     simple_ts = pd.DataFrame({
-        'location': diary_data_ts.location.map(uo.tus.LOCATION_MAP),
-        'activity': diary_data_ts.activity.map(uo.tus.ACTIVITY_MAP)
+        'location': diary_data_ts.location.map(LOCATION_MAP),
+        'activity': diary_data_ts.activity.map(ACTIVITY_MAP)
     })
     markov_ts = pd.Series(index=simple_ts.index, dtype='category')
     markov_ts.cat.add_categories([state for state in ppl.Activity], inplace=True)
-    mask_home = ((simple_ts.location == uo.tus.Location.HOME) &
-                 (simple_ts.activity != uo.tus.Activity.SLEEP))
-    mask_sleep = (((simple_ts.location == uo.tus.Location.HOME) |
-                   (simple_ts.location == uo.tus.Location.IMPLICIT)) &
-                  (simple_ts.activity == uo.tus.Activity.SLEEP))
+    mask_home = ((simple_ts.location == Location.HOME) &
+                 (simple_ts.activity != Activity.SLEEP))
+    mask_sleep = (((simple_ts.location == Location.HOME) |
+                   (simple_ts.location == Location.IMPLICIT)) &
+                  (simple_ts.activity == Activity.SLEEP))
     mask_nan = pd.isnull(simple_ts.location) | pd.isnull(simple_ts.activity)
     markov_ts[:] = ppl.Activity.NOT_AT_HOME
     markov_ts[mask_home] = ppl.Activity.HOME
@@ -115,3 +115,7 @@ def _add_daytype(diary_data, markov_ts):
     markov_ts = markov_ts.reset_index(level=['SN4', 'time_of_day'])\
         .set_index(['daytype', 'time_of_day'], append=True)
     return markov_ts.drop('SN4', axis=1)
+
+
+if __name__ == '__main__':
+    read_markov_ts()

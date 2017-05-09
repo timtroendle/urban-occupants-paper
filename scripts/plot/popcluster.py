@@ -80,3 +80,7 @@ def _plot_clustered_by_feature(markov_ts, seed, feature, ax, name):
         color='black',
         linewidth=2
     )
+
+
+if __name__ == '__main__':
+    population_cluster()

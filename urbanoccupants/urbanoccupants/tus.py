@@ -10,17 +10,16 @@ import pandas as pd
 
 from pytus2000 import diary, individual
 import people as ppl
-from ..types import EconomicActivity, Qualification, HouseholdType, AgeStructure, Pseudo, Carer,\
+from .types import EconomicActivity, Qualification, HouseholdType, AgeStructure, Pseudo, Carer,\
     PersonalIncome, PopulationDensity, Region
 
 
-def _filter_features_and_drop_nan(seed, features):
+def filter_features_and_drop_nan(seed, features):
     """Filters seed by chosen features and drops nans.
 
     If there is any nan in any chosen feature for a certain individual in the seed, that
     individual will be dropped.
     """
-    # FIXME this is a redunant copy from individuals.py and should be removed.
     if isinstance(features, tuple): # 2D
         features = list(features)
     return seed[features].dropna(axis='index', how='any')
@@ -38,7 +37,7 @@ def filter_features(seed, markov_ts, features):
     Returns:
         * (seed, markov_ts) as tuple
     """
-    seed = _filter_features_and_drop_nan(seed, [str(feature) for feature in features])
+    seed = filter_features_and_drop_nan(seed, [str(feature) for feature in features])
     markov_ts = markov_ts[markov_ts.index.droplevel(['daytype', 'time_of_day']).isin(seed.index)]
     seed = seed[seed.index.isin(markov_ts.index.droplevel(['daytype', 'time_of_day']))]
     return seed, markov_ts

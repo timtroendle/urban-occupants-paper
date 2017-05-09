@@ -4,9 +4,9 @@ import click
 import pandas as pd
 import pytus2000
 
-from ..synthpop import PeopleFeature, HouseholdFeature
-from ..types import HouseholdType
-
+from urbanoccupants import PeopleFeature, HouseholdFeature
+from urbanoccupants.types import HouseholdType
+from urbanoccupants.tus import filter_features_and_drop_nan
 
 HOUSEHOLD_TYPE_FEATURE_NAME = str(HouseholdFeature.HOUSEHOLD_TYPE)
 
@@ -30,17 +30,6 @@ def read_seed(path_to_input, path_to_output):
     seed = _filter_invalid_households(seed)
     print("Write {} individuals.".format(seed.shape[0]))
     seed.to_pickle(path_to_output)
-
-
-def filter_features_and_drop_nan(seed, features):
-    """Filters seed by chosen features and drops nans.
-
-    If there is any nan in any chosen feature for a certain individual in the seed, that
-    individual will be dropped.
-    """
-    if isinstance(features, tuple): # 2D
-        features = list(features)
-    return seed[features].dropna(axis='index', how='any')
 
 
 def _read_raw_data(path_to_input):
@@ -75,3 +64,7 @@ def _filter_invalid_households(seed):
     )
     print("{} households are invalid and were removed.".format(len(invalids.index)))
     return seed.drop(labels=invalids.index, level=None)
+
+
+if __name__ == '__main__':
+    read_seed()
