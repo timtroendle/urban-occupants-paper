@@ -14,6 +14,36 @@ from ..types import EconomicActivity, Qualification, HouseholdType, AgeStructure
     PersonalIncome, PopulationDensity, Region
 
 
+def _filter_features_and_drop_nan(seed, features):
+    """Filters seed by chosen features and drops nans.
+
+    If there is any nan in any chosen feature for a certain individual in the seed, that
+    individual will be dropped.
+    """
+    # FIXME this is a redunant copy from individuals.py and should be removed.
+    if isinstance(features, tuple): # 2D
+        features = list(features)
+    return seed[features].dropna(axis='index', how='any')
+
+
+def filter_features(seed, markov_ts, features):
+    """Filters data sets for features and drops all missing values.
+
+    This will:
+        * filter features in the seed
+        * drop all individuals in seed for which at least one feature is missing
+        * drop all diaries in the markov_ts whose individuals are not in seed
+        * drop all individuals from seed which are not in the markov_ts
+
+    Returns:
+        * (seed, markov_ts) as tuple
+    """
+    seed = _filter_features_and_drop_nan(seed, [str(feature) for feature in features])
+    markov_ts = markov_ts[markov_ts.index.droplevel(['daytype', 'time_of_day']).isin(seed.index)]
+    seed = seed[seed.index.isin(markov_ts.index.droplevel(['daytype', 'time_of_day']))]
+    return seed, markov_ts
+
+
 def markov_chain_for_cluster(param_tuple):
     """Creating a heterogenous markov chain for a cluster of the TUS sample.
 

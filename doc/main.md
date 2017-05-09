@@ -176,11 +176,7 @@ economic act, hh type       0.177692
 
 Table: Average of time dependent association between people and household features using Cramér's V $\Phi_C$. {#tbl:2d-association}
 
-![Raw occupancy time series](../notebooks/build/all-diaries-original.png){#fig:all-diaries-original .class width=500}
-
-![Occupancy time series clustered by economic activity](../notebooks/build/all-diaries-economic-activity-cluster.png){#fig:all-diaries-economic-activity-cluster .class width=500}
-
-![Occupancy time series clustered by age group](../notebooks/build/all-diaries-age-group-cluster.png){#fig:all-diaries-age-group-cluster .class width=500}
+![Occupancy time series (a) raw, (b) clustered by economic activity (c) clustered by age](../build/population-cluster.png){#fig:population-cluster .class width=500}
 
 ## Results for Economic Activity and Age
 
