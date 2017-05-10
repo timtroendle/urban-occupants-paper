@@ -23,3 +23,6 @@ wake-up-time: '07:00'
 leave-home-time: '08:30'
 come-home-time: '18:00'
 bed-time: '22:00'
+log-thermal-power: True
+log-temperature: False
+log-activity: False
