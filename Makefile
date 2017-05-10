@@ -37,6 +37,12 @@ build/energy-agents.jar: | build
 build/simulation-output.db: build/energy-agents.jar build/simulation-input.db scripts/runsim.py simulation-config.yaml
 	python scripts/runsim.py build/energy-agents.jar build/simulation-input.db build/simulation-output.db simulation-config.yaml
 
-build/paper.docx: doc/literature.bib doc/main.md doc/pandoc-metadata.yml build/ts-association.png build/population-cluster.png
+build/thermal-power.png build/choropleth.png: build/simulation-output.db simulation-config.yaml scripts/plot/simulationresults.py
+	python scripts/plot/simulationresults.py build/simulation-output.db simulation-config.yaml build/thermal-power.png build/choropleth.png
+
+build/paper.docx: doc/literature.bib doc/online.bib doc/main.md doc/pandoc-metadata.yml
+build/paper.docx: build/ts-association.png build/population-cluster.png build/thermal-power.png
+build/paper.docx: build/choropleth.png
 	cd ./doc && \
-	pandoc --filter pandoc-fignos --filter pandoc-tablenos --filter pandoc-citeproc --reference-docx ./paper-template.docx main.md pandoc-metadata.yml -t docx -o ../build/paper.docx
+	pandoc --filter pandoc-fignos --filter pandoc-tablenos --filter pandoc-citeproc \
+		--reference-docx ./paper-template.docx main.md pandoc-metadata.yml -t docx -o ../build/paper.docx

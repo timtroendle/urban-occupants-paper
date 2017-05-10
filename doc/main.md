@@ -182,15 +182,13 @@ Table: Average of time dependent association between people and household featur
 
 energy wise no strong difference:
 
-![Simulated average energy demand in Haringey](../notebooks/build/haringey-ward-economic-hhtype/power_std_choropleth.png){#fig:energy-choropleth .class width=500}
+![Simulated average energy demand in Haringey](../build/choropleth.png){#fig:choropleth .class width=500}
 
 dynamic load profiles vary between wards:
 
-![Average thermal power in different wards](../notebooks/build/haringey-ward-economic-hhtype/thermal_power_average.png){#fig:thermal-power-average .class width=500}
-
 in particular the variance inside wards varies, especially in the evening hours:
 
-![Standard deviation of thermal power in different wards](../notebooks/build/haringey-ward-economic-hhtype/thermal_power.png){#fig:thermal-power-std .class width=500}
+![Thermal power in different wards](../build/thermal-power.png){#fig:thermal-power .class width=500}
 
 ## Results for Alternative Feature Selection
 

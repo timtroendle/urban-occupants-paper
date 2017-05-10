@@ -17,11 +17,6 @@ import urbanoccupants as uo
 
 NUMBER_HOUSEHOLDS_HARINGEY = 101955
 NUMBER_USUAL_RESIDENTS_HARINGEY = 254926
-MARKOV_CHAIN_INDEX_TABLE_NAME = 'markovChains'
-DWELLINGS_TABLE_NAME = 'dwellings'
-PEOPLE_TABLE_NAME = 'people'
-ENVIRONMENT_TABLE_NAME = 'environment'
-PARAMETERS_TABLE_NAME = 'parameters'
 ROOT_FOLDER = Path(os.path.abspath(__file__)).parent.parent
 CACHE_PATH = ROOT_FOLDER / 'build' / 'web-cache'
 MIDAS_DATABASE_PATH = ROOT_FOLDER / 'data' / 'Londhour.csv'
@@ -209,7 +204,7 @@ def _write_dwellings_table(households, config, path_to_db):
             'region': [household.region for household in households]
         }
     )
-    _df_to_input_db(df, DWELLINGS_TABLE_NAME, path_to_db)
+    _df_to_input_db(df, uo.DWELLINGS_TABLE_NAME, path_to_db)
 
 
 def _write_citizens_table(citizens, path_to_db):
@@ -224,7 +219,7 @@ def _write_citizens_table(citizens, path_to_db):
             'randomSeed': [citizen.randomSeed for citizen in citizens]
         }
     )
-    _df_to_input_db(df, PEOPLE_TABLE_NAME, path_to_db)
+    _df_to_input_db(df, uo.PEOPLE_TABLE_NAME, path_to_db)
 
 
 def _write_markov_chains(markov_chains, path_to_db):
@@ -235,7 +230,7 @@ def _write_markov_chains(markov_chains, path_to_db):
         },
         name='tablename'
     )
-    _df_to_input_db(markov_index, MARKOV_CHAIN_INDEX_TABLE_NAME, path_to_db)
+    _df_to_input_db(markov_index, uo.MARKOV_CHAIN_INDEX_TABLE_NAME, path_to_db)
     for feature_combination, markov_chain in markov_chains.items():
         df = markov_chain.to_dataframe()
         df.fromActivity = [str(x) for x in df.fromActivity]
@@ -260,12 +255,12 @@ def _write_temperature_table(config, path_to_db):
     temperature.rename(columns={'Dry-bulb (C)': 'temperature'}, inplace=True)
     temperature.index.name = 'index'
     df = temperature['temperature'].resample(config['time-step-size']).ffill()
-    _df_to_input_db(df, ENVIRONMENT_TABLE_NAME, path_to_db)
+    _df_to_input_db(df, uo.ENVIRONMENT_TABLE_NAME, path_to_db)
 
 
 def _write_simulation_parameter_table(config, path_to_db):
     _df_to_input_db(
-        table_name=PARAMETERS_TABLE_NAME,
+        table_name=uo.PARAMETERS_TABLE_NAME,
         df=pd.DataFrame(
             index=[1],
             data={

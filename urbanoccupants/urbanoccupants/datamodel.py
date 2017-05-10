@@ -1,0 +1,5 @@
+MARKOV_CHAIN_INDEX_TABLE_NAME = 'markovChains'
+DWELLINGS_TABLE_NAME = 'dwellings'
+PEOPLE_TABLE_NAME = 'people'
+ENVIRONMENT_TABLE_NAME = 'environment'
+PARAMETERS_TABLE_NAME = 'parameters'
