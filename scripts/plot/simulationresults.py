@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import seaborn as sns
 import pandas as pd
+import numpy as np
 import sqlalchemy
 import requests_cache
 
@@ -64,8 +65,24 @@ def _read_thermal_power(disk_engine, dwellings):
 
 def _read_geo_data(config, thermal_power):
     geo_data = uo.census.read_haringey_shape_file(config['spatial-resolution'])
-    geo_data['average_power'] = thermal_power.groupby('region').value.mean()
+    duration = thermal_power.datetime.max() - thermal_power.datetime.min()
+    if config['reweight-to-full-week']:
+        print('Reweighting thermal power to full week. Make sure that is what you want.')
+        thermal_power = _reweight_thermal_power(thermal_power)
+        duration = duration * 7 / 2
+    geo_data['average_energy'] = (thermal_power.groupby('region').value.mean() /
+                                  (duration.total_seconds() / 60 / 24))
     return geo_data
+
+
+def _reweight_thermal_power(thermal_power):
+    weekend_mask = ((thermal_power.set_index('datetime', drop=True).index.weekday == 5) |
+                    (thermal_power.set_index('datetime', drop=True).index.weekday == 6))
+    weekday_mask = np.invert(weekend_mask)
+    thermal_power_re = thermal_power.copy()
+    thermal_power_re.loc[weekend_mask, 'value'] = thermal_power.loc[weekend_mask, 'value'] * 2
+    thermal_power_re.loc[weekday_mask, 'value'] = thermal_power.loc[weekday_mask, 'value'] * 5
+    return thermal_power_re
 
 
 def _plot_thermal_power(thermal_power, path_to_plot):
@@ -102,7 +119,7 @@ def _plot_thermal_power(thermal_power, path_to_plot):
 def _plot_choropleth(geo_data, path_to_choropleth):
     ax = gpdplt.plot_dataframe(
         geo_data,
-        column='average_power',
+        column='average_energy',
         categorical=False,
         linewidth=0.2,
         legend=True,
