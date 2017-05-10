@@ -9,6 +9,8 @@ To set up a environment in which the analysis can be run and the paper be build,
 
     conda env create -f conda-environment.yml
 
+In addition you will need [Java 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html) to run simulations.
+
 ## Build the paper
 
     make paper

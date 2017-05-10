@@ -9,6 +9,7 @@ time-step-size-minutes: 10
 start-time: 2005-01-03 00:00
 spatial-resolution: WARD
 number-processes: 4
+java-heap-size: 12
 heat-mass-capacity: 16500000
 heat-transmission: 200
 max-heating-power: 10000
@@ -18,7 +19,7 @@ heating-control-strategy: PRESENCE_TRIGGERED
 number-time-steps: 144
 set-point-while-home: 22
 set-point-while-asleep: 18
-wake-up-time: 07:00
-leave-home-time: 08:30
-come-home-time: 18:00
-bed-time: 22:00
+wake-up-time: '07:00'
+leave-home-time: '08:30'
+come-home-time: '18:00'
+bed-time: '22:00'
