@@ -50,32 +50,27 @@ def markov_chain_for_cluster(param_tuple):
     only one parameter, hence the inconvenient tuple parameter design.
 
     Parameters:
-        * param_tuple(0): time series for all people, with index (SN1, SN2, SN3, SN4, timeofday)
+        * param_tuple(0): time series for all people, with index (SN1, SN2, SN3, daytype, timeofday)
         * param_tuple(1): a subset of the individual data set representing the cluster for which
                           the markov chain should be created, with index (SN1, SN2, SN3)
         * param_tuple(2): the tuple of people features representing the cluster, this is not used
                           in this function, but only passed through
-        * param_tuple(3): a subset of the diary data set representing weekdays, with index
-                          (SN1, SN2, SN3, SN4)
-        * param_tuple(4): a subset of the diary data set representing weekend days, with index
-                          (SN1, SN2, SN3, SN4)
-        * param_tuple(5): the time step size of the markov chain, a datetime.timedelta object
+        * param_tuple(3): the time step size of the markov chain, a datetime.timedelta object
 
     Returns:
         a tuple of
             * param_tuple(2)
             * the heterogeneous markov chain for the cluster
     """
-    markov_ts, group_of_people, features, weekdays, weekenddays, time_step_size = param_tuple
+    markov_ts, group_of_people, features, time_step_size = param_tuple
     # filter by people
     people_mask = markov_ts.index.droplevel([3, 4]).isin(group_of_people.index)
-    filtered_markov = pd.DataFrame(markov_ts)[people_mask]
+    filtered_markov = pd.DataFrame(markov_ts)[people_mask].sort_index()
     # filter by weekday
-    weekday_mask = filtered_markov.index.droplevel([4]).isin(weekdays.index)
-    filtered_markov_weekday = filtered_markov[weekday_mask]
+    idx = pd.IndexSlice
+    filtered_markov_weekday = filtered_markov.loc[idx[:, :, :, 'weekday'], :]
     # filter by weekend
-    weekend_mask = filtered_markov.index.droplevel([4]).isin(weekenddays.index)
-    filtered_markov_weekend = filtered_markov[weekend_mask]
+    filtered_markov_weekend = filtered_markov.loc[idx[:, :, :, 'weekend'], :]
     return features, ppl.WeekMarkovChain(
         weekday_time_series=filtered_markov_weekday.unstack(level=[0, 1, 2, 3]),
         weekend_time_series=filtered_markov_weekend.unstack(level=[0, 1, 2, 3]),

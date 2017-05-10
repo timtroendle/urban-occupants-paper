@@ -65,11 +65,9 @@ def fit_hipf(reference_sample, controls_individuals, controls_households, maxite
         if (residuals_tol is not None and
             _residuals_tolerance_reached(reference_sample, weights, controls_households,
                                          controls_individuals, residuals_tol)):
-            print('Residuals tolerance reached in iteration {}.'.format(i))
             break
         if (weights_tol is not None and
                 _weights_tolerance_reached(next_weights, previous_weights, weights_tol)):
-            print("Weights haven't changed anymore in iteration {}.".format(i))
             break
     return weights
 

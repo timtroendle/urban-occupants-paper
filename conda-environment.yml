@@ -17,6 +17,7 @@ dependencies:
   - xlrd=1.0.0
   - pandoc=1.19.2.1
   - pytest=3.0.7
+  - pyyaml=3.12
   - pip:
       - git+git://github.com/riccardoscalco/Pykov@master
       - git+git://github.com/timtroendle/people@develop
