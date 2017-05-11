@@ -4,7 +4,6 @@ The paper defining the algorithm and the toy example is:
 Müller and Axhausen 2011: "Hierarchical IPF: Generating a synthetic population for Switzerland"
 
 """
-import sys
 import itertools
 from collections import namedtuple
 
@@ -13,7 +12,6 @@ import numpy as np
 from pandas.util.testing import assert_series_equal
 import pytest
 
-sys.path.append('.')
 from urbanoccupants.hipf import fit_hipf
 
 

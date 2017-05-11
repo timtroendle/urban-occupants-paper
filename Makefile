@@ -22,6 +22,9 @@ build/markov-ts.pickle: ./data/UKDA-4504-tab/tab/diary_data_8.tab ./scripts/tus/
 build/feature-association.pickle build/ts-association.pickle: ./build/seed.pickle ./build/markov-ts.pickle ./scripts/tus/association.py
 	python ./scripts/tus/association.py ./build/seed.pickle ./build/markov-ts.pickle ./build/feature-association.pickle ./build/ts-association.pickle
 
+build/ts-association-filtered-stats.csv: build/ts-association.pickle scripts/tus/analyseassociation.py
+	python scripts/tus/analyseassociation.py build/seed.pickle build/ts-association.pickle build/ts-association-full-stats.csv build/ts-association-filtered-stats.csv
+
 build/ts-association.png: ./build/ts-association.pickle ./scripts/plot/association.py
 	python ./scripts/plot/association.py ./build/ts-association.pickle ./build/ts-association.png
 
@@ -43,6 +46,7 @@ build/thermal-power.png build/choropleth.png: build/simulation-output.db simulat
 build/paper.docx: doc/literature.bib doc/online.bib doc/main.md doc/pandoc-metadata.yml
 build/paper.docx: build/ts-association.png build/population-cluster.png build/thermal-power.png
 build/paper.docx: build/choropleth.png
+build/paper.docx: build/ts-association-filtered-stats.csv
 	cd ./doc && \
-	pandoc --filter pandoc-fignos --filter pandoc-tablenos --filter pandoc-citeproc \
+	pandoc --filter pantable --filter pandoc-fignos --filter pandoc-tablenos --filter pandoc-citeproc \
 		--reference-docx ./paper-template.docx main.md pandoc-metadata.yml -t docx -o ../build/paper.docx

@@ -164,17 +164,15 @@ Table: Model parameters applied in Haringey study. {#tbl:parameters}
 
 ![Time dependent association between people features and occupancy](../build/ts-association.png){#fig:1d-association .class width=500}
 
----------------------------------------
-feature tuple               $\Phi_C$
---------------------------- -----------
-age, economic act           0.183522
 
-age, income                 0.180527
-
-economic act, hh type       0.177692
----------------------------------------
-
-Table: Average of time dependent association between people and household features using Cramér's V $\Phi_C$. {#tbl:2d-association}
+```table
+---
+caption: 'Average of time dependent association between people and household features $\overline{\Phi_C}$ and average cluster size for feature combinations with highest average association. {#tbl:ts-association}'
+alignment: CCC
+include: ../build/ts-association-filtered-stats.csv
+markdown: True
+---
+```
 
 ![Occupancy time series (a) raw, (b) clustered by economic activity (c) clustered by age](../build/population-cluster.png){#fig:population-cluster .class width=500}
 

@@ -7,7 +7,6 @@ Results were created from the given repository with default parameters, i.e. run
 `ml_fit_hipf(toy_example('Separate'))`. Hence `tol` was 1e-6, `diff_tol` was set to
 2.220446e-16, and `maxiter` was 200.
 """
-import sys
 import math
 from pathlib import Path
 
@@ -16,7 +15,6 @@ import pandas as pd
 from pandas.util.testing import assert_series_equal
 import pytest
 
-sys.path.append('.')
 from urbanoccupants.hipf import fit_hipf, _all_residuals
 
 

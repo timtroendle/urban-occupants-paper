@@ -1,9 +1,7 @@
 from enum import Enum
-import sys
 
 import pandas as pd
 
-sys.path.append('.')
 from urbanoccupants.synthpop import feature_id, _pairing_function
 
 
