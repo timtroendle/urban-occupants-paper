@@ -60,7 +60,7 @@ def _filter_invalid_households(seed):
         households[(households.type == HouseholdType.LONE_PARENT_WITH_DEPENDENT_CHILDREN) &
                    (households.size < 2)] |
         households[(households.type == HouseholdType.MULTI_PERSON_HOUSEHOLD) &
-                   (households.size <= 2)]
+                   (households.size < 2)]
     )
     print("{} households are invalid and were removed.".format(len(invalids.index)))
     return seed.drop(labels=invalids.index, level=None)
