@@ -20,7 +20,6 @@ NUMBER_USUAL_RESIDENTS_HARINGEY = 254926
 ROOT_FOLDER = Path(os.path.abspath(__file__)).parent.parent
 CACHE_PATH = ROOT_FOLDER / 'build' / 'web-cache'
 MIDAS_DATABASE_PATH = ROOT_FOLDER / 'data' / 'Londhour.csv'
-CACHE_PATH.mkdir(parents=True, exist_ok=True)
 requests_cache.install_cache((CACHE_PATH).as_posix())
 
 
