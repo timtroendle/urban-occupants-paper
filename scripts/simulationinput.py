@@ -95,9 +95,10 @@ def _create_markov_chains(seed, markov_ts, features, config):
              config['time-step-size'])
             for features in feature_combinations
         )
-        print('Calculating markov chains...')
         markov_chains = dict(pool.imap_unordered(uo.tus.markov_chain_for_cluster,
-                             tqdm(all_parameters, total=len(feature_combinations))))
+                             tqdm(all_parameters,
+                                  total=len(feature_combinations),
+                                  desc='Calculating markov chains')))
     return markov_chains
 
 
@@ -155,22 +156,21 @@ def _create_synthetic_population(seed, census_data_hh, census_data_ppl, config):
     hh_chunk_size = int(NUMBER_HOUSEHOLDS_HARINGEY / config['number-processes'] / 4)
 
     with Pool(config['number-processes']) as pool:
-        print('Hierarchical iterative proportional fitting...')
         hipf_params = ((seed, controls_hh[region], controls_ppl[region], region)
                        for region in regions)
         household_weights = dict(tqdm(
             pool.imap_unordered(uo.synthpop.run_hipf, hipf_params),
-            total=len(regions)
+            total=len(regions),
+            desc='Hierarchical IPF         '
         ))
-        print('Sampling households...')
         household_params = ((region, seed, household_weights[region],
                              random_numbers[region], household_ids[region])
                             for region in regions)
         households = list(chain(*tqdm(
             pool.imap_unordered(uo.synthpop.sample_households, household_params),
-            total=len(regions)
+            total=len(regions),
+            desc='Sampling households      '
         )))
-        print('Sampling individuals...')
         household_chunks = [households[i:i + hh_chunk_size]
                             for i in range(0, len(households), hh_chunk_size)]
         citizens = list(chain(*tqdm(
@@ -178,7 +178,8 @@ def _create_synthetic_population(seed, census_data_hh, census_data_ppl, config):
                 uo.synthpop.sample_citizen,
                 ((households, seed) for households in household_chunks)
             ),
-            total=math.ceil(NUMBER_HOUSEHOLDS_HARINGEY / hh_chunk_size)
+            total=math.ceil(NUMBER_HOUSEHOLDS_HARINGEY / hh_chunk_size),
+            desc='Sampling individuals     '
         )))
 
     assert len(households) == NUMBER_HOUSEHOLDS_HARINGEY
