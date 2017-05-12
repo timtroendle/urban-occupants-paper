@@ -51,7 +51,7 @@ def _filter(stats):
     fstats.index = fstats['index'].apply(_rename_index)
     fstats.drop(['index'], axis=1, inplace=True)
     fstats['mean_association'] = fstats['mean_association'].apply(np.round, decimals=5)
-    fstats['mean_cluster_size'] = fstats['mean_cluster_size'].apply(np.round, decimals=0)
+    fstats['mean_cluster_size'] = fstats['mean_cluster_size'].apply(int)
     fstats.rename(columns={
         'mean_association': '$\overline{\Phi_C}$',
         'mean_cluster_size': 'avg cluster size'
