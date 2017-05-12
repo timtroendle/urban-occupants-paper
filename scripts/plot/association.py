@@ -39,7 +39,7 @@ def _features_to_string(features):
 
 def _shorten_feature_name(features):
     def str_manipulation(feature):
-        return feature.split('.')[1].lower()
+        return feature.split('.')[1].lower().replace('_', ' ')
 
     if isinstance(features, tuple):
         return ', '.join([str_manipulation(feature) for feature in features])

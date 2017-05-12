@@ -96,7 +96,7 @@ The following subsection describes methods to calibrate the conceptual model as 
 
 The transition matrix $Pr^p$ for each citizen is derived from the TUS data set. The TUS data set contains location and activity data for each participant at a high temporal resolution in the form of a diary. Diaries span at least a day, though typically a weekday and a weekend day are recorded as time use varies between these days [@ctus]. In the following, a mapping is performed from each tuple of location and activity to one of the states of the Markov chain. As an example, the tuple (location = 'workplace or school', activity = 'lunch break') is mapped to 1 = not at home, as is (location = 'second home or weekend house', activity = 'sleep'). After the mapping, each diary can be understood as a concrete instance of a stochastic process that is described by the time heterogeneous Markov chain of the occupancy model. The set of participants is clustered by one or more household or people features $F$, e.g. age, which is available in both, the TUS data set and the aggregated census, and a time-heterogeneous Markov chain for each cluster following the approach used e.g. by [@Richardson:2008dj; @Widen:2009fo] is created. The resulting set of transition matrices $\{Pr^f| \forall f \in F\}$ then allows us to deterministically allocate a transition matrix to a citizen based on the citizens feature value $f^p$: $Pr^p = Pr^{f^p}$.
 
-The choice of household or people features is important for the quality of this approach. Unfortunately we are not aware of a deterministic way of choosing the _correct_ set of features. We instead acknowledge the inherent uncertainty and analyse features, their correlation among each other, and their correlation to the derived time series. We furthermore discuss the sensitivity of the results to the choice of features in the case study performed.
+The choice of household or people features is important for the quality of this approach. While theoretically all features could be used, in practise this might lead to sample sizes of that type of person which is too small. Hence, a subset of features must be chosen. Unfortunately we are not aware of a deterministic way of choosing the _correct_ subset of features. We instead acknowledge the inherent uncertainty and analyse features, their correlation among each other, and their correlation to the derived time series. We furthermore discuss the sensitivity of the results to the choice of features in the case study performed.
 
 ### Synthetic Population
 
@@ -130,7 +130,7 @@ Given the conceptual model and its calibration using census data and TUS data as
 
 # Case Study
 
-The model is applied in a case study of the London Borough of Haringey which according to latest census data [@ukcensus2011] is the home of 254,926 usual residents and comprises of 101,955 households. For this case study two data sets have been used: the UK Time Use Survey 2000 [@uktus2000], and the UK 2011 Census [@ukcensus2011]. The former contains time use diaries for a weekday and a weekend day for more than 11,500 individuals of nearly 6,500 households in the UK. The latter contains aggregated census data for so called output areas (OA) comprising of at least 40 resident households and 100 resident people to ensure confidentiality. Haringey is divided into 753 distinct output areas which are aggregated into 145 Lower Super Output Areas (LSOA) on which this analysis is based.
+The model is applied in a case study of the London Borough of Haringey which according to latest census data [@ukcensus2011] is the home of 254,926 usual residents and comprises of 101,955 households. For this case study two data sets have been used: the UK Time Use Survey 2000 [@uktus2000], and the UK 2011 Census [@ukcensus2011]. The former contains time use diaries with a resolution of 10 min for a weekday and a weekend day for more than 11,500 individuals of nearly 6,500 households in the UK. The latter contains aggregated census data for so called output areas (OA) comprising of at least 40 resident households and 100 resident people to ensure confidentiality. Haringey is divided into 753 distinct output areas which are aggregated into 145 Lower Super Output Areas (LSOA) on which this analysis is based.
 
 Table @tbl:parameters summarises the parameters of the thermal dwelling model applied for the dwelling of each household in Haringey including set point temperatures of their heating control systems, and metabolic heat gains.
 
@@ -162,8 +162,19 @@ Table: Model parameters applied in Haringey study. {#tbl:parameters}
 
 ## Feature Selection Results
 
-![Time dependent association between people features and occupancy](../build/ts-association.png){#fig:1d-association .class width=500}
+In a first step, people and household features that are used to form the occupancy model and the synthetic population are chosen. As mentioned above, a valid measure for the eligibility of a subset of features is not known, hence the following methodology is applied: in a first step, association between features and the occupancy time series in the TUS data set are determined which are used as an indication of more important features. Later, we will investigate the sensitivity of the simulation results to the choice of features.
 
+To illustrate the necessity to cluster the sample population, Fig. @fig:population-cluster shows all occupancy time series in the data set (a) raw, and after clustering by (b) economic activity and (c) age. Each occupancy time series is depicted vertically using three colours: white for (1) not at home, dark grey for (2) active at home, and light grey for (3) asleep at home for both days starting from midnight weekday until the end of the weekend day. While some patterns like the stronger homogeneity at night times are clearly visible, the data appears noisy. After clustering by either economic activity or age, the in-cluster homogeneity becomes visually stronger and more patterns emerge.
+
+![Occupancy time series (a) raw, (b) clustered by economic activity (c) clustered by age groups. Occupancy is color coded using white for (1) not at home, dark grey for (2) active at home, and light grey for (3) asleep at home ](../build/population-cluster.png){#fig:population-cluster .class width=500}
+
+In the following, five people features and three household features are considered: the economic activity, highest qualification, age, and personal income of a person and whether that person is looking after another person; the type of a household and the region it is located in including that region's population density. As all features and the occupancy time series are nominal, we will use Cramér's V method and we will denote the strength of association, which ranges between 0 and 1, with $\Phi_C$. We will measure association between a subset of features and occupancy for each of the 288 time steps of the time series. Fig. @fig:ts-association shows the results for a selected number of subsets.
+
+A strong time dependency is visible, indicating that occupancy at certain times of the day is stronger associated to people or household features. Weekday and weekend day show similar, but distinct patterns, and the weekend day reveals a weaker association at almost all time steps of the day. The region and the population density of the household's surrounding area don't show a significant association at any time of the day, indicating that there are no significant differences in occupancy patterns between, e.g. rural and urban environments. Among the single features, economic activity and age show the highest association throughout both days. Combined features reveal an association that is higher than single features at most times of the day. Combination of three features, like the depicted combination of economic activity, age, and household type show the highest association but their curves become unsmooth, indicating overfitting and sample sizes that are too small.
+
+![Time dependent association between people features and occupancy](../build/ts-association.png){#fig:ts-association .class width=500}
+
+Table @tbl:ts-association shows the average association over the day for selected feature combinations and the average size of their clusters. The combination of economic activity, age, and household type reveals the highest average association, but also has a low average sample size. Among the tuple combinations of features, Table @tbl:ts-association shows the five with the highest average association, which have a significantly larger average cluster size as well.
 
 ```table
 ---
@@ -174,7 +185,11 @@ markdown: True
 ---
 ```
 
-![Occupancy time series (a) raw, (b) clustered by economic activity (c) clustered by age](../build/population-cluster.png){#fig:population-cluster .class width=500}
+Based on these results it is concluded that:
+
+* There exists no strong argument for assuming different occupancy patterns based on spatial location only, e.g. in rural or urban areas. Hence, although looking at an urban environment in this study, the TUS data set is not filtered by spatial location.
+* Combinations of 3 features reveal high association with the occupancy time series but seem overfitted. Their cluster sizes are too small to be used to fit the occupancy Markov model and hence combinations of 3 features are not considered.
+* Combinations of 2 features reveal higher associations with the occupancy time series than single features while their cluster sizes remain reasonably high. Several combinations show high association and the sensitivity of the model to those is investigated.
 
 ## Results for Economic Activity and Age
 
