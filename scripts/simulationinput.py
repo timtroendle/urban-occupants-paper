@@ -34,7 +34,11 @@ def simulation_input(path_to_seed, path_to_markov_ts, path_to_config, path_to_re
     markov_ts = pd.read_pickle(path_to_markov_ts)
     config = uo.read_simulation_config(path_to_config)
     features = config['people-features'] + config['household-features']
-    seed, markov_ts = uo.tus.filter_features(seed, markov_ts, features + [uo.PeopleFeature.AGE])
+    seed, markov_ts = uo.tus.filter_features(
+        seed,
+        markov_ts,
+        set(features + [uo.PeopleFeature.AGE])
+    )
     markov_chains = _create_markov_chains(
         seed,
         markov_ts,

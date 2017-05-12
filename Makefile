@@ -40,12 +40,12 @@ build/energy-agents.jar: | build
 build/simulation-output.db: build/energy-agents.jar build/simulation-input.db scripts/runsim.py simulation-config.yaml
 	python scripts/runsim.py build/energy-agents.jar build/simulation-input.db build/simulation-output.db simulation-config.yaml
 
-build/thermal-power.png build/choropleth.png: build/simulation-output.db simulation-config.yaml scripts/plot/simulationresults.py
-	python scripts/plot/simulationresults.py build/simulation-output.db simulation-config.yaml build/thermal-power.png build/choropleth.png
+build/thermal-power.png build/choropleth.png build/scatter.png: build/simulation-output.db simulation-config.yaml scripts/plot/simulationresults.py
+	python scripts/plot/simulationresults.py build/simulation-output.db simulation-config.yaml build/thermal-power.png build/choropleth.png build/scatter.png
 
 build/paper.docx: doc/literature.bib doc/online.bib doc/main.md doc/pandoc-metadata.yml
 build/paper.docx: build/ts-association.png build/population-cluster.png build/thermal-power.png
-build/paper.docx: build/choropleth.png
+build/paper.docx: build/choropleth.png build/scatter.png
 build/paper.docx: build/ts-association-filtered-stats.csv
 	cd ./doc && \
 	pandoc --filter pantable --filter pandoc-fignos --filter pandoc-tablenos --filter pandoc-citeproc \

@@ -191,17 +191,20 @@ Based on these results it is concluded that:
 * Combinations of 3 features reveal high association with the occupancy time series but seem overfitted. Their cluster sizes are too small to be used to fit the occupancy Markov model and hence combinations of 3 features are not considered.
 * Combinations of 2 features reveal higher associations with the occupancy time series than single features while their cluster sizes remain reasonably high. Several combinations show high association and the sensitivity of the model to those is investigated.
 
-## Results for Economic Activity and Age
+## Simulation Results
 
-energy wise no strong difference:
+Using economic activity and age as discriminating features, a model of Haringey can be formed by creating a synthetic population for every LSOA following a zone-by-zone approach [@Muller:2010vx] and the model can by simulated by the open-source simulation model [@energyagents]. The simulation is run for two winter days, a weekday and a weekend day, and the results for both days are scaled appropriately energy-wise to represent a full week. Fig. @fig:choropleth shows a choropleth map of Haringey where the average energy demand for one full week per dwelling is depicted for every LSOA. The map reveals a few spatial patterns, most significantly a higher energy demand in the north eastern corner of Haringey. The variation in energy demand is though only marginal, with less than 4% difference between the LSOA with the highest energy demand and the one with the lowest energy demand.
 
-![Simulated average energy demand in Haringey](../build/choropleth.png){#fig:choropleth .class width=500}
+![Simulated average energy demand in Haringey for a week in January](../build/choropleth.png){#fig:choropleth .class width=500}
+<!--- add unit to plot --->
 
-dynamic load profiles vary between wards:
-
-in particular the variance inside wards varies, especially in the evening hours:
+Fig. @fig:thermal-power depicts the thermal power profiles for all LSOAs, as average and standard deviation among all households in that area. The average thermal power varies between LSOA's with up to 1.5 kW per household. Large variations can be found in the morning hours, in particular on the weekend, and in the evening hours on weekdays. The standard deviation shows an even larger spread between LSOA's with almost 2 kW per household peak and significant variations in particular in the evening hours of weekdays but also during daytime.
 
 ![Thermal power in different wards](../build/thermal-power.png){#fig:thermal-power .class width=500}
+
+To understand relationships between people and household features and the energy usage as seen above, Fig. @fig:scatter depicts the pairwise distributions between the average household size, the average age, and the share of economically active people in a LSOA and the energy usage as determined by the simulation model in terms of average energy usage per household and standard deviation of energy usage. While for the average age no clear relationship can be seen, the average household size and the share of economically active people correlate with both, average and standard deviation of energy. Average and standard deviation are negatively correlated, as are average household size and share of economically active people (not depicted).
+
+![Pairwise relationships of population features and simulated energy usage per LSOA](../build/scatter.png){#fig:scatter .class width=400}
 
 ## Results for Alternative Feature Selection
 
@@ -211,6 +214,7 @@ compare numerically the two runs
 
 Future work:
 
+* sensitivity to other parameters, like weather, heating set points
 * use survival models for occupancy, as done by [@Aerts:2015ko; @Baetens:2015gm]
 * use clustering approach as used by [@Aerts:2015ko]
 * use set point preference as introduced by [@Baetens:2015gm; @Leidelmeijer:2005vu]

@@ -39,7 +39,7 @@ def population_cluster(path_to_seed, path_to_markov_ts, path_to_plot):
         ha='left',
         loc=(-0.075, 0.5), labels=['({})'.format(letter) for letter in string.ascii_lowercase]
     )
-    fig.savefig(path_to_plot)
+    fig.savefig(path_to_plot, dpi=300)
 
 
 def _convert_to_numerical_values(markov_ts):
