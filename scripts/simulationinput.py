@@ -199,16 +199,26 @@ def _write_dwellings_table(households, config, path_to_db):
     df = pd.DataFrame(
         index=[household.id for household in households],
         data={
-            'heatMassCapacity': config['heat-mass-capacity'],
-            'heatTransmission': config['heat-transmission'],
-            'maxHeatingPower': config['max-heating-power'],
-            'initialTemperature': config['initial-temperature'],
-            'conditionedFloorArea': config['conditioned-floor-area'],
-            'heatingControlStrategy': config['heating-control-strategy'],
+            'thermalMassCapacity': config['dwelling']['thermal-mass-capacity'],
+            'thermalMassArea': config['dwelling']['thermal-mass-area'],
+            'floorArea': config['dwelling']['floor-area'],
+            'roomHeight': config['dwelling']['room-height'],
+            'windowToWallRatio': config['dwelling']['window-to-wall-ratio'],
+            'uWall': config['dwelling']['u-value-wall'],
+            'uRoof': config['dwelling']['u-value-roof'],
+            'uFloor': config['dwelling']['u-value-floor'],
+            'uWindow': config['dwelling']['u-value-window'],
+            'transmissionAdjustmentGround': config['dwelling']['transmission-adjustment-ground'],
+            'naturalVentilationRate': config['dwelling']['natural-ventilation-rate'],
+            'maxHeatingPower': config['dwelling']['max-heating-power'],
+            'initialTemperature': config['dwelling']['initial-temperature'],
+            'heatingControlStrategy': config['dwelling']['heating-control-strategy'],
             'region': [household.region for household in households]
         }
     )
     _df_to_input_db(df, uo.DWELLINGS_TABLE_NAME, path_to_db)
+
+
 
 
 def _write_citizens_table(citizens, path_to_db):
