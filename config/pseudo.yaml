@@ -1,0 +1,38 @@
+metabolic-heat-gain-active: 140
+metabolic-heat-gain-passive: 70
+metabolic-ratio-child: 0.75
+people-features:
+    - PSEUDO
+household-features:
+    - PSEUDO
+time-step-size-minutes: 10
+start-time: 2005-01-07 00:00
+spatial-resolution: WARD
+number-processes: 4
+java-heap-size: 12
+number-time-steps: 288
+set-point-while-home: 22
+set-point-while-asleep: 18
+wake-up-time: '07:00'
+leave-home-time: '08:30'
+come-home-time: '18:00'
+bed-time: '22:00'
+log-thermal-power: True
+log-temperature: False
+log-activity: False
+reweight-to-full-week: True
+dwelling:
+    thermal-mass-capacity: 9900000 # 165000 x floor area [J/K]
+    thermal-mass-area: 150 # 2.5 x floor area [m^2]
+    floor-area: 60 # [m^2]
+    room-height: 2.5 # [m]
+    window-to-wall-ratio: 0.19 # [-]
+    u-value-wall: 0.26 # [W/(m^2 * K)]
+    u-value-roof: 0.12 # [W/(m^2 * K)]
+    u-value-floor: 0.40 # [W/(m^2 * K)]
+    u-value-window: 1.95 # [W/(m^2 * K)]
+    transmission-adjustment-ground: 0.91 # [-]
+    natural-ventilation-rate: 0.65 # [l/(s*m^2)]
+    max-heating-power: 10000 # [W] (>= 0)
+    initial-temperature: 18 # [℃]
+    heating-control-strategy: PRESENCE_TRIGGERED

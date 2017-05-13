@@ -31,21 +31,36 @@ build/ts-association.png: ./build/ts-association.pickle ./scripts/plot/associati
 build/population-cluster.png: ./build/seed.pickle ./build/markov-ts.pickle ./scripts/plot/popcluster.py
 	python ./scripts/plot/popcluster.py ./build/seed.pickle ./build/markov-ts.pickle ./build/population-cluster.png
 
-build/simulation-input.db: ./build/seed.pickle ./build/markov-ts.pickle ./simulation-config.yaml ./scripts/simulationinput.py
-	python ./scripts/simulationinput.py ./build/seed.pickle ./build/markov-ts.pickle ./simulation-config.yaml build/simulation-input.db
+build/simulation-input.db: ./build/seed.pickle ./build/markov-ts.pickle ./config/default.yaml ./scripts/simulationinput.py
+	python ./scripts/simulationinput.py ./build/seed.pickle ./build/markov-ts.pickle ./config/default.yaml build/simulation-input.db
 
 build/energy-agents.jar: | build
 	curl -Lo build/energy-agents.jar 'https://github.com/timtroendle/energy-agents/releases/download/v1.0.0-RC1/energy-agents-1.0.0-RC1-jar-with-dependencies.jar'
 
-build/simulation-output.db: build/energy-agents.jar build/simulation-input.db scripts/runsim.py simulation-config.yaml
-	python scripts/runsim.py build/energy-agents.jar build/simulation-input.db build/simulation-output.db simulation-config.yaml
+build/simulation-output.db: build/energy-agents.jar build/simulation-input.db scripts/runsim.py config/default.yaml
+	python scripts/runsim.py build/energy-agents.jar build/simulation-input.db build/simulation-output.db config/default.yaml
 
-build/thermal-power.png build/choropleth.png build/scatter.png: build/simulation-output.db simulation-config.yaml scripts/plot/simulationresults.py
-	python scripts/plot/simulationresults.py build/simulation-output.db simulation-config.yaml build/thermal-power.png build/choropleth.png build/scatter.png
+build/sim-output-age.db: build/energy-agents.jar build/seed.pickle build/markov-ts.pickle config/age.yaml scripts/simulationinput.py scripts/runsim.py
+	python scripts/simulationinput.py build/seed.pickle build/markov-ts.pickle config/age.yaml build/sim-input-age.db
+	python scripts/runsim.py build/energy-agents.jar build/sim-input-age.db build/sim-output-age.db config/age.yaml
+
+build/sim-output-qual.db: build/energy-agents.jar build/seed.pickle build/markov-ts.pickle config/qual.yaml scripts/simulationinput.py scripts/runsim.py
+	python scripts/simulationinput.py build/seed.pickle build/markov-ts.pickle config/qual.yaml build/sim-input-qual.db
+	python scripts/runsim.py build/energy-agents.jar build/sim-input-qual.db build/sim-output-qual.db config/qual.yaml
+
+build/sim-output-pseudo.db: build/energy-agents.jar build/seed.pickle build/markov-ts.pickle config/pseudo.yaml scripts/simulationinput.py scripts/runsim.py
+	python scripts/simulationinput.py build/seed.pickle build/markov-ts.pickle config/pseudo.yaml build/sim-input-pseudo.db
+	python scripts/runsim.py build/energy-agents.jar build/sim-input-pseudo.db build/sim-output-pseudo.db config/pseudo.yaml
+
+build/thermal-diff.png: build/sim-output-pseudo.db build/sim-output-qual.db build/simulation-output.db scripts/plot/powerdiff.py
+	python scripts/plot/powerdiff.py build/simulation-output.db 'none' build/sim-output-pseudo.db 'qualification' build/sim-output-qual.db build/thermal-diff.png
+
+build/thermal-power.png build/choropleth.png build/scatter.png: build/simulation-output.db config/default.yaml scripts/plot/simulationresults.py
+	python scripts/plot/simulationresults.py build/simulation-output.db config/default.yaml build/thermal-power.png build/choropleth.png build/scatter.png
 
 build/paper.docx: doc/literature.bib doc/online.bib doc/main.md doc/pandoc-metadata.yml
 build/paper.docx: build/ts-association.png build/population-cluster.png build/thermal-power.png
-build/paper.docx: build/choropleth.png build/scatter.png
+build/paper.docx: build/choropleth.png build/scatter.png build/thermal-diff.png
 build/paper.docx: build/ts-association-filtered-stats.csv
 	cd ./doc && \
 	pandoc --filter pantable --filter pandoc-fignos --filter pandoc-tablenos --filter pandoc-citeproc \

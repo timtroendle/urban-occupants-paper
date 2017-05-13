@@ -214,6 +214,8 @@ To understand relationships between people and household features and the energy
 
 compare numerically the two runs
 
+![Difference to the original run in average thermal power per household in different wards](../build/thermal-diff.png){#fig:thermal-diff .class width=500}
+
 # Discussion & Conclusion
 
 Future work:
