@@ -65,24 +65,9 @@ Every person has exactly one home, so we can define a time-invariant set of peop
 
 ### Thermal Dwelling Model
 
-Dwellings are modelled as single thermal zones following the conceptual model of EN ISO 13790 [@cen13790:2008]. The model is derived from the simple hourly dynamic model as described in the standard but is reduced to a single capacity and a single resistance as depicted in Fig. @fig:simple-simple. Compared to the full model there is no other than metabolic heat gain, full shading of the building, i.e. no direct or indirect sun light, no windows or doors, no ventilation, and immediate heat transfer between air and surface. Furthermore, heat transfer between dwellings is ignored.
+Dwellings are modelled following the simple hourly dynamic model of EN ISO 13790 [@cen13790:2008]. Each dwelling is represented as a single thermal zone with squared floor area which is entirely heated. The dwelling consists of only one storey with equally sized windows facing north, south, east, and west. Ventilation and infiltration is limited to constant natural ventilation, and heat gains are limited to metabolic heat gains. Furthermore, heat transfer between dwellings is ignored.
 
-![RC network of the applied dynamic thermal model of a dwelling](../doc/figures/simple-simple.jpg){#fig:simple-simple .class width=300}
-
-The time discrete difference equation of the indoor temperature $\theta_{m, k}^d$ of dwelling $d$ is given as:
-
-$$\theta_{m, k}^d = \theta_{m, k-1}^d \cdot (1 - \frac{\Delta{t}}{C_{m}^d} \cdot H_{tr, em}^d) + \frac{\Delta{t}}{C_m^d} \cdot (\Phi_{HC, nd, k-1}^d + \Phi_{int,Oc, k}^d + H_{tr, em}^d \cdot \theta_{e, k-1}),$$
-
-where
-
-* $\Phi_{HC, nd, k}^d$: heating power at time k [W],
-* $\Phi_{int,Oc, k}^d$: metabolic heat gain of occupants at time k [W],
-* $C_m^d$: capacity of the dwellings's heat mass [J/K],
-* $H_{tr, em}^d$: heat transmission to the outside [W/K],
-* $\theta_{e, k}$: outside temperature [℃] at time k,
-* $\Delta{t}$: time step size [s].
-
-The unknown and bounded heating power $\Phi_{HC, nd, k}^d$ is determined by the need to reach the set point temperature as defined by the heating system control. According to [@cen13790:2008] it is assumed that the controller has a perfect dwelling model and can hence determine the necessary heating power in an precise manner.
+The unknown and bounded heating power $\Phi_{HC, nd, k}^d$ is determined by the need to reach the set point temperature as defined by the heating system control. According to [@cen13790:2008] it is assumed that the controller has a perfect dwelling model and can hence determine the necessary heating power in a precise manner.
 
 ## Simulation Model
 
@@ -136,14 +121,32 @@ Table @tbl:parameters summarises the parameters of the thermal dwelling model ap
 
 ------------------------------------------------------------
 parameter name                                  value
-------------------------------------            -----
-$C_m$: heat mass capacity                       16.5 MJ/K
+------------------------------------            -----------
+thermal mass capacity                           9.9 MJ/K
 
-$H_{tr, em}$: heat transmission                 200 W/K
+thermal mass area                               150 m^2
+
+floor area                                      60 m^2
+
+room height                                     2.5 m
+
+window to wall ratio                            0.19
+
+U-value wall                                    0.26 W/(m^2 * K)
+
+U-value roof                                    0.12 W/(m^2 * K)
+
+U-value floor                                   0.40 W/(m^2 * K)
+
+U-value window                                  1.95 W/(m^2 * K)
+
+transmission adjustment ground                  0.91
+
+natural ventilation rate                        0.65 l/(s*m^2)
 
 $\Phi_{HC, nd, max}$: max heating power         10 kW
 
-$\theta_{m, 0}$: initial indoor temperature     22 ˚C
+$\theta_{m, 0}$: initial indoor temperature     18 ˚C
 
 $\theta_{set, absent}$: absent set point        0 ˚C
 
@@ -156,6 +159,7 @@ metabolic heat gain while active                140 W
 metabolic heat gain while passive               70 W
 
 metabolic heat gain ratio below age 18          0.75
+
 ------------------------------------------------------------
 
 Table: Model parameters applied in Haringey study. {#tbl:parameters}
