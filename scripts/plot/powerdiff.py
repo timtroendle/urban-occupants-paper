@@ -25,30 +25,27 @@ def plot_diff(path_to_original_result, name2, path_to_result2, name3, path_to_re
     dwellings = _read_dwellings(disk_engine)
     thermal_power_orig = _read_thermal_power(disk_engine, dwellings)
     disk_engine = sqlalchemy.create_engine('sqlite:///{}'.format(path_to_result2))
+    dwellings = _read_dwellings(disk_engine)
     thermal_power2 = _read_thermal_power(disk_engine, dwellings)
     disk_engine = sqlalchemy.create_engine('sqlite:///{}'.format(path_to_result3))
+    dwellings = _read_dwellings(disk_engine)
     thermal_power3 = _read_thermal_power(disk_engine, dwellings)
     disk_engine = sqlalchemy.create_engine('sqlite:///{}'.format(path_to_result4))
+    dwellings = _read_dwellings(disk_engine)
     thermal_power4 = _read_thermal_power(disk_engine, dwellings)
 
-    thermal_power_orig.set_index(['dwelling_id', 'datetime'], inplace=True)
-    thermal_power2.set_index(['dwelling_id', 'datetime'], inplace=True)
-    thermal_power3.set_index(['dwelling_id', 'datetime'], inplace=True)
-    thermal_power4.set_index(['dwelling_id', 'datetime'], inplace=True)
-    diff2 = thermal_power2
-    diff2['value'] = diff2['value'] - thermal_power_orig['value']
-    diff2.reset_index(inplace=True)
-    diff2['feature'] = name2
-    diff3 = thermal_power3
-    diff3['value'] = diff3['value'] - thermal_power_orig['value']
-    diff3.reset_index(inplace=True)
-    diff3['feature'] = name3
-    diff4 = thermal_power4
-    diff4['value'] = diff4['value'] - thermal_power_orig['value']
-    diff4.reset_index(inplace=True)
-    diff4['feature'] = name4
-
-    diff = pd.concat([diff2, diff3, diff4])
+    orig_groups = thermal_power_orig.groupby(['region', 'datetime'])
+    orig_mean = orig_groups.value.mean()
+    orig_std = orig_groups.value.std()
+    diff = pd.concat([
+        pd.DataFrame(index=orig_mean.index, data={
+                     'mean': diff.groupby(['region', 'datetime']).value.mean() - orig_mean,
+                     'std': diff.groupby(['region', 'datetime']).value.std() - orig_std,
+                     'feature': name})
+        for diff, name in zip([thermal_power2, thermal_power3, thermal_power4],
+                              [name2, name3, name4])
+    ])
+    diff.reset_index(inplace=True)
     _plot_thermal_power_diff(diff, path_to_plot)
 
 
@@ -89,10 +86,10 @@ def _plot_thermal_power_diff(thermal_power, path_to_plot):
     fig = plt.figure(figsize=(14, 7))
     ax1 = fig.add_subplot(2, 1, 1)
     sns.tsplot(
-        data=(thermal_power.groupby(['datetime', 'region', 'feature']).value.mean().reset_index()),
+        data=thermal_power,
         time='datetime',
         unit='region',
-        value='value',
+        value='mean',
         condition='feature',
         err_style='unit_traces',
         ax=ax1
@@ -102,10 +99,10 @@ def _plot_thermal_power_diff(thermal_power, path_to_plot):
 
     ax2 = fig.add_subplot(2, 1, 2, sharex=ax1)
     sns.tsplot(
-        data=(thermal_power.groupby(['datetime', 'region', 'feature']).value.std().reset_index()),
+        data=thermal_power,
         time='datetime',
         unit='region',
-        value='value',
+        value='std',
         condition='feature',
         err_style='unit_traces',
         ax=ax2
