@@ -15,9 +15,11 @@ import urbanoccupants as uo
 @click.argument('path_to_result2')
 @click.argument('name3')
 @click.argument('path_to_result3')
+@click.argument('name4')
+@click.argument('path_to_result4')
 @click.argument('path_to_plot')
 def plot_diff(path_to_original_result, name2, path_to_result2, name3, path_to_result3,
-              path_to_plot):
+              name4, path_to_result4, path_to_plot):
     """Plots the difference in thermal power of several simulation runs."""
     disk_engine = sqlalchemy.create_engine('sqlite:///{}'.format(path_to_original_result))
     dwellings = _read_dwellings(disk_engine)
@@ -26,10 +28,13 @@ def plot_diff(path_to_original_result, name2, path_to_result2, name3, path_to_re
     thermal_power2 = _read_thermal_power(disk_engine, dwellings)
     disk_engine = sqlalchemy.create_engine('sqlite:///{}'.format(path_to_result3))
     thermal_power3 = _read_thermal_power(disk_engine, dwellings)
+    disk_engine = sqlalchemy.create_engine('sqlite:///{}'.format(path_to_result4))
+    thermal_power4 = _read_thermal_power(disk_engine, dwellings)
 
     thermal_power_orig.set_index(['dwelling_id', 'datetime'], inplace=True)
     thermal_power2.set_index(['dwelling_id', 'datetime'], inplace=True)
     thermal_power3.set_index(['dwelling_id', 'datetime'], inplace=True)
+    thermal_power4.set_index(['dwelling_id', 'datetime'], inplace=True)
     diff2 = thermal_power2
     diff2['value'] = diff2['value'] - thermal_power_orig['value']
     diff2.reset_index(inplace=True)
@@ -38,8 +43,12 @@ def plot_diff(path_to_original_result, name2, path_to_result2, name3, path_to_re
     diff3['value'] = diff3['value'] - thermal_power_orig['value']
     diff3.reset_index(inplace=True)
     diff3['feature'] = name3
+    diff4 = thermal_power4
+    diff4['value'] = diff4['value'] - thermal_power_orig['value']
+    diff4.reset_index(inplace=True)
+    diff4['feature'] = name4
 
-    diff = pd.concat([diff2, diff3])
+    diff = pd.concat([diff2, diff3, diff4])
     _plot_thermal_power_diff(diff, path_to_plot)
 
 
@@ -88,7 +97,7 @@ def _plot_thermal_power_diff(thermal_power, path_to_plot):
         err_style='unit_traces',
         ax=ax1
     )
-    _ = plt.ylabel('diff of average [W]')
+    _ = plt.ylabel('average [W]')
     _ = plt.xlabel('')
 
     ax2 = fig.add_subplot(2, 1, 2, sharex=ax1)
@@ -101,7 +110,7 @@ def _plot_thermal_power_diff(thermal_power, path_to_plot):
         err_style='unit_traces',
         ax=ax2
     )
-    _ = plt.ylabel('diff of standard deviation [W]')
+    _ = plt.ylabel('standard deviation [W]')
     _ = plt.xlabel('time of the day')
     ax1.xaxis.set_major_formatter(mpl.ticker.FuncFormatter(_xTickFormatter))
     fig.savefig(path_to_plot, dpi=300)

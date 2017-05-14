@@ -31,14 +31,18 @@ build/ts-association.png: ./build/ts-association.pickle ./scripts/plot/associati
 build/population-cluster.png: ./build/seed.pickle ./build/markov-ts.pickle ./scripts/plot/popcluster.py
 	python ./scripts/plot/popcluster.py ./build/seed.pickle ./build/markov-ts.pickle ./build/population-cluster.png
 
-build/simulation-input.db: ./build/seed.pickle ./build/markov-ts.pickle ./config/default.yaml ./scripts/simulationinput.py
-	python ./scripts/simulationinput.py ./build/seed.pickle ./build/markov-ts.pickle ./config/default.yaml build/simulation-input.db
+build/sim-input.db: ./build/seed.pickle ./build/markov-ts.pickle ./config/default.yaml ./scripts/simulationinput.py
+	python ./scripts/simulationinput.py ./build/seed.pickle ./build/markov-ts.pickle ./config/default.yaml build/sim-input.db
 
 build/energy-agents.jar: | build
 	curl -Lo build/energy-agents.jar 'https://github.com/timtroendle/energy-agents/releases/download/v1.0.0-RC1/energy-agents-1.0.0-RC1-jar-with-dependencies.jar'
 
-build/simulation-output.db: build/energy-agents.jar build/simulation-input.db scripts/runsim.py config/default.yaml
-	python scripts/runsim.py build/energy-agents.jar build/simulation-input.db build/simulation-output.db config/default.yaml
+build/sim-output.db: build/energy-agents.jar build/sim-input.db scripts/runsim.py config/default.yaml
+	python scripts/runsim.py build/energy-agents.jar build/sim-input.db build/sim-output.db config/default.yaml
+
+build/sim-output-default-ward.db: build/energy-agents.jar build/seed.pickle build/markov-ts.pickle config/default-ward.yaml scripts/simulationinput.py scripts/runsim.py
+	python scripts/simulationinput.py build/seed.pickle build/markov-ts.pickle config/default-ward.yaml build/sim-input-default-ward.db
+	python scripts/runsim.py build/energy-agents.jar build/sim-input-default-ward.db build/sim-output-default-ward.db config/default-ward.yaml
 
 build/sim-output-age.db: build/energy-agents.jar build/seed.pickle build/markov-ts.pickle config/age.yaml scripts/simulationinput.py scripts/runsim.py
 	python scripts/simulationinput.py build/seed.pickle build/markov-ts.pickle config/age.yaml build/sim-input-age.db
@@ -52,11 +56,11 @@ build/sim-output-pseudo.db: build/energy-agents.jar build/seed.pickle build/mark
 	python scripts/simulationinput.py build/seed.pickle build/markov-ts.pickle config/pseudo.yaml build/sim-input-pseudo.db
 	python scripts/runsim.py build/energy-agents.jar build/sim-input-pseudo.db build/sim-output-pseudo.db config/pseudo.yaml
 
-build/thermal-diff.png: build/sim-output-pseudo.db build/sim-output-qual.db build/simulation-output.db scripts/plot/powerdiff.py
-	python scripts/plot/powerdiff.py build/simulation-output.db 'none' build/sim-output-pseudo.db 'qualification' build/sim-output-qual.db build/thermal-diff.png
+build/thermal-diff.png: build/sim-output-pseudo.db build/sim-output-qual.db build/sim-output.db scripts/plot/powerdiff.py
+	python scripts/plot/powerdiff.py build/sim-output-default-ward.db 'age' build/sim-output-age.db 'qualification' build/sim-output-qual.db 'none' build/sim-output-pseudo.db build/thermal-diff.png
 
-build/thermal-power.png build/choropleth.png build/scatter.png: build/simulation-output.db config/default.yaml scripts/plot/simulationresults.py
-	python scripts/plot/simulationresults.py build/simulation-output.db config/default.yaml build/thermal-power.png build/choropleth.png build/scatter.png
+build/thermal-power.png build/choropleth.png build/scatter.png: build/sim-output.db config/default.yaml scripts/plot/simulationresults.py
+	python scripts/plot/simulationresults.py build/sim-output.db config/default.yaml build/thermal-power.png build/choropleth.png build/scatter.png
 
 build/paper.docx: doc/literature.bib doc/online.bib doc/main.md doc/pandoc-metadata.yml
 build/paper.docx: build/ts-association.png build/population-cluster.png build/thermal-power.png
