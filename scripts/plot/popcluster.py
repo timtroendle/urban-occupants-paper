@@ -8,7 +8,6 @@ import numpy as np
 import string
 from itertools import cycle
 
-import people as ppl
 import urbanoccupants as uo
 
 GREY_COLORMAP = ListedColormap(sns.light_palette("black", 30)[2:20])
@@ -44,9 +43,9 @@ def population_cluster(path_to_seed, path_to_markov_ts, path_to_plot):
 
 def _convert_to_numerical_values(markov_ts):
     color_markov_ts = markov_ts.copy()
-    color_markov_ts.replace(to_replace=ppl.Activity.NOT_AT_HOME, value=0, inplace=True)
-    color_markov_ts.replace(to_replace=ppl.Activity.SLEEP_AT_HOME, value=0.5, inplace=True)
-    color_markov_ts.replace(to_replace=ppl.Activity.HOME, value=1.0, inplace=True)
+    color_markov_ts.replace(to_replace=uo.Activity.NOT_AT_HOME, value=0, inplace=True)
+    color_markov_ts.replace(to_replace=uo.Activity.SLEEP_AT_HOME, value=0.5, inplace=True)
+    color_markov_ts.replace(to_replace=uo.Activity.HOME, value=1.0, inplace=True)
     return color_markov_ts
 
 

@@ -1,9 +1,8 @@
 import click
-import pytus2000
-import people as ppl
 import pandas as pd
 import numpy as np
 
+import pytus2000
 from urbanoccupants.tus import Activity, Location, ACTIVITY_MAP, LOCATION_MAP
 
 EXPECTED_NUMBER_OF_DIARY_ENTRIES = 2 * 24 * 6
@@ -53,16 +52,16 @@ def _transform_to_markov_timeseries(diary_data_ts):
         'activity': diary_data_ts.activity.map(ACTIVITY_MAP)
     })
     markov_ts = pd.Series(index=simple_ts.index, dtype='category')
-    markov_ts.cat.add_categories([state for state in ppl.Activity], inplace=True)
+    markov_ts.cat.add_categories([state for state in uo.Activity], inplace=True)
     mask_home = ((simple_ts.location == Location.HOME) &
                  (simple_ts.activity != Activity.SLEEP))
     mask_sleep = (((simple_ts.location == Location.HOME) |
                    (simple_ts.location == Location.IMPLICIT)) &
                   (simple_ts.activity == Activity.SLEEP))
     mask_nan = pd.isnull(simple_ts.location) | pd.isnull(simple_ts.activity)
-    markov_ts[:] = ppl.Activity.NOT_AT_HOME
-    markov_ts[mask_home] = ppl.Activity.HOME
-    markov_ts[mask_sleep] = ppl.Activity.SLEEP_AT_HOME
+    markov_ts[:] = uo.Activity.NOT_AT_HOME
+    markov_ts[mask_home] = uo.Activity.HOME
+    markov_ts[mask_sleep] = uo.Activity.SLEEP_AT_HOME
     markov_ts[mask_nan] = np.nan
     return markov_ts
 

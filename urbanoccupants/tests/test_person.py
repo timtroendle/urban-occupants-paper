@@ -6,7 +6,7 @@ import random
 import pykov
 import pytest
 
-from people import Person, Activity, WeekMarkovChain
+from urbanoccupants import Person, Activity, WeekMarkovChain
 
 
 TIME_STEP_SIZE = timedelta(hours=1)

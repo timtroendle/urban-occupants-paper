@@ -9,8 +9,8 @@ from pandas.util.testing import assert_frame_equal
 import pytest
 import pykov
 
-from people import Activity, WeekMarkovChain
-from people import person
+from urbanoccupants import Activity, WeekMarkovChain
+import urbanoccupants.person as person
 
 
 MIDNIGHT_WEEKDAY = datetime(2017, 3, 8, 0, 0)
