@@ -20,7 +20,7 @@ dependencies:
   - pytest=3.0.7
   - pyyaml=3.12
   - pip:
-      - git+git://github.com/riccardoscalco/Pykov@master
+      - git+git://github.com/riccardoscalco/Pykov@16cda2f2c0ed8143ddcfa25dac34d3dadc982380
       - git+git://github.com/timtroendle/pytus2000@v0.5.1
       - ./urbanoccupants/
       - pandoc-tablenos
