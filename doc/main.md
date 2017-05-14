@@ -146,7 +146,7 @@ natural ventilation rate                        0.65 l/(s*m^2)
 
 $\Phi_{HC, nd, max}$: max heating power         10 kW
 
-$\theta_{m, 0}$: initial indoor temperature     18 ˚C
+$\theta_{m, 0}$: initial indoor temperature     20 ˚C
 
 $\theta_{set, absent}$: absent set point        0 ˚C
 

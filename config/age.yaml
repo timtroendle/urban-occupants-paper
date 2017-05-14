@@ -34,5 +34,5 @@ dwelling:
     transmission-adjustment-ground: 0.91 # [-]
     natural-ventilation-rate: 0.65 # [l/(s*m^2)]
     max-heating-power: 10000 # [W] (>= 0)
-    initial-temperature: 18 # [℃]
+    initial-temperature: 20 # [℃]
     heating-control-strategy: PRESENCE_TRIGGERED
