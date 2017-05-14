@@ -44,12 +44,28 @@ If you do not have `make` you can manually run the steps through the Python comm
 * `urbanoccupants`: a small Python library and their tests, containing reusable code needed several times in this study
 * `scripts`: Python scripts and its tests which run this analysis
 * `notebooks`: Jupyter notebooks that are not used in the main build chain of the paper
+* `config`: configurations for the simulation runs as performed in the study
 
 ## Datasets
 
-// TODO add licenses and copyright
+* UK Census 2011: Retrieved from [nomis](https://www.nomisweb.co.uk).
 
-* UK Census 2011: Retrieved from [nomis](https://www.nomisweb.co.uk.).
-* London Shape Files: Retrieved from [London Datastore](https://data.london.gov.uk).
+>Office for National Statistics ; National Records of Scotland ; Northern Ireland Statistics and Research Agency (2016): 2011 Census aggregate data. UK Data Service (Edition: June 2016). DOI: http://dx.doi.org/10.5257/census/aggregate-2011-1
+
+>This information is licensed under the terms of the Open Government Licence [http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3].
+
+* London Shape Files: Retrieved from [London Datastore](https://data.london.gov.uk/dataset/statistical-gis-boundary-files-london).
+
+> Contains National Statistics data © Crown copyright and database right 2012
+
+> Contains Ordnance Survey data © Crown copyright and database right 2012
+
+> Release under the terms of the [UK Open Government Licence (OGL v2)](http://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/).
+
 * UK Time Use Survey 2001: Safeguarded data set.
+
+> Ipsos-RSL, Office for National Statistics. (2003). United Kingdom Time Use Survey, 2000. [data collection]. 3rd Edition. UK Data Service. SN: 4504, http://doi.org/10.5255/UKDA-SN-4504-1
+
 * MIDAS: Safeguarded data set.
+
+> Met Office (2006): MIDAS: UK Hourly Weather Observation Data. NCAS British Atmospheric Data Centre. http://catalogue.ceda.ac.uk/uuid/916ac4bbc46f7685ae9a5e10451bae7c
