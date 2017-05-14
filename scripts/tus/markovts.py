@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 
 import pytus2000
+import urbanoccupants as uo
 from urbanoccupants.tus import Activity, Location, ACTIVITY_MAP, LOCATION_MAP
 
 EXPECTED_NUMBER_OF_DIARY_ENTRIES = 2 * 24 * 6

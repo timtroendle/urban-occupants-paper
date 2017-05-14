@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 
 from pytus2000 import diary, individual
+from .person import WeekMarkovChain
 from .types import EconomicActivity, Qualification, HouseholdType, AgeStructure, Pseudo, Carer,\
     PersonalIncome, PopulationDensity, Region
 
@@ -70,7 +71,7 @@ def markov_chain_for_cluster(param_tuple):
     filtered_markov_weekday = filtered_markov.loc[idx[:, :, :, 'weekday'], :]
     # filter by weekend
     filtered_markov_weekend = filtered_markov.loc[idx[:, :, :, 'weekend'], :]
-    return features, uo.WeekMarkovChain(
+    return features, WeekMarkovChain(
         weekday_time_series=filtered_markov_weekday.unstack(level=[0, 1, 2, 3]),
         weekend_time_series=filtered_markov_weekend.unstack(level=[0, 1, 2, 3]),
         time_step_size=time_step_size
