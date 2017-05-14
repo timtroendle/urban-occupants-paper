@@ -228,4 +228,7 @@ When looking at thermal power profiles similar temporal patterns to the ones fro
 
 The results support the suitability of models with low resolution when aggregated results are demanded. In cases where higher temporal or spatial resolution is needed, as it is for example for the design and optimised operation of decentralised energy supply systems like combined heat and power plants, detailed micro simulations as performed in this study offer the potential to understand and predict urban energy demand better. This study focusses on only one aspect of urban energy demand, namely occupancy, and generates energy profiles for a hypothetical scenario. The methodology and simulation framework allow to analyse more aspects like the spatial distribution of heating patterns, set point preferences [@Baetens:2015gm; @Leidelmeijer:2005vu], fraction of dwellings heated [@Baetens:2015gm; @Leidelmeijer:2005vu], and electricity demand [@Aerts:2015ko], and incorporating those will allow to create a more comprehensive picture of urban energy demand.
 
+# Acknowledgements {.unnumbered}
+This research was conducted as part of a Knowledge Transfer Partnership between University of Cambridge and Improbable Ltd., financed by the UK Engineering and Physical Sciences Research Council.
+
 # References <!--- filled automatically by pandoc --->
