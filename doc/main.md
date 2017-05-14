@@ -117,6 +117,8 @@ Given the conceptual model and its calibration using census data and TUS data as
 
 The model is applied in a case study of the London Borough of Haringey which according to latest census data [@ukcensus2011] is the home of 254,926 usual residents and comprises of 101,955 households. For this case study two data sets have been used: the UK Time Use Survey 2000 [@uktus2000], and the UK 2011 Census [@ukcensus2011]. The former contains time use diaries with a resolution of 10 min for a weekday and a weekend day for more than 11,500 individuals of nearly 6,500 households in the UK. The latter contains aggregated census data for so called output areas (OA) comprising of at least 40 resident households and 100 resident people to ensure confidentiality. Haringey is divided into 753 distinct output areas which are aggregated into 145 Lower Super Output Areas (LSOA) and furthermore into 19 wards. The source code for this case study is published under an open source license and is available online [@scripts, @pytus2000].
 
+<!-- TODO mention new TUS data set -->
+
 Table @tbl:parameters summarises the parameters of the thermal dwelling model applied for the dwelling of each household in Haringey including set point temperatures of their heating control systems, and metabolic heat gains.
 
 ------------------------------------------------------------
@@ -218,14 +220,12 @@ compare numerically the two runs
 
 # Discussion & Conclusion
 
-Future work:
+This paper evaluates the usefulness of microsimulations for urban energy systems by presenting the work in progress of introducing occupancy models to high resolution bottom up energy models. A synthetic population is created from census data and the occupancy of every citizen is modelled using a time heterogeneous Markov chain which is calibrated using time use survey data. The fraction of the variability of the thermal energy demand caused by building specifics is deliberately ignored and heating system control is considered to be based on occupancy only to highlight the impact of occupants. This study is hence hypothetical and aims at understanding underlying mechanics of energy demand rather than actual energy demand.
 
-* sensitivity to other parameters, like weather, heating set points
-* use survival models for occupancy, as done by [@Aerts:2015ko; @Baetens:2015gm]
-* use clustering approach as used by [@Aerts:2015ko]
-* use set point preference as introduced by [@Baetens:2015gm; @Leidelmeijer:2005vu]
-* use fraction of room heated as in [@Baetens:2015gm; @Leidelmeijer:2005vu]
-* use newly released uk TUS data set
+In an application of this methodology to the London Borough of Haringey, the average thermal energy demand for space heating varies only marginally between the 145 LSOA's of in average around 1700 citizens into which Haringey is divided and to which results are aggregated. The standard deviation of energy demand per dwelling varies much more among the LSOA's indicating a higher diversity of household compositions in these parts of the city.
 
+When looking at thermal power profiles similar temporal patterns to the ones from the input time use data can be seen: low variability in average thermal power during the night and on the weekends, and a larger variability during working hours. At noon on a workday for example, the LSOA with the lowest average power shows a thermal power of roughly 500 W per household, while the LSOA with the highest average power shows a thermal power above 800 W per household. The standard deviation of thermal power between dwellings varies strongly in the evening hours of workdays and during the weekend.
+
+The results support the suitability of models with low resolution when aggregated results are demanded. In cases where higher temporal or spatial resolution is needed, as it is for example for the design and optimised operation of decentralised energy supply systems like combined heat and power plants, detailed micro simulations as performed in this study offer the potential to understand and predict urban energy demand better. This study focusses on only one aspect of urban energy demand, namely occupancy, and generates energy profiles for a hypothetical scenario. The methodology and simulation framework allow to analyse more aspects like the spatial distribution of heating patterns, set point preferences [@Baetens:2015gm; @Leidelmeijer:2005vu], fraction of dwellings heated [@Baetens:2015gm; @Leidelmeijer:2005vu], and electricity demand [@Aerts:2015ko], and incorporating those will allow to create a more comprehensive picture of urban energy demand.
 
 # References <!--- filled automatically by pandoc --->
