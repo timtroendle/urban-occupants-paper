@@ -56,7 +56,8 @@ build/sim-output-pseudo.db: build/energy-agents.jar build/seed.pickle build/mark
 	python scripts/simulationinput.py build/seed.pickle build/markov-ts.pickle config/pseudo.yaml build/sim-input-pseudo.db
 	python scripts/runsim.py build/energy-agents.jar build/sim-input-pseudo.db build/sim-output-pseudo.db config/pseudo.yaml
 
-build/thermal-diff.png: build/sim-output-pseudo.db build/sim-output-qual.db build/sim-output.db scripts/plot/powerdiff.py
+build/thermal-diff.png: build/sim-output-pseudo.db build/sim-output-qual.db
+build/thermal-diff.png: build/sim-output-default-ward.db build/sim-output-age.db scripts/plot/powerdiff.py
 	python scripts/plot/powerdiff.py build/sim-output-default-ward.db 'age' build/sim-output-age.db 'qualification' build/sim-output-qual.db 'none' build/sim-output-pseudo.db build/thermal-diff.png
 
 build/thermal-power.png build/choropleth.png build/scatter.png: build/sim-output.db config/default.yaml scripts/plot/simulationresults.py
