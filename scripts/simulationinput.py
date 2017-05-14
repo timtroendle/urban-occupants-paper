@@ -17,6 +17,7 @@ import urbanoccupants as uo
 
 NUMBER_HOUSEHOLDS_HARINGEY = 101955
 NUMBER_USUAL_RESIDENTS_HARINGEY = 254926
+RANDOM_SEED = 'haringey-case-study'
 ROOT_FOLDER = Path(os.path.abspath(__file__)).parent.parent
 CACHE_PATH = ROOT_FOLDER / 'build' / 'web-cache'
 MIDAS_DATABASE_PATH = ROOT_FOLDER / 'data' / 'Londhour.csv'
@@ -29,6 +30,7 @@ requests_cache.install_cache((CACHE_PATH).as_posix())
 @click.argument('path_to_config')
 @click.argument('path_to_result')
 def simulation_input(path_to_seed, path_to_markov_ts, path_to_config, path_to_result):
+    random.seed(RANDOM_SEED)
     _check_paths(path_to_seed, path_to_markov_ts, path_to_config, path_to_result)
     seed = pd.read_pickle(path_to_seed)
     markov_ts = pd.read_pickle(path_to_markov_ts)
@@ -217,8 +219,6 @@ def _write_dwellings_table(households, config, path_to_db):
         }
     )
     _df_to_input_db(df, uo.DWELLINGS_TABLE_NAME, path_to_db)
-
-
 
 
 def _write_citizens_table(citizens, path_to_db):
