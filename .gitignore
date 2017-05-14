@@ -37,3 +37,11 @@ notebooks/build/
 *.synctex.gz
 *.synctex.gz(busy)
 *.pdfsync
+
+# Python
+*.pyc
+build/
+dist/
+__pycache__
+*.egg-info
+.cache/

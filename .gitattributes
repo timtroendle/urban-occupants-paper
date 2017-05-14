@@ -3,5 +3,10 @@
 
 *.tex text
 *.md text
+*.py text
+*.idf text
+*.md text
+*.txt text
+*.csv text
 
 *.ipynb filter=nbstripout
