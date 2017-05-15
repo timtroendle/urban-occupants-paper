@@ -16,7 +16,7 @@ This paper is structured as follows: section 2 describes the conceptual model an
 
 ## Conceptual Model
 
-The general urban energy system as applied in this study consists of three distinct entities: citizens, HVAC controls, and dwellings whose models will be described in detail in the following sub sections. A dwelling forms a home for one to $n$ citizens and incorporates exactly one HVAC control system. Fig. @fig:flow-chart-time-step shows a flow-chart of the model. The model is time-step based where in each time step $k$, each entity updates its state: first all citizens update their occupancy, i.e. determine whether they are at home or not. Second, the HVAC control system of each dwelling updates its heating set point, taking into account the occupancy of the dwelling. Lastly, each dwelling updates its indoor temperature and the thermal power needed for reaching it.
+The general urban energy system as applied in this study consists of three distinct entities: citizens, HVAC controls, and dwellings whose models will be described in detail in the following sub sections. A dwelling forms a home for one to $n$ citizens and incorporates exactly one HVAC control system. Fig. @fig:flow-chart-time-step shows a flow-chart of the model. The model is time-step based where in each time step $k$, each entity updates its state: first all citizens update their occupancy, i.e. determine whether they are at home or not. Second, the HVAC control system of each dwelling updates its heating set point, taking into account the occupancy of the dwelling. Lastly, each dwelling updates its indoor temperature and the thermal power needed for reaching it. An agent-based implementation of this conceptual model is available online and published under an open-source license [@energyagents].
 
 ![Flow chart of a single time step $k$](../doc/figures/flow-chart-time-step.png){#fig:flow-chart-time-step .class}
 
@@ -64,10 +64,6 @@ Dwellings are modelled following the simple hourly dynamic model of EN ISO 13790
 
 The unknown and bounded heating power $\Phi_{HC, nd, k}^d$ is determined by the need to reach the set point temperature as defined by the heating system control. According to [@cen13790:2008] it is assumed that the controller has a perfect dwelling model and can hence determine the necessary heating power in a precise manner.
 
-## Simulation Model
-
-The distinct sub models of the heating control systems, the dwellings, and the citizens, are linked and implemented in an open-source simulation model [@energyagents]. While the conceptual models as defined above would allow for a separate, three stages approach of simulation, in which citizens occupancy is simulated first, heating set points are simulated consecutively, and indoor temperatures and thermal powers of dwellings are simulated as a last step, the model has been implemented in an agent-based manner in which these three stages are simulated consecutively. This will allow amending the model by aspects which add other relationships between the layers than the one depicting in Fig. @fig:flow-chart-time-step.
-
 ## Model Calibration
 
 The following subsection describes methods to calibrate the conceptual model as defined above. In particular two types of data sets are taken into account: (1) time use survey (TUS) data and (2) aggregated census data, which both are available for many regions of the world, and in the case of TUS data, even in a standardised manner [@ctus]. The TUS data is used to calibrate the occupancy model, whereas the aggregated census data is used to generate a synthetic population. In addition to these, a micro sample of census data is necessary, i.e. fully detailed census data for a fraction of the population. For the approach described in this study, that data must be available in the TUS data set, i.e. for each participant whose time use is recorded in the study, we will demand features of the participant as well, e.g. their socio-economic situation.
@@ -101,12 +97,6 @@ In the case of this study, the relationship between households and people must b
 ### Thermal Dwelling Model and Heating Control System
 
 To isolate the impact of occupants on the space heating energy demand in buildings in this proof-of-concept study, we are assuming the same physical conditions for all dwellings. We are hence defining a default dwelling and are allocating it to each household in the study area. This can be compared to normative building energy assessment where the object of study is the building and its impact on energy demand. Heating behaviour in these assessments is considered external to the object of study and equal among all buildings which allows to compare the physical structure of buildings only. Here, the object of study is the heating behaviour of occupants and its impact on energy demand. The physical structure of the building is considered external to the object of study and always equal among all households. Equal configuration is assumed for the heating control system as well.
-
-## Summary of Assumptions
-
-Given the conceptual model and its calibration using census data and TUS data as described above, the resulting model allows estimation of spatio-temporal patterns of energy usage for space heating in the hypothetical case in which the heating behaviour is identical in all dwellings and is based on occupancy only. Using identically parameterised thermal models for dwellings allows to study the impact of occupancy in isolation ignoring the variance stemming from the physical structure. Due to the population synthesis, model results are only valid for the smallest spatial region for which aggregated census data is available.
-
-<!--- TODO add ignorance of other people's home --->
 
 # Case Study
 
@@ -178,7 +168,7 @@ Based on these results it is concluded that:
 
 ## Simulation Results
 
-Using economic activity and age as discriminating features, a model of Haringey can be formed by creating a synthetic population for every LSOA following a zone-by-zone approach [@Muller:2010vx] and the model can by simulated by the open-source simulation model [@energyagents]. The simulation is run for two winter days, a weekday and a weekend day, and the results for both days are scaled appropriately energy-wise to represent a full week. Fig. @fig:choropleth shows a choropleth map of Haringey where the average energy demand for one full week per dwelling is depicted for every LSOA. The map reveals a few spatial patterns, most significantly a higher energy demand in the north eastern corner of Haringey. The variation in energy demand is though only marginal, with less than 6% difference between most LSOA.
+Using economic activity and age as discriminating features, a model of Haringey can be formed by creating a synthetic population for every LSOA following a zone-by-zone approach [@Muller:2010vx] and the model can by simulated by the open-source simulation model [@energyagents]. The simulation is run for two winter days, a weekday and a weekend day, and the results for both days are scaled appropriately energy-wise to represent a full week. Due to the population synthesis, model results are aggregated on the LSOA level. Fig. @fig:choropleth shows a choropleth map of Haringey where the average energy demand for one full week per dwelling is depicted for every LSOA. The map reveals a few spatial patterns, most significantly a higher energy demand in the north eastern corner of Haringey. The variation in energy demand is though only marginal, with less than 6% difference between most LSOA.
 
 ![Simulated average energy demand in Haringey for a week in January \[kWh/week\]](../build/choropleth.png){#fig:choropleth .class}
 
