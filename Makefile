@@ -66,7 +66,7 @@ build/thermal-power.png build/choropleth.png build/scatter.png: build/sim-output
 build/paper.docx: doc/literature.bib doc/online.bib doc/main.md doc/pandoc-metadata.yml
 build/paper.docx: build/ts-association.png build/population-cluster.png build/thermal-power.png
 build/paper.docx: build/choropleth.png build/scatter.png build/thermal-diff.png
-build/paper.docx: build/ts-association-filtered-stats.csv
+build/paper.docx: build/ts-association-filtered-stats.csv doc/figures/flow-chart-time-step.png
 	cd ./doc && \
 	pandoc --filter pantable --filter pandoc-fignos --filter pandoc-tablenos --filter pandoc-citeproc \
 		--reference-docx ./paper-template.docx main.md pandoc-metadata.yml -t docx -o ../build/paper.docx

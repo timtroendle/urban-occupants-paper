@@ -18,7 +18,7 @@ This paper is structured as follows: section 2 describes the conceptual model an
 
 The general urban energy system as applied in this study consists of three distinct entities: citizens, HVAC controls, and dwellings whose models will be described in detail in the following sub sections. A dwelling forms a home for one to $n$ citizens and incorporates exactly one HVAC control system. Fig. @fig:flow-chart-time-step shows a flow-chart of the model. The model is time-step based where in each time step $k$, each entity updates its state: first all citizens update their occupancy, i.e. determine whether they are at home or not. Second, the HVAC control system of each dwelling updates its heating set point, taking into account the occupancy of the dwelling. Lastly, each dwelling updates its indoor temperature and the thermal power needed for reaching it.
 
-![Flow chart of a single time step $k$](../doc/figures/flow-chart-time-step.png){#fig:flow-chart-time-step .class width=500}
+![Flow chart of a single time step $k$](../doc/figures/flow-chart-time-step.png){#fig:flow-chart-time-step .class}
 
 ### Heating System Control Model
 
