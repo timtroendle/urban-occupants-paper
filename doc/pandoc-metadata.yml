@@ -17,6 +17,6 @@ bibliography:
     - 'literature.bib'
     - 'online.bib'
 csl: 'wpconf.csl'
-link-citations: true
+link-citations: false
 
 ---
