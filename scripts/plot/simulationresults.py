@@ -204,12 +204,11 @@ def _plot_scatter(geo_data, path_to_plot):
     plt.rcParams['figure.dpi'] = 300
     geo_data = geo_data.rename(columns={
         'average energy': 'average energy [kWh/week]',
-        'standard deviation energy': 'std energy [kWh/week]'
     })
 
     sns.pairplot(
         data=geo_data,
-        y_vars=['average energy [kWh/week]', 'std energy [kWh/week]'],
+        y_vars=['average energy [kWh/week]'],
         x_vars=['avg household size', 'avg age', 'share economic active']
     )
     plt.savefig(path_to_plot, dpi=300)
