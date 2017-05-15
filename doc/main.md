@@ -151,13 +151,13 @@ In the first step, people and household features that are used to form the occup
 
 To illustrate the necessity to cluster the sample population, Fig. @fig:population-cluster shows all occupancy time series in the data set (a) raw, and after clustering by (b) economic activity and (c) age. Each occupancy time series is depicted vertically using three colours: white for (1) not at home, dark grey for (2) active at home, and light grey for (3) asleep at home for both days starting from midnight weekday until the end of the weekend day. While some patterns like the stronger homogeneity at night times are clearly visible, the data appears noisy. After clustering by either economic activity or age, the in-cluster homogeneity becomes visually stronger and more patterns emerge.
 
-![Occupancy time series (a) raw, (b) clustered by economic activity (c) clustered by age groups. Occupancy is color coded using white for (1) not at home, dark grey for (2) active at home, and light grey for (3) asleep at home ](../build/population-cluster.png){#fig:population-cluster .class width=500}
+![Occupancy time series (a) raw, (b) clustered by economic activity (c) clustered by age groups. Occupancy is color coded using white for (1) not at home, dark grey for (2) active at home, and light grey for (3) asleep at home ](../build/population-cluster.png){#fig:population-cluster .class}
 
 In the following analysis, five people features and three household features are considered. People features are: the economic activity, highest qualification, age, and personal income of a person and whether that person is looking after another person. Household features include the composition of a household, the region it is located in, and the population density in the household's postcode sector. As all features and the occupancy time series are nominal, we will use Cramér's V method and we will denote the strength of association, which ranges between 0 and 1, with $\Phi_C$. We will measure association between a subset of features and occupancy for each of the 288 time steps of the time series. Fig. @fig:ts-association shows the results for a selected number of subsets.
 
 A strong time dependency is visible, indicating that at certain times of the day occupancy is stronger associated to people or household features than on others. Weekday and weekend day show similar, but distinct patterns, and the weekend day reveals a weaker association at almost all time steps of the day. The region and the population density of the household's surrounding area don't show a significant association at any time of the day, indicating that there are no significant differences in occupancy patterns between, e.g. rural and urban environments. Among single features, economic activity and age show the highest association throughout both days; a finding that is in line with former research [@Aerts:2015ko]. Combined features reveal an association that is higher than single features at most times of the day. Combination of three features, like the depicted combination of economic activity, age, and household type show the highest association but their curves are unsmooth, indicating overfitting and sample sizes that are too small.
 
-![Time dependent association between people features and occupancy](../build/ts-association.png){#fig:ts-association .class width=500}
+![Time dependent association between people features and occupancy](../build/ts-association.png){#fig:ts-association .class}
 
 Table @tbl:ts-association shows the average association over the day for selected feature combinations and the average size of their clusters. The combination of economic activity, age, and household type reveals the highest average association, but also has a low average sample size. Among the tuple combinations of features, Table @tbl:ts-association shows the four with the highest average association, which have a significantly larger average cluster size than combinations of three features.
 
@@ -180,19 +180,17 @@ Based on these results it is concluded that:
 
 Using economic activity and age as discriminating features, a model of Haringey can be formed by creating a synthetic population for every LSOA following a zone-by-zone approach [@Muller:2010vx] and the model can by simulated by the open-source simulation model [@energyagents]. The simulation is run for two winter days, a weekday and a weekend day, and the results for both days are scaled appropriately energy-wise to represent a full week. Fig. @fig:choropleth shows a choropleth map of Haringey where the average energy demand for one full week per dwelling is depicted for every LSOA. The map reveals a few spatial patterns, most significantly a higher energy demand in the north eastern corner of Haringey. The variation in energy demand is though only marginal, with less than 6% difference between most LSOA.
 
-![Simulated average energy demand in Haringey for a week in January](../build/choropleth.png){#fig:choropleth .class width=500}
-
-<!--- add unit to plot --->
+![Simulated average energy demand in Haringey for a week in January \[kWh/week\]](../build/choropleth.png){#fig:choropleth .class}
 
 Fig. @fig:thermal-power depicts the thermal power profiles for each LSOA, as average and standard deviation among all households in one area. The average thermal power varies between LSOA's with up to 400 W per household. Large variations can be seen during daytime, and in particular in the evening hours. The temporal pattern follow the ones that are visible in the occupancy time series depicted in Fig. @fig:population-cluster. The standard deviation shows a more permanent spread across the LSOAs, with around 300 W per household peak and significant variations in particular in the evening hours of weekdays but in particular also during daytime on weekends.
 
-![Average thermal power per household across LSOAs](../build/thermal-power.png){#fig:thermal-power .class width=500}
+![Average thermal power per household across LSOAs](../build/thermal-power.png){#fig:thermal-power .class}
 
 To understand relationships between people and household features and the energy usage as seen above, Fig. @fig:scatter depicts the pairwise distributions between the average household size, the average age, and the share of economically active people in a LSOA and the energy usage as determined by the simulation model in terms of average energy usage per household and standard deviation of energy usage. The only visible trend is a negative correlation between the share of economically active people and the average energy demand. In general, a direct link between single feature values of a LSOA and its energy demand does not seem possible. It shall be noted that the sensitivity of these results towards simulation parameters like season and length of the simulation should be further investigated.
 
 <!-- TODO discuss sensitivity to sim parameters -->
 
-![Pairwise relationships of population features and simulated energy usage per LSOA](../build/scatter.png){#fig:scatter .class width=400}
+![Pairwise relationships of population features and simulated energy usage per LSOA](../build/scatter.png){#fig:scatter .class}
 
 ## Results for Alternative Feature Selection
 

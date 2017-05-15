@@ -24,7 +24,10 @@ def association_plots(path_to_ts_association, path_to_plot):
     ts_association = ts_association.filter([_features_to_string(f) for f in FEATURES_TO_PLOT],
                                            axis=1)
     ts_association.rename(columns=_shorten_feature_name, inplace=True)
-    ax = ts_association.plot(figsize=(14, 7))
+    sns.set_context('paper')
+    fig = plt.figure(figsize=(8, 3), dpi=300)
+    ax = fig.add_subplot(111)
+    ts_association.plot(ax=ax, xticks=[0, 144 / 2, 144, 144 * 3 / 2])
     _ = plt.ylabel("Cramer's phi association")
     _ = plt.xlabel("time step")
     plt.savefig(path_to_plot, dpi=300)
@@ -39,7 +42,8 @@ def _features_to_string(features):
 
 def _shorten_feature_name(features):
     def str_manipulation(feature):
-        return feature.split('.')[1].lower().replace('_', ' ')
+        return feature.split('.')[1].lower().replace('_', ' ')\
+            .replace('type', 'composition').replace('household', 'hh')
 
     if isinstance(features, tuple):
         return ', '.join([str_manipulation(feature) for feature in features])

@@ -26,7 +26,8 @@ def population_cluster(path_to_seed, path_to_markov_ts, path_to_plot):
     seed = pd.read_pickle(path_to_seed)
     markov_ts = _convert_to_numerical_values(pd.read_pickle(path_to_markov_ts))
     seed, markov_ts = uo.tus.filter_features(seed, markov_ts, ALL_FEATURES)
-    fig = plt.figure(figsize=(14, 7))
+    sns.set_context('paper')
+    fig = plt.figure(figsize=(8, 4), dpi=300)
     ax = fig.add_subplot(len(ALL_FEATURES) + 1, 1, 1)
     _plot_heatmap(markov_ts.unstack(['SN1', 'SN2', 'SN3']), ax)
     for i, feature in enumerate(ALL_FEATURES):
@@ -84,7 +85,7 @@ def _plot_clustered_by_feature(markov_ts, seed, feature, ax):
         cluster_boundaries,
         ymin=0, ymax=288,
         color='black',
-        linewidth=1.5
+        linewidth=1.0
     )
 
 

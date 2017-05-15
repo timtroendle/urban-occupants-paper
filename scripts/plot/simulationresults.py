@@ -29,6 +29,7 @@ ENERGY_TIME_SPAN = timedelta(days=7) # energy will be reported as kWh per timesp
 def plot_simulation_results(path_to_simulation_results, path_to_config,
                             path_to_thermal_power_plot, path_to_choropleth_plot,
                             path_to_scatter_plot):
+    sns.set_context('paper')
     disk_engine = sqlalchemy.create_engine('sqlite:///{}'.format(path_to_simulation_results))
     dwellings = _read_dwellings(disk_engine)
     thermal_power = _read_thermal_power(disk_engine, dwellings)
@@ -144,7 +145,7 @@ def _share_economic_active(economic_activity_data):
 def _plot_thermal_power(thermal_power, path_to_plot):
     def _xTickFormatter(x, pos):
         return pd.to_datetime(x).time()
-    fig = plt.figure(figsize=(14, 7))
+    fig = plt.figure(figsize=(8, 4), dpi=300)
     ax1 = fig.add_subplot(2, 1, 1)
     sns.tsplot(
         data=thermal_power.groupby(['datetime', 'region']).value.mean().reset_index(),
@@ -156,6 +157,8 @@ def _plot_thermal_power(thermal_power, path_to_plot):
     )
     _ = plt.ylabel('average [W]')
     _ = plt.xlabel('')
+    ax1.get_xaxis().set_visible(False)
+    ax1.set_ylim(bottom=0)
 
     ax2 = fig.add_subplot(2, 1, 2, sharex=ax1)
     sns.tsplot(
@@ -168,33 +171,48 @@ def _plot_thermal_power(thermal_power, path_to_plot):
     )
     _ = plt.ylabel('standard deviation [W]')
     _ = plt.xlabel('time of the day')
+    ax2.set_ylim(bottom=0)
+
+    points_in_time = thermal_power.groupby('datetime').value.mean().index
+    xtick_locations = [5, 5 + 144 // 2, 149, 149 + 144 // 2] # not sure why they are shifted
+    ax1.set_xticks([points_in_time[x].timestamp() * 10e8 for x in xtick_locations])
+    ax1.xaxis.set_major_formatter(mpl.ticker.FuncFormatter(_xTickFormatter))
     ax1.xaxis.set_major_formatter(mpl.ticker.FuncFormatter(_xTickFormatter))
     fig.savefig(path_to_plot, dpi=300)
 
 
 def _plot_choropleth(geo_data, path_to_choropleth):
-    ax = gpdplt.plot_dataframe(
+    fig = plt.figure(figsize=(8, 4), dpi=300)
+    ax = fig.add_subplot(111)
+    gpdplt.plot_dataframe(
         geo_data,
         column='average energy',
         categorical=False,
         linewidth=0.2,
         legend=True,
         figsize=(14, 7),
-        cmap='viridis'
+        cmap='viridis',
+        ax=ax
     )
     _ = plt.xticks([])
     _ = plt.yticks([])
-    fig = ax.get_figure()
     fig.savefig(path_to_choropleth, dpi=300)
 
 
 def _plot_scatter(geo_data, path_to_plot):
-    fig = sns.pairplot(
+    plt.rcParams['figure.figsize'] = (8, 3)
+    plt.rcParams['figure.dpi'] = 300
+    geo_data = geo_data.rename(columns={
+        'average energy': 'average energy [kWh/week]',
+        'standard deviation energy': 'std energy [kWh/week]'
+    })
+
+    sns.pairplot(
         data=geo_data,
-        y_vars=['average energy', 'standard deviation energy'],
+        y_vars=['average energy [kWh/week]', 'std energy [kWh/week]'],
         x_vars=['avg household size', 'avg age', 'share economic active']
     )
-    fig.savefig(path_to_plot, dpi=300)
+    plt.savefig(path_to_plot, dpi=300)
 
 
 if __name__ == '__main__':
