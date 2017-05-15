@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0" demote-non-dropping-particle="sort-only" page-range-format="minimal">
   <info>
-    <title>Vancouver</title>
+    <title>wpconf</title>
     <id>http://www.zotero.org/styles/vancouver</id>
     <link href="http://www.zotero.org/styles/vancouver" rel="self"/>
     <link href="http://www.nlm.nih.gov/bsd/uniform_requirements.html" rel="documentation"/>
@@ -16,9 +16,12 @@
     <contributor>
       <name>Sebastian Karcher</name>
     </contributor>
+    <contributor>
+        <name>Tim Tröndle</name>
+    </contributor>
     <category citation-format="numeric"/>
     <category field="medicine"/>
-    <summary>Vancouver style as outlined by International Committee of Medical Journal Editors Uniform Requirements for Manuscripts Submitted to Biomedical Journals: Sample References</summary>
+    <summary>Based on Vancouver, this style tries to be consistent with WP.</summary>
     <updated>2016-06-19T21:20:29+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
@@ -317,7 +320,7 @@
     <sort>
       <key variable="citation-number"/>
     </sort>
-    <layout prefix="(" suffix=")" delimiter=",">
+    <layout prefix="[" suffix="]" delimiter=",">
       <text variable="citation-number"/>
     </layout>
   </citation>

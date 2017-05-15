@@ -3,6 +3,7 @@ title: 'Occupancy based thermal energy modelling in the urban residential sector
 author:
     - 'Tim Tröndle'
     - 'Ruchi Choudhary'
+institute: University of Cambridge
 tags:
     - 'residential building occupancy'
     - 'building energy model'
@@ -19,7 +20,7 @@ abstract: |
 bibliography:
     - 'literature.bib'
     - 'online.bib'
-csl: 'vancouver.csl'
+csl: 'wpconf.csl'
 link-citations: true
 
 ---
