@@ -43,7 +43,6 @@ If you do not have `make` you can manually run the steps through the Python comm
 * `doc`: contains all files necessary to build the paper; plots and result files are not in here but generated automatically
 * `urbanoccupants`: a small Python library and their tests, containing reusable code needed several times in this study
 * `scripts`: Python scripts and its tests which run this analysis
-* `notebooks`: Jupyter notebooks that are not used in the main build chain of the paper
 * `config`: configurations for the simulation runs as performed in the study
 
 ## Datasets
