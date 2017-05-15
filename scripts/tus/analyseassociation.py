@@ -44,7 +44,7 @@ def _filter(stats):
 
     def _rename_index(index_name):
         if isinstance(index_name, tuple):
-            index_name = ','.join(index_name)
+            index_name = ', '.join(index_name)
         for key, value in feature_name_map.items():
             index_name = index_name.replace(key, value)
         return index_name
@@ -57,18 +57,18 @@ def _filter(stats):
         'mean_cluster_size': 'avg cluster size'
     }, inplace=True)
     fstats.drop(['min_cluster_size', 'std_association', 'std_cluster_size'], axis=1, inplace=True)
-    return fstats[:6]
+    return fstats[:5]
 
 
 feature_name_map = {
-    'HouseholdFeature.HOUSEHOLD_TYPE': 'hhtype',
+    'HouseholdFeature.HOUSEHOLD_TYPE': 'hh composition',
     'HouseholdFeature.POPULATION_DENSITY': 'popden',
     'HouseholdFeature.REGION': 'region',
     'PeopleFeature.CARER': 'carer',
     'PeopleFeature.PERSONAL_INCOME': 'income',
     'PeopleFeature.AGE': 'age',
-    'PeopleFeature.ECONOMIC_ACTIVITY': 'ecact',
-    'PeopleFeature.QUALIFICATION': 'qual'
+    'PeopleFeature.ECONOMIC_ACTIVITY': 'economic',
+    'PeopleFeature.QUALIFICATION': 'qualification'
 }
 
 if __name__ == '__main__':

@@ -117,45 +117,29 @@ The model is applied in a case study of the London Borough of Haringey which acc
 Table @tbl:parameters summarises the parameters of the thermal dwelling model applied for the dwelling of each household in Haringey including set point temperatures of their heating control systems, and metabolic heat gains.
 
 ------------------------------------------------------------
-parameter name                                  value
-------------------------------------            -----------
-thermal mass capacity                           9.9 MJ/K
+parameter name            value             parameter name         value
+------------------------  ---------------   ------------------     --------
+thermal mass capacity     9.9 MJ/K          initial indoor temp    20 ˚C
 
-thermal mass area                               150 m^2
+thermal mass area         150 m^2^          absent set point       0 ˚C
 
-floor area                                      60 m^2
+floor area                60 m^2^           passive set point      18 ˚C
 
-room height                                     2.5 m
+room height               2.5 m             active set point       22 ˚C
 
-window to wall ratio                            0.19
+window to wall ratio      0.19              max heating power      10 kW
 
-U-value wall                                    0.26 W/(m^2 * K)
+U-value wall              0.26 W/(m^2^ K)   metabolic heat active  140 W
 
-U-value roof                                    0.12 W/(m^2 * K)
+U-value roof              0.12 W/(m^2^ K)   metabolic heat passive 70 W
 
-U-value floor                                   0.40 W/(m^2 * K)
+U-value floor             0.40 W/(m^2^ K)   metabolic heat < 18    0.75
 
-U-value window                                  1.95 W/(m^2 * K)
+U-value window            1.95 W/(m^2^ K)   natural ventilation    0.65 l/(s m^2^)
+                                            rate
 
-transmission adjustment ground                  0.91
-
-natural ventilation rate                        0.65 l/(s*m^2)
-
-$\Phi_{HC, nd, max}$: max heating power         10 kW
-
-$\theta_{m, 0}$: initial indoor temperature     20 ˚C
-
-$\theta_{set, absent}$: absent set point        0 ˚C
-
-$\theta_{set, passive}$: passive set point      18 ˚C
-
-$\theta_{set, active}$: active set point        22 ˚C
-
-metabolic heat gain while active                140 W
-
-metabolic heat gain while passive               70 W
-
-metabolic heat gain ratio below age 18          0.75
+transmission adjustment
+ground                    0.91
 
 ------------------------------------------------------------
 
@@ -175,7 +159,7 @@ A strong time dependency is visible, indicating that at certain times of the day
 
 ![Time dependent association between people features and occupancy](../build/ts-association.png){#fig:ts-association .class width=500}
 
-Table @tbl:ts-association shows the average association over the day for selected feature combinations and the average size of their clusters. The combination of economic activity, age, and household type reveals the highest average association, but also has a low average sample size. Among the tuple combinations of features, Table @tbl:ts-association shows the five with the highest average association, which have a significantly larger average cluster size than combinations of three features.
+Table @tbl:ts-association shows the average association over the day for selected feature combinations and the average size of their clusters. The combination of economic activity, age, and household type reveals the highest average association, but also has a low average sample size. Among the tuple combinations of features, Table @tbl:ts-association shows the four with the highest average association, which have a significantly larger average cluster size than combinations of three features.
 
 ```table
 ---
