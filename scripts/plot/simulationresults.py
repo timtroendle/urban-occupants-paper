@@ -181,21 +181,42 @@ def _plot_thermal_power(thermal_power, path_to_plot):
 
 
 def _plot_choropleth(geo_data, path_to_choropleth):
-    fig = plt.figure(figsize=(8, 4), dpi=300)
-    ax = fig.add_subplot(111)
+    # The plot must be scaled, otherwise the legend will look weird. To bring
+    # test sizes to a readable level, the seaborn context is set to poster.
+    sns.set_context('poster')
+    fig = plt.figure(figsize=(18, 4))
+    ax = fig.add_subplot(121)
     gpdplt.plot_dataframe(
         geo_data,
         column='average energy',
         categorical=False,
         linewidth=0.2,
         legend=True,
-        figsize=(14, 7),
         cmap='viridis',
         ax=ax
     )
+    ax.set_aspect(1)
     _ = plt.xticks([])
     _ = plt.yticks([])
+    ax.annotate('(a)', xy=[-0.15, 0.5], xycoords='axes fraction')
+
+    ax = fig.add_subplot(122)
+    gpdplt.plot_dataframe(
+        geo_data,
+        column='standard deviation energy',
+        categorical=False,
+        linewidth=0.2,
+        legend=True,
+        cmap='viridis',
+        ax=ax
+    )
+    ax.set_aspect(1)
+    _ = plt.xticks([])
+    _ = plt.yticks([])
+    ax.annotate('(b)', xy=[-0.15, 0.5], xycoords='axes fraction')
+
     fig.savefig(path_to_choropleth, dpi=300)
+    sns.set_context('paper')
 
 
 def _plot_scatter(geo_data, path_to_plot):
