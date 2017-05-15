@@ -1,7 +1,6 @@
-# Working Paper KTP EECi & Improbable
+# Occupancy based thermal energy modelling in the urban residential sector
 
-This is the work in progress paper of the Knowledge Transfer Partnership between the Energy
-Efficient Cities initiative (EECi) of University of Cambridge and Improbable.
+This is a paper and all scripts creating the results of the paper that resulted from the Knowledge Transfer Partnership between the Energy Efficient Cities initiative (EECi) of University of Cambridge and Improbable Ltd.
 
 ## Getting ready
 
