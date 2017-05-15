@@ -177,7 +177,6 @@ def _plot_thermal_power(thermal_power, path_to_plot):
     xtick_locations = [5, 5 + 144 // 2, 149, 149 + 144 // 2] # not sure why they are shifted
     ax1.set_xticks([points_in_time[x].timestamp() * 10e8 for x in xtick_locations])
     ax1.xaxis.set_major_formatter(mpl.ticker.FuncFormatter(_xTickFormatter))
-    ax1.xaxis.set_major_formatter(mpl.ticker.FuncFormatter(_xTickFormatter))
     fig.savefig(path_to_plot, dpi=300)
 
 

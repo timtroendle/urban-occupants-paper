@@ -83,7 +83,7 @@ def _read_thermal_power(disk_engine, dwellings):
 def _plot_thermal_power_diff(thermal_power, path_to_plot):
     def _xTickFormatter(x, pos):
         return pd.to_datetime(x).time()
-    fig = plt.figure(figsize=(14, 7))
+    fig = plt.figure(figsize=(8, 4), dpi=300)
     ax1 = fig.add_subplot(2, 1, 1)
     sns.tsplot(
         data=thermal_power,
@@ -96,6 +96,9 @@ def _plot_thermal_power_diff(thermal_power, path_to_plot):
     )
     _ = plt.ylabel('average [W]')
     _ = plt.xlabel('')
+    ax1.get_xaxis().set_visible(False)
+    ax1.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
+               ncol=2, mode="expand", borderaxespad=0.)
 
     ax2 = fig.add_subplot(2, 1, 2, sharex=ax1)
     sns.tsplot(
@@ -109,6 +112,11 @@ def _plot_thermal_power_diff(thermal_power, path_to_plot):
     )
     _ = plt.ylabel('standard deviation [W]')
     _ = plt.xlabel('time of the day')
+    ax2.legend().set_visible(False)
+
+    points_in_time = thermal_power.groupby('datetime').feature.first().index
+    xtick_locations = [5, 5 + 144 // 2, 149, 149 + 144 // 2] # not sure why they are shifted
+    ax1.set_xticks([points_in_time[x].timestamp() * 10e8 for x in xtick_locations])
     ax1.xaxis.set_major_formatter(mpl.ticker.FuncFormatter(_xTickFormatter))
     fig.savefig(path_to_plot, dpi=300)
 
