@@ -15,7 +15,7 @@ abstract: |
 
     This paper presents a proof-of-concept methodology of estimating thermal energy demand on an urban scale by introducing occupancy models to high resolution bottom up energy models. A synthetic population is created from census data and the occupancy of every citizen is modelled using a time heterogeneous Markov chain which is calibrated using time use survey data. The fraction of the variability of the thermal energy demand caused by building specifics is deliberately ignored and heating system control is considered to be based on occupancy only to highlight the impact of occupants. This study is hence hypothetical and aims at understanding underlying mechanics of energy demand rather than actual energy demand.
 
-    The methodology is applied in a case study on the London Borough of Haringey in where the thermal energy demand is found to be varying up to 50 % in different parts of the city at certain times of the week. Regions with less diverse energy demand and thermal power patterns can be identified and discriminiated against those with more diversity in the demand. Being a hypothetical study these results cannot applied directly but deliver insights into the mechanics of urban energy demand.
+    The methodology is applied in a case study on the London Borough of Haringey in where the thermal energy demand is found to be varying up to 50 % in different parts of the city at certain times of the week. Regions with less diverse energy demand and thermal power patterns can be identified and discriminiated against those with more diversity in the demand. Being a hypothetical study these results cannot be applied directly but deliver insights into the mechanics of urban energy demand.
 
 bibliography:
     - 'literature.bib'
