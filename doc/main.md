@@ -39,16 +39,7 @@ In this model, there are three distinct heating set points between which the con
 
 ### Occupancy Model
 
-Citizens are modelled solely by the occupancy in their respective dwellings, using a probabilistic occupancy model that has been applied in several studies, albeit at the scale of single dwellings [@Richardson:2008dj; @Widen:2009fo; @Aerts:2015ko]. The occupancy model consists of a time-heterogeneous Markov chain with the following states: (1) not at home, (2) active at home, and (3) asleep at home. As the Markov chain is time heterogeneous, transition probabilities between the states of the Markov chain are time dependent, and hence the transition matrix for person $p$ at time $k$ can be given as:
-
-$$
-Pr^p =
-\begin{bmatrix}
-    p_{11}^p(k)&p_{12}^p(k)&p_{13}^p(k)\\
-    p_{21}^p(k)&p_{22}^p(k)&p_{23}^p(k)\\
-    p_{31}^p(k)&p_{32}^p(k)&p_{33}^p(k)
-\end{bmatrix}.
-$$
+Citizens are modelled solely by the occupancy in their respective dwellings, using a probabilistic occupancy model that has been applied in several studies, albeit at the scale of single dwellings [@Richardson:2008dj; @Widen:2009fo; @Aerts:2015ko]. The occupancy model consists of a time-heterogeneous Markov chain with the following states: (1) not at home, (2) active at home, and (3) asleep at home. As the Markov chain is time heterogeneous, transition probabilities between the states of the Markov chain are time dependent, and hence the transition matrix $Pr^p$ for person $p$ at time $k$ is defined by the collection of its entries $p_{i, j}^p(k) \forall i, j \in \{1, 2, 3\}$.
 
 Every person has exactly one home, so we can define a time-invariant set of people $P_d$ for every dwelling $d$ such that the family of sets $P_D = \{P_d | \forall d \in D\}$ form a partition of population $P$ and $\cup_{d \in D} P_d = P$ and $P_{d_1} \cap P_{d_2} = \varnothing \ \forall \ d_1 \neq d_2$ hold. The time dependent set of occupancy of dwelling $d$ at time $k$ as used in the heating system control model can then be given as $P_k^d = \{p \in P_d | \text{p is active at home or p is asleep at home} \}$.
 
@@ -74,19 +65,7 @@ The choice of household or people features is important for the quality of this 
 
 The urban scale occupancy model as described above needs information on the composition of every household, and household and people feature vectors $f^p$ for every individual $p$ in the population of the study area. Such disaggregated data is typically not available and hence the population is synthesised from aggregated census data and typical population compositions given by micro samples of census data. Population synthesis as a way to initialise micro-simulations has been applied in the past mainly in land use and transportation models [@Beckman:1996hv; @Arentze:2007cf] but more recently in energy models as well [@Anonymous:sQCtxREz]. [@Muller:2010vx] provides an overview over the different approaches that are available.
 
-In population synthesis, the aim is to estimate the joint probability mass function $p_{F}$ for a set of $n$ features $F = \{F_1, F_2, ..., F_n\}$ which describes the correct distribution of those features in the actual population, given a set of marginal probability mass functions $p_{\tilde{F}}$ for a subset of features $\tilde{F} \subset F$. A simple example for the two-dimensional case of $F = \{\text{sex, age}\}$ is given in Table @tbl:popsynth-example, a contingency table in which the last column shows the probability mass function for the feature 'sex', the last row shows the probability mass function for the feature 'age', and the centre shows the unknown joint probability mass function $p_F$.
-
-+--------+----------------------------+----------------------------+-------------------+
-|        | below age 50               | above age 50               |                   |
-+--------+----------------------------+----------------------------+-------------------+
-|  male  | $p_F(\text{male, < 50)}$   | $p_F(\text{male, > 50)}$   | $p_{sex}(male)$   |
-+--------+----------------------------+----------------------------+-------------------+
-|  female| $p_F(\text{female, < 50)}$ | $p_F(\text{female, > 50)}$ | $p_{sex}(female)$ |
-+--------+----------------------------+----------------------------+-------------------+
-|        | $p_{age}(< 50)$            | $p_{age}(> 50)$            |                   |
-+--------+----------------------------+----------------------------+-------------------+
-
-Table: A two dimensional population synthesis problem. {#tbl:popsynth-example}
+In population synthesis, the aim is to estimate the joint probability mass function $p_{F}$ for a set of $n$ features $F = \{F_1, F_2, ..., F_n\}$ which describes the correct distribution of those features in the actual population, given a set of marginal probability mass functions $p_{\tilde{F}}$ for a subset of features $\tilde{F} \subset F$. As a simple example for the two-dimensional case of $F = \{\text{sex, age}\}$ consider that marginal probability mass functions $p_{sex}(f_1)$ and $p_{age}(f_2)$ are known and the joint probability mass function $p_{sex, age}(f_1, f_2)$ is to be estimated.
 
 In the case of this study, the relationship between households and people must be retained when creating the synthetic population. Solutions for such hierarchical problems have been discussed in the past [@Ye:2009uw; @Muller:vs0R1Q2; @Pritchard:2011gy], and in the case of this study the approach of [@Muller:vs0R1Q2] is followed.
 
