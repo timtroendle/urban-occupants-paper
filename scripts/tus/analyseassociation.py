@@ -49,6 +49,7 @@ def _filter(stats):
             index_name = index_name.replace(key, value)
         return index_name
     fstats.index = fstats['index'].apply(_rename_index)
+    fstats.index.name = 'features'
     fstats.drop(['index'], axis=1, inplace=True)
     fstats['mean_association'] = fstats['mean_association'].apply(np.round, decimals=5)
     fstats['mean_cluster_size'] = fstats['mean_cluster_size'].apply(int)
