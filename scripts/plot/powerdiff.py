@@ -96,7 +96,6 @@ def _plot_thermal_power_diff(thermal_power, path_to_plot):
     )
     _ = plt.ylabel('average [W]')
     _ = plt.xlabel('')
-    ax1.get_xaxis().set_visible(False)
     ax1.legend(bbox_to_anchor=(0., 1.02, 1., .102), loc=3,
                ncol=2, mode="expand", borderaxespad=0.)
 
@@ -116,8 +115,12 @@ def _plot_thermal_power_diff(thermal_power, path_to_plot):
 
     points_in_time = thermal_power.groupby('datetime').feature.first().index
     xtick_locations = [5, 5 + 144 // 2, 149, 149 + 144 // 2] # not sure why they are shifted
-    ax1.set_xticks([points_in_time[x].timestamp() * 10e8 for x in xtick_locations])
-    ax1.xaxis.set_major_formatter(mpl.ticker.FuncFormatter(_xTickFormatter))
+    ax2.set_xticks([points_in_time[x].timestamp() * 10e8 for x in xtick_locations])
+    ax2.xaxis.set_major_formatter(mpl.ticker.FuncFormatter(_xTickFormatter))
+
+    ax1.label_outer()
+    ax2.label_outer()
+
     fig.savefig(path_to_plot, dpi=300)
 
 
