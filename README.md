@@ -8,13 +8,12 @@ This is a paper and all scripts creating the results of the paper that resulted 
 
 ### Installation
 
-To set up a environment in which the analysis can be run and the paper be build, the simplest is to use [conda](https://conda.io/docs/index.html). An environment with all dependencies can be created from the provided yaml file:
+The following dependencies are needed to set up an environment in which the analysis can be run and the paper be build:
 
-    conda env create -f conda-environment.yml
-
-In addition you will need [Java 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html) to run simulations.
-
-You will also need `make` to automatically replicate all results. Without `make`, e.g. on Windows, you will need to manually run all steps.
+* [conda](https://conda.io/docs/index.html)
+* [Git](https://git-scm.com)
+* [Java 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)
+* `make` (optional; without `make`, e.g. on Windows, you will need to manually run all steps)
 
 ### Data preparation
 

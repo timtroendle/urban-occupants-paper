@@ -13,7 +13,7 @@ setup(
     url='https://www.github.com/timtroendle/urbanoccupants',
     packages=find_packages(exclude=['tests*']),
     include_package_data=True,
-    install_requires=['pytus2000', 'people'],
+    install_requires=['pytus2000'],
     classifiers=[
         'Environment :: Console',
         'Intended Audience :: Science/Research',
