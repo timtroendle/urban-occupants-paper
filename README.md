@@ -15,6 +15,10 @@ The following dependencies are needed to set up an environment in which the anal
 * [Java 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)
 * `make` (optional; without `make`, e.g. on Windows, you will need to manually run all steps)
 
+When all these dependencies are installed, you can create a conda environment from within you can run the analysis:
+
+    conda env create -f conda-environment.yml
+
 ### Data preparation
 
 All open data is retrieved automatically from the web when running the analysis the first time. All closed or safeguarded data must be provided by the user. These datasets are:
