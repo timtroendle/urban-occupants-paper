@@ -22,7 +22,7 @@ RANDOM_SEED = 123456789
 MAX_HOUSEHOLD_SIZE = 70
 
 
-def _unimplemented_census_read_function(geographical_layer):
+def _unimplemented_census_read_function(study_area, geographical_layer):
     # lambda function cannot raise errors, hence the function definition here
     raise NotImplementedError()
 
@@ -48,8 +48,8 @@ class HouseholdFeature(Enum):
         return feature_values.map(self.tus_mapping)
         return new_values
 
-    def read_census_data(self, geographical_layer):
-        return self._census_read_function(geographical_layer)
+    def read_census_data(self, study_area, geographical_layer):
+        return self._census_read_function(study_area, geographical_layer)
 
 
 class PeopleFeature(Enum):
@@ -88,14 +88,14 @@ class PeopleFeature(Enum):
             new_values[age > 74] = self.uo_type.ABOVE_74
         return new_values
 
-    def read_census_data(self, geographical_layer):
-        data = self._census_read_function(geographical_layer)
+    def read_census_data(self, study_area, geographical_layer):
+        data = self._census_read_function(study_area, geographical_layer)
         if not self._includes_below_16:
-            usual_residents = PeopleFeature.AGE.read_census_data(geographical_layer)
+            usual_residents = PeopleFeature.AGE.read_census_data(study_area, geographical_layer)
             younger_than_sixteen = usual_residents.ix[:, :AgeStructure.AGE_15].sum(axis=1)
             data[self.uo_type.BELOW_16] = younger_than_sixteen
         if not self._includes_above_74:
-            usual_residents = PeopleFeature.AGE.read_census_data(geographical_layer)
+            usual_residents = PeopleFeature.AGE.read_census_data(study_area, geographical_layer)
             older_than_74 = usual_residents.ix[:, AgeStructure.AGE_75_TO_84:].sum(axis=1)
             data[self.uo_type.ABOVE_74] = older_than_74
         return data

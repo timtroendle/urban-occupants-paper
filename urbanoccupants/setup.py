@@ -7,7 +7,7 @@ exec(open('urbanoccupants/version.py').read())
 setup(
     name='urbanoccupants',
     version=__version__,
-    description='A library accompanying the case study on urban occupancy in Haringey.',
+    description='A library accompanying the case study on urban occupancy in Greater London.',
     maintainer='Tim Tröndle',
     maintainer_email='tt397@cam.ac.uk',
     url='https://www.github.com/timtroendle/urbanoccupants',

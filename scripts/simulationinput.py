@@ -15,9 +15,7 @@ import sqlalchemy
 
 import urbanoccupants as uo
 
-NUMBER_HOUSEHOLDS_HARINGEY = 101955
-NUMBER_USUAL_RESIDENTS_HARINGEY = 254926
-RANDOM_SEED = 'haringey-case-study'
+RANDOM_SEED = 'greater-london-case-study'
 ROOT_FOLDER = Path(os.path.abspath(__file__)).parent.parent
 CACHE_PATH = ROOT_FOLDER / 'build' / 'web-cache'
 MIDAS_DATABASE_PATH = ROOT_FOLDER / 'data' / 'Londhour.csv'
@@ -49,14 +47,16 @@ def simulation_input(path_to_seed, path_to_markov_ts, path_to_config, path_to_re
     )
     seed = _amend_seed_by_markov_model(seed, markov_chains, features, config['start-time'])
     seed = _amend_seed_by_metabolic_rate(seed, config)
-    census_data_ppl = {feature: feature.read_census_data(config['spatial-resolution'])
+    census_data_ppl = {feature: feature.read_census_data(config['study-area'],
+                                                         config['spatial-resolution'])
                        for feature in config['people-features']}
     for data in census_data_ppl.values():
-        assert data.sum().sum() == NUMBER_USUAL_RESIDENTS_HARINGEY
-    census_data_hh = {feature: feature.read_census_data(config['spatial-resolution'])
+        assert data.sum().sum() == config['study-area'].number_usual_residents
+    census_data_hh = {feature: feature.read_census_data(config['study-area'],
+                                                        config['spatial-resolution'])
                       for feature in config['household-features']}
     for data in census_data_hh.values():
-        assert data.sum().sum() == NUMBER_HOUSEHOLDS_HARINGEY
+        assert data.sum().sum() == config['study-area'].number_households
     seed = _prepare_seed_index(seed)
     households, citizens = _create_synthetic_population(
         seed,
@@ -158,7 +158,7 @@ def _create_synthetic_population(seed, census_data_hh, census_data_ppl, config):
                      for region in regions}
     random_numbers = {region: [random.uniform(0, 1) for _ in range(number_households[region])]
                       for region in regions}
-    hh_chunk_size = int(NUMBER_HOUSEHOLDS_HARINGEY / config['number-processes'] / 4)
+    hh_chunk_size = int(config['study-area'].number_households / config['number-processes'] / 4)
 
     with Pool(config['number-processes']) as pool:
         hipf_params = ((seed, controls_hh[region], controls_ppl[region], region)
@@ -183,12 +183,12 @@ def _create_synthetic_population(seed, census_data_hh, census_data_ppl, config):
                 uo.synthpop.sample_citizen,
                 ((households, seed) for households in household_chunks)
             ),
-            total=math.ceil(NUMBER_HOUSEHOLDS_HARINGEY / hh_chunk_size),
+            total=math.ceil(config['study-area'].number_households / hh_chunk_size),
             desc='Sampling individuals     '
         )))
 
-    assert len(households) == NUMBER_HOUSEHOLDS_HARINGEY
-    assert abs(len(citizens) - NUMBER_USUAL_RESIDENTS_HARINGEY) < 2000
+    assert len(households) == config['study-area'].number_households
+    assert abs(len(citizens) - config['study-area'].number_usual_residents) < 2000
     return households, citizens
 
 

@@ -8,6 +8,7 @@ household-features:
     - PSEUDO
 time-step-size-minutes: 10
 start-time: 2005-01-07 00:00
+study-area: HARINGEY
 spatial-resolution: LSOA
 number-processes: 4
 java-heap-size: 12

@@ -24,32 +24,32 @@ NOMIS_QS116EW_DATASET_ID = "NM_516_1"
 NOMIS_KS501EW_DATASET_ID = "NM_623_1"
 NOMIS_KS601EW_DATASET_ID = "NM_624_1"
 # the following are nomis geography codes for Haringey on different layer
-NOMIS_WARD_GEOGRAPHY = "1237319929...1237319939,1237319941,1237319940,1237319942...1237319947"
-NOMIS_MSOA_GEOGRPAHY = "1245708671...1245708705,1245714941"
-NOMIS_LSOA_GEOGRAPHY = ("1249904514,1249904516,1249904519,1249904520,1249904579,1249904580," +
-                        "1249904582,1249904583,1249904507,1249904515,1249904517,1249904518," +
-                        "1249904633,1249904636,1249904639,1249904640,1249904634,1249904635," +
-                        "1249904637,1249904638,1249904641,1249904644,1249904645,1249904648," +
-                        "1249904642,1249904643,1249904646,1249904647,1249904508...1249904511," +
-                        "1249904571,1249904572,1249904576,1249904577,1249904521...1249904524," +
-                        "1249904617,1249904620,1249904622,1249904624,1249904625,1249904629," +
-                        "1249904631,1249904632,1249904512,1249904513,1249904541,1249904542," +
-                        "1249904618,1249904619,1249904621,1249904623,1249904570," +
-                        "1249904573...1249904575,1249904536...1249904538,1249904540," +
-                        "1249904525...1249904528,1249904626...1249904628,1249904630,1249904558," +
-                        "1249904559,1249904562,1249934828,1249934829,1249904564,1249904566," +
-                        "1249904567,1249904569,1249904557,1249904563,1249904565,1249904568," +
-                        "1249904543,1249904544,1249904548,1249904549,1249904610,1249904612," +
-                        "1249904613,1249904616,1249904609,1249904611,1249904614,1249904615," +
-                        "1249904586,1249904588,1249904589,1249904592,1249904585,1249904587," +
-                        "1249904590,1249904591,1249904560,1249904561,1249904602,1249904603," +
-                        "1249904593...1249904595,1249904598,1249904539,1249904553,1249904555," +
-                        "1249904556,1249904545...1249904547,1249904601,1249904596,1249904597," +
-                        "1249904599,1249904600,1249904529,1249904530,1249904532,1249904534," +
-                        "1249904531,1249904533,1249904535,1249904605,1249904550...1249904552," +
-                        "1249904554,1249904604,1249904606...1249904608,1249904578,1249904581," +
-                        "1249904584,1249934354")
-NOMIS_OA_GEOGRAPHY = "1254106458...1254107181,1254258316,1254262366...1254262393"
+NOMIS_WARD_HARINGEY = "1237319929...1237319939,1237319941,1237319940,1237319942...1237319947"
+NOMIS_MSOA_HARINGEY = "1245708671...1245708705,1245714941"
+NOMIS_LSOA_HARINGEY = ("1249904514,1249904516,1249904519,1249904520,1249904579,1249904580," +
+                       "1249904582,1249904583,1249904507,1249904515,1249904517,1249904518," +
+                       "1249904633,1249904636,1249904639,1249904640,1249904634,1249904635," +
+                       "1249904637,1249904638,1249904641,1249904644,1249904645,1249904648," +
+                       "1249904642,1249904643,1249904646,1249904647,1249904508...1249904511," +
+                       "1249904571,1249904572,1249904576,1249904577,1249904521...1249904524," +
+                       "1249904617,1249904620,1249904622,1249904624,1249904625,1249904629," +
+                       "1249904631,1249904632,1249904512,1249904513,1249904541,1249904542," +
+                       "1249904618,1249904619,1249904621,1249904623,1249904570," +
+                       "1249904573...1249904575,1249904536...1249904538,1249904540," +
+                       "1249904525...1249904528,1249904626...1249904628,1249904630,1249904558," +
+                       "1249904559,1249904562,1249934828,1249934829,1249904564,1249904566," +
+                       "1249904567,1249904569,1249904557,1249904563,1249904565,1249904568," +
+                       "1249904543,1249904544,1249904548,1249904549,1249904610,1249904612," +
+                       "1249904613,1249904616,1249904609,1249904611,1249904614,1249904615," +
+                       "1249904586,1249904588,1249904589,1249904592,1249904585,1249904587," +
+                       "1249904590,1249904591,1249904560,1249904561,1249904602,1249904603," +
+                       "1249904593...1249904595,1249904598,1249904539,1249904553,1249904555," +
+                       "1249904556,1249904545...1249904547,1249904601,1249904596,1249904597," +
+                       "1249904599,1249904600,1249904529,1249904530,1249904532,1249904534," +
+                       "1249904531,1249904533,1249904535,1249904605,1249904550...1249904552," +
+                       "1249904554,1249904604,1249904606...1249904608,1249904578,1249904581," +
+                       "1249904584,1249934354")
+NOMIS_OA_HARINGEY = "1254106458...1254107181,1254258316,1254262366...1254262393"
 NOMIS_GEOGRAPHY_CODE_COLUMN_NAME = "GEOGRAPHY_CODE"
 NOMIS_VALUE_NAME_COLUMN_NAME = "CELL_NAME"
 NOMIS_VALUE_COLUMN_NAME = "OBS_VALUE"
@@ -71,17 +71,37 @@ OA_ID_COLUMN_NAME = 'OA11CD'
 
 class GeographicalLayer(Enum):
     """The geographical layer at which census data should be retrieved."""
-    OA = (NOMIS_OA_GEOGRAPHY, OA_SHAPE_FILE_PATH, BOROUGH_ID_COLUMN_NAME, OA_ID_COLUMN_NAME)
-    LSOA = (NOMIS_LSOA_GEOGRAPHY, LSOA_SHAPE_FILE_PATH, BOROUGH_ID_COLUMN_NAME, LSOA_ID_COLUMN_NAME)
-    MSOA = (NOMIS_MSOA_GEOGRPAHY, MSOA_SHAPE_FILE_PATH, BOROUGH_ID_COLUMN_NAME, MSOA_ID_COLUMN_NAME)
-    WARD = (NOMIS_WARD_GEOGRAPHY, WARD_SHAPE_FILE_PATH, BOROUGH_ID_IN_WARD_DATA_SET,
-            WARD_ID_COLUMN_NAME)
+    OA = (OA_SHAPE_FILE_PATH, BOROUGH_ID_COLUMN_NAME, OA_ID_COLUMN_NAME)
+    LSOA = (LSOA_SHAPE_FILE_PATH, BOROUGH_ID_COLUMN_NAME, LSOA_ID_COLUMN_NAME)
+    MSOA = (MSOA_SHAPE_FILE_PATH, BOROUGH_ID_COLUMN_NAME, MSOA_ID_COLUMN_NAME)
+    WARD = (WARD_SHAPE_FILE_PATH, BOROUGH_ID_IN_WARD_DATA_SET, WARD_ID_COLUMN_NAME)
 
-    def __init__(self, nomis_geo_codes, shape_file_path, borough_col_name, index_col_name):
-        self.nomis_geo_codes = nomis_geo_codes
+    def __init__(self, shape_file_path, borough_col_name, index_col_name):
         self.shape_file_path = shape_file_path
         self.borough_col_name = borough_col_name
         self.index_col_name = index_col_name
+
+
+class StudyArea(Enum):
+    """The study area inside of Greater London for which census data should be retrieved.
+
+    A study area comprises of one or more boroughs.
+    """
+    HARINGEY = (['Haringey'], 101955, 254926, NOMIS_OA_HARINGEY, NOMIS_LSOA_HARINGEY,
+                NOMIS_MSOA_HARINGEY, NOMIS_WARD_HARINGEY)
+
+    def __init__(self, borough_names, number_households, number_usual_residents,
+                 nomis_oa_geo_codes, nomis_lsoa_geo_codes,
+                 nomis_msoa_geo_codes, nomis_ward_geo_codes):
+        self.borough_names = borough_names
+        self.number_households = number_households
+        self.number_usual_residents = number_usual_residents
+        self.nomis_geo_codes = {
+            GeographicalLayer.OA: nomis_oa_geo_codes,
+            GeographicalLayer.LSOA: nomis_lsoa_geo_codes,
+            GeographicalLayer.MSOA: nomis_msoa_geo_codes,
+            GeographicalLayer.WARD: nomis_ward_geo_codes
+        }
 
 
 AGE_STRUCTURE_MAP = {
@@ -155,8 +175,8 @@ HOUSEHOLDTYPE_MAP = {
 }
 
 
-def read_haringey_shape_file(geographical_layer=GeographicalLayer.LSOA):
-    """Reads shape file of Haringey from London Data Store.
+def read_shape_file(study_area=StudyArea.HARINGEY, geographical_layer=GeographicalLayer.LSOA):
+    """Reads shape file of the study area from London Data Store.
 
     Make sure to use requests_cache to cache the retrieved data.
     """
@@ -166,20 +186,24 @@ def read_haringey_shape_file(geographical_layer=GeographicalLayer.LSOA):
         z.extractall(path=tmpdir)
         shape_file = Path(tmpdir) / geographical_layer.shape_file_path
         data = gpd.read_file(shape_file.as_posix())
-    data = data[data[geographical_layer.borough_col_name] == 'Haringey']
+    data = data[data[geographical_layer.borough_col_name].isin(study_area.borough_names)]
     return data.set_index(geographical_layer.index_col_name)
 
 
-def read_age_structure_data(geographical_layer=GeographicalLayer.LSOA):
-    """Retrieves age structure date from Census 2011 for Haringey.
+def read_age_structure_data(study_area=StudyArea.HARINGEY,
+                            geographical_layer=GeographicalLayer.LSOA):
+    """Retrieves age structure date from UK Census 2011.
 
     Data is taken from the KS102EW table from the UK Census 2011.
     Data is retrieved from nomis, see https://www.nomisweb.co.uk.
     """
-    url = ("https://www.nomisweb.co.uk/api/v01/dataset/{}.data.csv" +
-           "?date=latest&geography={}&rural_urban=0&measures=20100" +
-           "&select=geography_code,cell_name,obs_value").format(NOMIS_KS102EW_DATASET_ID,
-                                                                geographical_layer.nomis_geo_codes)
+    url = (
+        "https://www.nomisweb.co.uk/api/v01/dataset/{}.data.csv" +
+        "?date=latest&geography={}&rural_urban=0&measures=20100" +
+        "&select=geography_code,cell_name,obs_value").format(
+        NOMIS_KS102EW_DATASET_ID,
+        study_area.nomis_geo_codes[geographical_layer]
+    )
     r = requests.get(url)
     df = pd.read_csv(io.BytesIO(r.content))
     df = df.pivot(
@@ -191,8 +215,9 @@ def read_age_structure_data(geographical_layer=GeographicalLayer.LSOA):
     return df
 
 
-def read_household_type_data(geographical_layer=GeographicalLayer.LSOA):
-    """Retrieves household type date from Census 2011 for Haringey.
+def read_household_type_data(study_area=StudyArea.HARINGEY,
+                             geographical_layer=GeographicalLayer.LSOA):
+    """Retrieves household type date from UK Census 2011.
 
     Data is taken from the QS116EW table from the UK Census 2011.
     Data is retrieved from nomis, see https://www.nomisweb.co.uk.
@@ -201,7 +226,7 @@ def read_household_type_data(geographical_layer=GeographicalLayer.LSOA):
            "?date=latest&geography={}&rural_urban=0&measures=20100" +
            "&select=geography_code,c_ahthuk11_name," +
            "obs_value").format(NOMIS_QS116EW_DATASET_ID,
-                               geographical_layer.nomis_geo_codes)
+                               study_area.nomis_geo_codes[geographical_layer])
     r = requests.get(url)
     df = pd.read_csv(io.BytesIO(r.content))
     df = df.pivot(
@@ -213,16 +238,20 @@ def read_household_type_data(geographical_layer=GeographicalLayer.LSOA):
     return df
 
 
-def read_qualification_level_data(geographical_layer=GeographicalLayer.LSOA):
-    """Retrieves highest qualification level data from Census 2011 for Haringey.
+def read_qualification_level_data(study_area=StudyArea.HARINGEY,
+                                  geographical_layer=GeographicalLayer.LSOA):
+    """Retrieves highest qualification level data from UK Census 2011.
 
     Data is taken from the KS501EW table from the UK Census 2011.
     Data is retrieved from nomis, see https://www.nomisweb.co.uk.
     """
-    url = ("https://www.nomisweb.co.uk/api/v01/dataset/{}.data.csv" +
-           "?date=latest&geography={}&rural_urban=0&measures=20100" +
-           "&select=geography_code,cell_name,obs_value").format(NOMIS_KS501EW_DATASET_ID,
-                                                                geographical_layer.nomis_geo_codes)
+    url = (
+        "https://www.nomisweb.co.uk/api/v01/dataset/{}.data.csv" +
+        "?date=latest&geography={}&rural_urban=0&measures=20100" +
+        "&select=geography_code,cell_name,obs_value").format(
+        NOMIS_KS501EW_DATASET_ID,
+        study_area.nomis_geo_codes[geographical_layer]
+    )
     r = requests.get(url)
     df = pd.read_csv(io.BytesIO(r.content))
     df = df.pivot(
@@ -234,17 +263,21 @@ def read_qualification_level_data(geographical_layer=GeographicalLayer.LSOA):
     return df
 
 
-def read_economic_activity_data(geographical_layer=GeographicalLayer.LSOA):
-    """Retrieves economic activity data from Census 2011 for Haringey.
+def read_economic_activity_data(study_area=StudyArea.HARINGEY,
+                                geographical_layer=GeographicalLayer.LSOA):
+    """Retrieves economic activity data from UK Census 2011.
 
     Data is taken from the KS601EW table from the UK Census 2011.
     Data is retrieved from nomis, see https://www.nomisweb.co.uk.
     """
-    url = ("https://www.nomisweb.co.uk/api/v01/dataset/{}.data.csv" +
-           "?date=latest&geography={}&rural_urban=0&measures=20100" +
-           "&c_sex=0" +
-           "&select=geography_code,cell_name,obs_value").format(NOMIS_KS601EW_DATASET_ID,
-                                                                geographical_layer.nomis_geo_codes)
+    url = (
+        "https://www.nomisweb.co.uk/api/v01/dataset/{}.data.csv" +
+        "?date=latest&geography={}&rural_urban=0&measures=20100" +
+        "&c_sex=0" +
+        "&select=geography_code,cell_name,obs_value").format(
+        NOMIS_KS601EW_DATASET_ID,
+        study_area.nomis_geo_codes[geographical_layer]
+    )
     r = requests.get(url)
     df = pd.read_csv(io.BytesIO(r.content))
     df = df.pivot(
@@ -256,21 +289,23 @@ def read_economic_activity_data(geographical_layer=GeographicalLayer.LSOA):
     return df
 
 
-def read_pseudo_individual_data(geographical_layer=GeographicalLayer.LSOA):
+def read_pseudo_individual_data(study_area=StudyArea.HARINGEY,
+                                geographical_layer=GeographicalLayer.LSOA):
     """Creates pseudo feature data for people.
 
     The data set will be equivalent to the population sum.
     """
-    data = read_age_structure_data(geographical_layer)
+    data = read_age_structure_data(study_area, geographical_layer)
     data[Pseudo.SINGLETON] = data.sum(axis=1)
     return data[[Pseudo.SINGLETON]]
 
 
-def read_pseudo_household_data(geographical_layer=GeographicalLayer.LSOA):
+def read_pseudo_household_data(study_area=StudyArea.HARINGEY,
+                               geographical_layer=GeographicalLayer.LSOA):
     """Creates pseudo feature data for households.
 
     The data set will be equivalent to the household sum.
     """
-    data = read_household_type_data(geographical_layer)
+    data = read_household_type_data(study_area, geographical_layer)
     data[Pseudo.SINGLETON] = data.sum(axis=1)
     return data[[Pseudo.SINGLETON]]

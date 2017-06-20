@@ -2,7 +2,7 @@ from datetime import timedelta, datetime
 
 import yaml
 
-from . import PeopleFeature, HouseholdFeature, GeographicalLayer
+from . import PeopleFeature, HouseholdFeature, StudyArea, GeographicalLayer
 
 
 def read_simulation_config(path_to_settings):
@@ -15,6 +15,7 @@ def read_simulation_config(path_to_settings):
                                       for feature in settings['household-features']]
     settings['time-step-size'] = timedelta(minutes=settings['time-step-size-minutes'])
     settings['start-time'] = datetime.strptime(settings['start-time'], '%Y-%m-%d %H:%M')
+    settings['study-area'] = StudyArea[settings['study-area']]
     settings['spatial-resolution'] = GeographicalLayer[settings['spatial-resolution']]
     for time_str in ['wake-up-time', 'leave-home-time', 'come-home-time', 'bed-time']:
         settings[time_str] = datetime.strptime(settings[time_str], '%H:%M').time()

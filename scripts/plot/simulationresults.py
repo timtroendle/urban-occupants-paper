@@ -71,10 +71,13 @@ def _read_thermal_power(disk_engine, dwellings):
 
 
 def _read_geo_data(config, thermal_power):
-    geo_data = uo.census.read_haringey_shape_file(config['spatial-resolution'])
-    household_data = uo.census.read_household_type_data(config['spatial-resolution'])
-    age_structure = uo.census.read_age_structure_data(config['spatial-resolution'])
-    economic_activity_data = uo.census.read_economic_activity_data(config['spatial-resolution'])
+    geo_data = uo.census.read_shape_file(config['study-area'], config['spatial-resolution'])
+    household_data = uo.census.read_household_type_data(config['study-area'],
+                                                        config['spatial-resolution'])
+    age_structure = uo.census.read_age_structure_data(config['study-area'],
+                                                      config['spatial-resolution'])
+    economic_activity_data = uo.census.read_economic_activity_data(config['study-area'],
+                                                                   config['spatial-resolution'])
 
     energy = thermal_power.copy()
     energy.value = energy.value * config['time-step-size'].total_seconds() / 1000 / 3600 # kWh
