@@ -50,6 +50,42 @@ NOMIS_LSOA_HARINGEY = ("1249904514,1249904516,1249904519,1249904520,1249904579,1
                        "1249904554,1249904604,1249904606...1249904608,1249904578,1249904581," +
                        "1249904584,1249934354")
 NOMIS_OA_HARINGEY = "1254106458...1254107181,1254258316,1254262366...1254262393"
+# the following are nomis geography codes for Greater London on different layer
+# LSOA and OA are skipped as the collection of numbers is too large and links would become huge
+NOMIS_WARD_GREATER_LONDON = ("1237319791...1237319808,1237319681...1237319688," +
+                             "1237319894...1237319947,1237320029...1237320062," +
+                             "1237320079...1237320117,1237320138...1237320157," +
+                             "1237320197...1237320217,1237320236...1237320252," +
+                             "1237320273...1237320312,1237319689...1237319790," +
+                             "1237319809...1237319893,1237319948...1237320028," +
+                             "1237320063...1237320078,1237320118...1237320137," +
+                             "1237320158...1237320196,1237320218...1237320235," +
+                             "1237320253...1237320272")
+
+NOMIS_MSOA_GREATER_LONDON = ("1245708449...1245708476,1245708289,1245708620...1245708645," +
+                             "1245715064,1245715067,1245708646...1245708705,1245714941," +
+                             "1245708822...1245708865,1245708886...1245708919,1245714947," +
+                             "1245708920...1245708952,1245714930,1245714931,1245714944," +
+                             "1245708978...1245709014,1245709066...1245709097,1245714948," +
+                             "1245709121...1245709150,1245714999,1245715000," +
+                             "1245709179...1245709239,1245708290...1245708310,1245714945," +
+                             "1245708311...1245708378,1245714932,1245708379...1245708448," +
+                             "1245714929,1245714934,1245714936,1245708477...1245708519," +
+                             "1245714935,1245708520...1245708557,1245714938," +
+                             "1245708558...1245708592,1245714940,1245708593...1245708619," +
+                             "1245714933,1245715072...1245715076,1245708706...1245708733," +
+                             "1245714942,1245715028,1245708734...1245708794,1245714943," +
+                             "1245708795...1245708821,1245714939,1245708866...1245708885," +
+                             "1245708953...1245708977,1245709015...1245709042,1245714946," +
+                             "1245715069,1245715070,1245709043...1245709065," +
+                             "1245709098...1245709120,1245714982,1245709151...1245709178")
+LONDON_BOROUGHS = ["City of London", "City of Westminster", "Kensington and Chelsea",
+                   "Hammersmith and Fulham", "Wandsworth", "Lambeth", "Southwark", "Tower Hamlets",
+                   "Hackney", "Islington", "Camden", "Brent", "Ealing", "Hounslow",
+                   "Richmond upon Thames", "Kingston upon Thames", "Merton", "Sutton", "Croydon",
+                   "Bromley", "Lewisham", "Greenwich", "Bexley", "Havering", "Barking and Dagenham",
+                   "Redbridge", "Newham", "Waltham Forest", "Haringey", "Enfield", "Barnet",
+                   "Harrow", "Hillingdon"]
 NOMIS_GEOGRAPHY_CODE_COLUMN_NAME = "GEOGRAPHY_CODE"
 NOMIS_VALUE_NAME_COLUMN_NAME = "CELL_NAME"
 NOMIS_VALUE_COLUMN_NAME = "OBS_VALUE"
@@ -89,6 +125,8 @@ class StudyArea(Enum):
     """
     HARINGEY = (['Haringey'], 101955, 254926, NOMIS_OA_HARINGEY, NOMIS_LSOA_HARINGEY,
                 NOMIS_MSOA_HARINGEY, NOMIS_WARD_HARINGEY)
+    GREATER_LONDON = (LONDON_BOROUGHS, 3266173, 8173941, None, None,
+                      NOMIS_MSOA_GREATER_LONDON, NOMIS_WARD_GREATER_LONDON)
 
     def __init__(self, borough_names, number_households, number_usual_residents,
                  nomis_oa_geo_codes, nomis_lsoa_geo_codes,
@@ -96,12 +134,19 @@ class StudyArea(Enum):
         self.borough_names = borough_names
         self.number_households = number_households
         self.number_usual_residents = number_usual_residents
-        self.nomis_geo_codes = {
+        self._nomis_geo_codes = {
             GeographicalLayer.OA: nomis_oa_geo_codes,
             GeographicalLayer.LSOA: nomis_lsoa_geo_codes,
             GeographicalLayer.MSOA: nomis_msoa_geo_codes,
             GeographicalLayer.WARD: nomis_ward_geo_codes
         }
+
+    def nomis_geo_codes(self, geographical_layer):
+        if self == StudyArea.GREATER_LONDON and (geographical_layer == GeographicalLayer.LSOA or
+                                                 geographical_layer == GeographicalLayer.OA):
+            raise ValueError("LSOA and OA levels not supported for Greater London.")
+        else:
+            return self._nomis_geo_codes[geographical_layer]
 
 
 AGE_STRUCTURE_MAP = {
@@ -202,7 +247,7 @@ def read_age_structure_data(study_area=StudyArea.HARINGEY,
         "?date=latest&geography={}&rural_urban=0&measures=20100" +
         "&select=geography_code,cell_name,obs_value").format(
         NOMIS_KS102EW_DATASET_ID,
-        study_area.nomis_geo_codes[geographical_layer]
+        study_area.nomis_geo_codes(geographical_layer)
     )
     r = requests.get(url)
     df = pd.read_csv(io.BytesIO(r.content))
@@ -213,6 +258,8 @@ def read_age_structure_data(study_area=StudyArea.HARINGEY,
     )[list(AGE_STRUCTURE_MAP.keys())].astype(np.int64)
     df = df.rename(columns=AGE_STRUCTURE_MAP).groupby(lambda x: x, axis=1).sum()
     return df
+
+
 
 
 def read_household_type_data(study_area=StudyArea.HARINGEY,
@@ -226,7 +273,7 @@ def read_household_type_data(study_area=StudyArea.HARINGEY,
            "?date=latest&geography={}&rural_urban=0&measures=20100" +
            "&select=geography_code,c_ahthuk11_name," +
            "obs_value").format(NOMIS_QS116EW_DATASET_ID,
-                               study_area.nomis_geo_codes[geographical_layer])
+                               study_area.nomis_geo_codes(geographical_layer))
     r = requests.get(url)
     df = pd.read_csv(io.BytesIO(r.content))
     df = df.pivot(
@@ -250,7 +297,7 @@ def read_qualification_level_data(study_area=StudyArea.HARINGEY,
         "?date=latest&geography={}&rural_urban=0&measures=20100" +
         "&select=geography_code,cell_name,obs_value").format(
         NOMIS_KS501EW_DATASET_ID,
-        study_area.nomis_geo_codes[geographical_layer]
+        study_area.nomis_geo_codes(geographical_layer)
     )
     r = requests.get(url)
     df = pd.read_csv(io.BytesIO(r.content))
@@ -276,7 +323,7 @@ def read_economic_activity_data(study_area=StudyArea.HARINGEY,
         "&c_sex=0" +
         "&select=geography_code,cell_name,obs_value").format(
         NOMIS_KS601EW_DATASET_ID,
-        study_area.nomis_geo_codes[geographical_layer]
+        study_area.nomis_geo_codes(geographical_layer)
     )
     r = requests.get(url)
     df = pd.read_csv(io.BytesIO(r.content))
