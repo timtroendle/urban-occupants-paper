@@ -215,7 +215,8 @@ def _write_dwellings_table(households, config, path_to_db):
             'maxHeatingPower': config['dwelling']['max-heating-power'],
             'initialTemperature': config['dwelling']['initial-temperature'],
             'heatingControlStrategy': config['dwelling']['heating-control-strategy'],
-            'region': [household.region for household in households]
+            'region': [household.region for household in households],
+            'districtId': [int(household.region.replace('E', '1')) for household in households]
         }
     )
     _df_to_input_db(df, uo.DWELLINGS_TABLE_NAME, path_to_db)
@@ -289,7 +290,8 @@ def _write_simulation_parameter_table(config, path_to_db):
                 'bedTime': config['bed-time'],
                 'logTemperature': config['log-temperature'],
                 'logThermalPower': config['log-thermal-power'],
-                'logActivity': config['log-activity']
+                'logActivity': config['log-activity'],
+                'logAggregated': config['log-aggregated']
             }
         ),
         path_to_db=path_to_db
