@@ -188,7 +188,7 @@ def _create_synthetic_population(seed, census_data_hh, census_data_ppl, config):
         )))
 
     assert len(households) == config['study-area'].number_households
-    assert abs(len(citizens) - config['study-area'].number_usual_residents) < 2000
+    assert abs(len(citizens) - config['study-area'].number_usual_residents) < (2000 * 320) # FIXME change
     return households, citizens
 
 

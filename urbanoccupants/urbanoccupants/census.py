@@ -79,7 +79,7 @@ NOMIS_MSOA_GREATER_LONDON = ("1245708449...1245708476,1245708289,1245708620...12
                              "1245708953...1245708977,1245709015...1245709042,1245714946," +
                              "1245715069,1245715070,1245709043...1245709065," +
                              "1245709098...1245709120,1245714982,1245709151...1245709178")
-LONDON_BOROUGHS = ["City of London", "City of Westminster", "Kensington and Chelsea",
+LONDON_BOROUGHS = ["Westminster", "Kensington and Chelsea",
                    "Hammersmith and Fulham", "Wandsworth", "Lambeth", "Southwark", "Tower Hamlets",
                    "Hackney", "Islington", "Camden", "Brent", "Ealing", "Hounslow",
                    "Richmond upon Thames", "Kingston upon Thames", "Merton", "Sutton", "Croydon",

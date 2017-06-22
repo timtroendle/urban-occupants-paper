@@ -70,3 +70,13 @@ build/paper.docx: build/ts-association-filtered-stats.csv doc/figures/flow-chart
 	cd ./doc && \
 	pandoc --filter pantable --filter pandoc-fignos --filter pandoc-tablenos --filter pandoc-citeproc \
 		--reference-docx ./paper-template.docx main.md pandoc-metadata.yml -t docx -o ../build/paper.docx
+
+
+build/sim-input-london.db: ./build/seed.pickle ./build/markov-ts.pickle ./config/greater-london.yaml ./scripts/simulationinput.py
+	python ./scripts/simulationinput.py ./build/seed.pickle ./build/markov-ts.pickle ./config/greater-london.yaml build/sim-input-london.db
+
+build/sim-output-london.db: build/energy-agents.jar build/sim-input-london.db scripts/runsim.py config/greater-london.yaml
+	python scripts/runsim.py build/energy-agents.jar build/sim-input-london.db build/sim-output-london.db config/greater-london.yaml
+
+build/choropleth-london.png: build/sim-output-london.db config/greater-london.yaml scripts/plot/simulationresultsaggregated.py
+	python scripts/plot/simulationresults.py build/sim-output-london.db config/greater-london.yaml build/choropleth-london.png
